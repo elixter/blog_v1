@@ -2,7 +2,6 @@ package main
 
 import (
 	// go standard libraries
-	"fmt"
 	"net/http"
 	
 	// open source libraries
@@ -24,9 +23,9 @@ func DisplayPosts (c echo.Context) error {
 	defer rows.Close()
 	
 	// Save data to Post container.
-	for row.next() {
+	for rows.Next() {
 		post := models.Post{}
-		if err := rows.Scan(&Post.Title, &Post.Date)); err != nil {
+		if err := rows.Scan(&post.Title, &post.Date); err != nil {
 			// if there is something wrong, return err.
 			return err
 		}

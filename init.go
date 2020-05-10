@@ -13,9 +13,14 @@ func NewEcho() *echo.Echo {
 	
 	e.Renderer = NewTemplate()		// Set template renderer
 	
-	// Regist middlewares
+	// Add middlewares
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	
+	// Static config
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root: "statics",
+	}))
 	
 	return e
 }
