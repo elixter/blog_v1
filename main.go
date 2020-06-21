@@ -2,34 +2,32 @@ package main
 
 import (
 	// defualt libraries.
-	"net/http"
+	//"net/http"
+	"log"
 	"database/sql"
 	
-	// open source libraries.
-	"github.com/labstack/echo/v4"
 	
+	// open source libraries.
 	_ "github.com/go-sql-driver/mysql"
+	
 )
 
-var db *sql.DB
-var dbErr error
-
 func main() {
-	e := NewEcho()
-	
-	// Database open
+	// open db
 	db, dbErr = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/blog?parseTime=true&charset=utf8mb4")
 	if dbErr != nil {
-		panic(dbErr)
+		log.Fatal(dbErr)
 	}
 	defer db.Close()
 	
-	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{})
-	})
+	e := NewEcho()
 	
-	// Post routing
-	e.GET("/blog", DisplayPosts)
+	e.GET("/", ServePosts)
+	e.GET("/write", NewPost)
+	
+	e.POST("/write", NewPost)
+	
+	//e.GET("/post", DisplayPost)
 		
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))
