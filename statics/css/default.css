@@ -454,3 +454,15 @@ body {
 }
 
 /* ---------------------------------------------*/
+
+
+/* 기타 */
+.action-btn {
+	margin-top: 5px;
+    width: 50px;
+    height: 25px;
+    border-radius: 10px;
+    border: 1px solid #0075cf;
+    background-color: #0390fc;
+    color: var(--text-color-brighter);
+}

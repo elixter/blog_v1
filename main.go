@@ -24,6 +24,8 @@ func main() {
 	
 	e.GET("/", ServePosts)
 	e.GET("/write", NewPost)
+	e.GET("/post", ServePost)
+	e.GET("/delete", DeletePost)
 	
 	e.POST("/write", NewPost)
 	

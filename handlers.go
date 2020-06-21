@@ -3,7 +3,7 @@ package main
 import (
 	// go standard libraries
 	"net/http"
-	//"strconv"
+	"strconv"
 	"fmt"
 	"log"
 	"time"
@@ -42,6 +42,8 @@ func ServePosts (c echo.Context) error {
 	return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{
 		"PageTitle": "DevLee",
 		"Posts": posts,
+		"Admin": 1,
+		"WriteUrl": "/write",
 	})
 }
 
@@ -57,6 +59,7 @@ func NewPost (c echo.Context) error {
 			return c.String(http.StatusInternalServerError, "error")
 		}
 		
+		// Content내용 정제시켜서 Summary에 넣는작업 해야됨.
 		t := time.Now()
 		p.Date = t
 		p.Updated = t
@@ -78,21 +81,56 @@ func NewPost (c echo.Context) error {
 	return c.String(http.StatusBadRequest, "bad")
 }
 
-	/*
-func DisplayPost (c echo.Context) error {
+func ServePost (c echo.Context) error {
 
-	postId := c.QueryParam("id")
+	pid := c.QueryParam("id")
 	p := new(models.Post)
 	
-	postIdInt, err := strconv.Atoi(postId)
+	intPid, err := strconv.Atoi(pid)
 	if err != nil {
 		return err	
 	}
 	
-	//err = db.QueryRow("SELECT * FROM Posts WHERE post_id = ?", postIdInt).Scan(&p.Id, &p.Title, &p.Content, &p.Date, &p.Update)
+	err = db.QueryRow("SELECT * FROM posts WHERE id = ?", intPid).Scan(&p.Id, &p.Author, &p.Title, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category)
 	
-	return c.Render(http.StatusOK, "blog/post", map[string]interface{}{
-		"post": p,
+	return c.Render(http.StatusOK, "blog/post.html", map[string]interface{}{
+		"PageTitle": "DevLee",
+		"Post": p,
+		"Admin": 1,
+		"Id": p.Id,
+		"EditUrl": "edit",
+		"DeleteUrl": "delete",
 	})
 }
-*/
+
+func DeletePost (c echo.Context) error {
+	id := c.QueryParam("id")
+	
+	intId, sconvErr := strconv.Atoi(id)
+	if sconvErr != nil {
+		log.Fatal(sconvErr)
+	}
+	
+	_, err := db.Exec("delete from posts where id = ?", intId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	// auto_increment initialize and sort.
+	_, err = db.Exec("ALTER TABLE posts AUTO_INCREMENT=1;")
+	if err != nil {
+		return err
+	}
+	
+	_, err = db.Exec("SET @COUNT = 0;")
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec("UPDATE posts SET id = @COUNT := @COUNT+1;")
+	if err != nil {
+		return err
+	}
+	
+	return c.Redirect(http.StatusMovedPermanently, "/")
+}

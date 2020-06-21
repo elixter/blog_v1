@@ -49,8 +49,9 @@ function hasScrolled() {
 
 // Btn funcs
 function post_confirm(url) {
-	if (confirm('Are you sure to post it????')) {
+	if (confirm('게시글을 등록하시겠습니까?')) {
 		// Yes click
+	
 		document.newPost.action = url;
 		document.newPost.method = "post";
 		document.newPost.submit();
@@ -61,10 +62,15 @@ function post_confirm(url) {
 }
 
 function cancel_confirm() {
-	if (confirm('Cancel the post????')) {
+	if (confirm('게시글 작성을 종료하시겠습니까?')) {
 		// Yes click
 		location.href = "/blog"
 	} else {
 		// no click
 		}
   }
+
+function intoHTML(className, text) {
+	console.log("test" + className)
+	document.querySelector(className).innerHTML = text;
+}
