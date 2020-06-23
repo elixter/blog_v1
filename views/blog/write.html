@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{template "meta"}}
+	<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
+</head>
+<body>
+  <!-- Start navbar -->
+  {{template "header"}}
+  <!-- End navbar -->
+  <!-- Start main -->
+  <main>
+    <div class="content">
+      <div class="content-div">
+        <!-- post form -->
+        <div class="post-form-div">
+          <form class="post-form" name="newPost">
+            <input class="form-title" type="text" name="title" placeholder="제목">
+            <textarea class="form-content" type="text" name="content"></textarea>
+            <input class="action-btn" type="button" value="저장" onclick="post_confirm({{.Url}})">
+    				<input class="action-btn" type="button" value="취소" onclick="cancel_confirm()">
+          </form>
+        </div>
+      <!-- End Post form -->
+      </div>
+    </div>
+  </main>
+  <!-- End main -->
+  {{template "footer"}}
+	
+	<!-- scripts -->
+	<script src="./js/ckeditor.js"></script>
+</body>
+</html>

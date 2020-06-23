@@ -22,15 +22,18 @@ func main() {
 	
 	e := NewEcho()
 	
+	// GET Actions
 	e.GET("/", ServePosts)
 	e.GET("/write", NewPost)
 	e.GET("/post", ServePost)
 	e.GET("/delete", DeletePost)
 	
+	
+	// Post Actions
 	e.POST("/write", NewPost)
 	
-	//e.GET("/post", DisplayPost)
-		
+	
+	
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))
 }

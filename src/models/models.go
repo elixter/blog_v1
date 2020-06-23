@@ -7,6 +7,7 @@ import (
 type Post struct {
 	Id			int			`json: "id" db: "id" gorm: "id"`
 	Author		string		`json: "author" db: "author" gorm: "author"`
+	UDesc		string		`json: "udesc" db: "udesc" gorm: "udesc"`
 	Title		string		`json: "title" db: "title" gorm: "title"`
 	Content		string		`json: "content" db: "content" gorm: "content"`
 	Summary		string		`json: "summary" db: "summary" gorm: "summary"`
@@ -28,6 +29,6 @@ type Comment struct {
 type User struct {
 	Id			string		`json: "id" db: "id" gorm: "id"`
 	Name		string		`json: "name" db: "name" gorm: "name"`
-	Admin		bool		`json: "admin" db: "admin" gorm: "admin"`
-	desc		string		`json: "desc" db: "desc" gorm: "desc"`		// user describe
+	Admin		int		`json: "admin" db: "admin" gorm: "admin"`		// 1: 관리자, 0: 일반 유저
+	Desc		string		`json: "desc" db: "desc" gorm: "desc"`		// user describe
 }
