@@ -90,7 +90,7 @@ func NewPost (c echo.Context) error {
 		
 		
 		// DB insert query
-		_, err := db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.Title, p.Content, p.Summary, p.Date, p.Updated, p.Category)
+		_, err := db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, "임시", p.Title, p.Content, p.Summary, p.Date, p.Updated, p.Category)
 		if err != nil {
 			log.Fatal(err)
 		}

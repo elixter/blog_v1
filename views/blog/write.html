@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   {{template "meta"}}
-	<script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script>
+	<!--script src="https://cdn.ckeditor.com/ckeditor5/19.1.1/classic/ckeditor.js"></script-->
+	<script src="https://cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
 </head>
 <body>
   <!-- Start navbar -->
@@ -16,7 +17,7 @@
         <div class="post-form-div">
           <form class="post-form" name="newPost">
             <input class="form-title" type="text" name="title" placeholder="제목">
-            <textarea class="form-content" type="text" name="content"></textarea>
+            <textarea id="form-content" class="form-content" type="text" name="content"></textarea>
             <input class="action-btn" type="button" value="저장" onclick="post_confirm({{.Url}})">
     				<input class="action-btn" type="button" value="취소" onclick="cancel_confirm()">
           </form>
@@ -29,6 +30,8 @@
   {{template "footer"}}
 	
 	<!-- scripts -->
-	<script src="./js/ckeditor.js"></script>
+	<script>CKEDITOR.replace('form-content', {
+			height: 500
+		}); </script>
 </body>
 </html>
