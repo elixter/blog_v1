@@ -18,7 +18,7 @@
           <form class="post-form" name="newPost">
             <input class="form-title" type="text" name="title" placeholder="제목">
             <textarea id="form-content" class="form-content" type="text" name="content"></textarea>
-            <input class="action-btn" type="button" value="저장" onclick="post_confirm({{.Url}})">
+            <input class="action-btn" type="button" value="저장" onclick="post_confirm('{{.Url}}?id={{.Id}}')">
     				<input class="action-btn" type="button" value="취소" onclick="cancel_confirm()">
           </form>
         </div>
@@ -30,8 +30,20 @@
   {{template "footer"}}
 	
 	<!-- scripts -->
-	<script>CKEDITOR.replace('form-content', {
+	<script>
+		CKEDITOR.replace('form-content', {
 			height: 500
-		}); </script>
+		}); 
+		
+		
+		
+		{{$Modify := .Modify}}
+		{{$EditPost := .EditPost}}
+		{{if $Modify}}
+		document.querySelector(".form-title").value = {{$EditPost.Title}};
+		CKEDITOR.instances["form-content"].setData({{$EditPost.Content}});
+		document.newPost.method = "put";
+		{{end}}
+	</script>
 </body>
 </html>

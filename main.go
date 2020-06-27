@@ -27,11 +27,13 @@ func main() {
 	e.GET("/write", NewPost)
 	e.GET("/post", ServePost)
 	e.GET("/delete", DeletePost)
+	e.GET("/edit", EditPost)
 	
 	
 	// Post Actions
 	e.POST("/write", NewPost)
-	
+	e.POST("/edit", EditPost)
+
 	
 	
 	// Run server with port 8080

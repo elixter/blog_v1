@@ -17,6 +17,8 @@ import (
 	"models"
 )
 
+
+// 블로그 첫 화면에 쓰이는 데이터 serving
 func ServePosts (c echo.Context) error {
 	var posts []models.Post
 	
@@ -50,6 +52,7 @@ func ServePosts (c echo.Context) error {
 	})
 }
 
+// 글쓰기 화면
 func NewPost (c echo.Context) error {
 	if (c.Request().Method == "GET") {
 		// Request method가 GET인 경우
@@ -104,6 +107,7 @@ func NewPost (c echo.Context) error {
 	return c.String(http.StatusBadRequest, "bad")
 }
 
+// 게시글 view
 func ServePost (c echo.Context) error {
 
 	pid := c.QueryParam("id")
@@ -124,9 +128,12 @@ func ServePost (c echo.Context) error {
 		"Id": p.Id,
 		"EditUrl": "edit",
 		"DeleteUrl": "delete",
+		"Modify": 0,
 	})
 }
 
+
+// 게시글 삭제
 func DeletePost (c echo.Context) error {
 	id := c.QueryParam("id")
 	
@@ -157,4 +164,55 @@ func DeletePost (c echo.Context) error {
 	}
 	
 	return c.Redirect(http.StatusMovedPermanently, "/")
+}
+
+// 게시글 수정
+func EditPost (c echo.Context) error {
+	p := new(models.Post)		// 수정할 게시글 object
+	pid := c.QueryParam("id")
+	
+	intPid, err := strconv.Atoi(pid)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "id 정수형 변환 실패")	
+	}
+	
+	log.Println(pid)
+	
+	if (c.Request().Method == "GET") {	
+		// Request method가 GET인 경우
+		
+
+		err = db.QueryRow("SELECT title, content FROM posts WHERE id = ?", intPid).Scan(&p.Title, &p.Content)
+		
+		
+		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
+			"Url": "/edit",
+			"Id": pid,
+			"Modify": 1,
+			"EditPost": p,
+		})
+	} else if (c.Request().Method == "POST") {
+		// Request method가 POST인 경우
+
+		if err := c.Bind(p); err != nil {
+			log.Fatal(err)
+			return c.String(http.StatusInternalServerError, "error")
+		}
+		
+		t := time.Now()
+		p.Updated = t
+		
+		// DB Update
+		_, err := db.Exec("update posts set title = ?, content = ?, updated = ? where id = ?", p.Title, p.Content, p.Updated, intPid)
+		if err != nil {
+			log.Fatal(err)
+		}
+		redirectUrl := "/post?id=" + pid
+		
+		log.Println(redirectUrl)
+		
+		return c.Redirect(http.StatusMovedPermanently, redirectUrl)
+	}
+	
+	return c.String(http.StatusBadRequest, "bad")
 }
