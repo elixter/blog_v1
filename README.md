@@ -2,7 +2,7 @@
 blog_v1
 
 Framework : Echo<br>
-API : CKEditor5, Fontawesome<br>
+API : CKEditor4, Fontawesome<br>
 Database : MYSQL<br>
 Backend: Golang<br>
 Frontend: HTML, CSS, Javascript<br>
