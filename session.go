@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 	"net/http"
+	"encoding/json"
 	
 	"models"
 	
@@ -27,111 +28,136 @@ import (
 
 */
 
-
 func Login (c echo.Context) error {
-	if (c.Request().Method == "GET") {
-		// http method가 GET인경우
-		return c.Render(http.StatusOK, "/login.html", map[string]interface{}{
-			"Url": "/login",
-		})
+	switch c.Request().Method {
+		case "GET":
+			// http method가 GET인경우
+			return c.Render(http.StatusOK, "/login.html", map[string]interface{}{
+				"Url": "/login",
+			})
+		case "POST":
+			// http method가 POST인 경우
 		
-	} else if (c.Request().Method == "POST") {
-		// http method가 POST인 경우
-		
-		u := new(models.User)
+			u := new(models.User)
 
-		id := c.FormValue("userId")
-		pw := c.FormValue("userPw")
+			var sess *sessions.Session
+			var sessCheck int			// 세션이 있는지 확인 0이면 없음, 있을경우 나머지...
 
-		saltedPw := "tw" + pw + "blog"			// 임시 salting
+			id := c.FormValue("userId")
+			pw := c.FormValue("userPw")
 
-		err := db.QueryRow("select uname, admin, udesc from users where uid = ? AND upw = SHA2(?, 256)", id, saltedPw).Scan(&u.Name, &u.Admin, &u.Desc)
-		if err != nil {
-			return c.String(http.StatusOK, "존재하지않은 아이디이거나 비밀번호가 맞지않습니다.")
-		}
-		u.Id = id
+			saltedPw := "tw" + pw + "blog"			// 임시 salting
 
-		UUID := uuid.New()
-
-		// session에 sessionID 추가
-		log.Println("Let's create session")
-		s := new(models.Session)
-		currentTime := time.Now()
-
-		s.Id = UUID.String()
-		s.Uid = id
-		s.CreatedAt = currentTime
-		s.ExpiresAt = currentTime.Add(time.Hour * 2)
-
-		sess, _ := session.Get("session", c)
-		sess.Options = &sessions.Options {
-			Path: "/",
-			MaxAge: 60 * 2,
-			HttpOnly: true,
-		}
-		sess.Values["sessId"] = s.Id
-		// currentPage := sess.Values["currentPage"].(string)
-		sess.Save(c.Request(), c.Response())
-		
-
-		// Database에 이미 Session이 있는지 확인
-		log.Println("Let's check session already exist.")
-		var count int		// session count
-		err = db.QueryRow("select count(id) from sessions where uid = ?", s.Uid).Scan(&count)
-		if err != nil {
-			log.Println(err)
-		}
-		
-		log.Printf("쿼리결과는 %d개 입니다.", &count)
-
-		if (count >= 1) {
-			// 이미 세션이 존재하는 경우
-			log.Println("Session already exist.")
-			_, err := db.Exec("update sessions set id = ?, expiresAt = ? where uid = ?", s.Id, s.ExpiresAt, s.Uid)
+			err := db.QueryRow("select uid, uname, admin, udesc from users where uid = ? AND upw = SHA2(?, 256)", id, saltedPw).Scan(&u.Id, &u.Name, &u.Admin, &u.Desc)
 			if err != nil {
 				log.Println(err)
-				
-				return c.String(http.StatusOK, "Session update failed.")
+				return c.String(http.StatusOK, "데이터베이스 에러")
 			}
-			
-			// 이전 페이지로 이동
-			return c.Redirect(http.StatusMovedPermanently, "/")
-		} else {
-			// 세션이 존재하지않는 경우
-			log.Println("Session is not exised.")
-			// Database에 Session저장
-			_, dbErr := db.Exec("insert into sessions values(?, ?, ?, ?)", s.Id, s.Uid, s.CreatedAt, s.ExpiresAt)
-			if dbErr != nil {
-				log.Println(dbErr)
 
-				return c.String(http.StatusOK, "Row insertion is failed.")
+			// 현재 계정으로 등록된 세션이 있는지 확인
+			err = db.QueryRow("select count(id) from sessions where uid = ?", u.Id).Scan(&sessCheck)
+
+			t := time.Now()
+
+			if (sessCheck == 0) {
+				// Database에 계정의 세션이 없는경우
+				// 새로운 세션 생성
+				log.Println("##데이터베이스에 세션이 존재하지 않습니다.##")			// 프롬프트 로그
+				log.Println("##새로운 세션 생성##")
+
+				UUID := uuid.New()				// 랜덤 uuid로 세션아이디 생성
+
+				// User 객체에 세션아이디, 유효기간 저장
+				u.SessionId = UUID.String()
+				u.ExpiresAt = t.Add(time.Hour * 2)
+
+				// Database에 세션저장
+				_, err := db.Exec("insert into sessions values(?, ?, ?)", u.SessionId, u.Id, u.ExpiresAt)
+				if err != nil {
+					log.Println(err)
+				return c.String(http.StatusOK, "데이터베이스 에러")
+				}
+
+			} else {
+				// Database에 계정의 세션이 있는경우
+				// 유효기간 확인해서 만료되었으면 재생성, 유요하면 리턴
+				rows, err := db.Query("select * from sessions where uid = ?", u.Id)
+				if err != nil {
+					log.Println(err)
+					return c.String(http.StatusOK, "데이터베이스 에러")
+				}
+				defer rows.Close()
+				
+				for rows.Next() {
+					err := rows.Scan(&u.SessionId, &u.Id, &u.ExpiresAt)
+					if err != nil {
+						log.Println(err)
+						return c.String(http.StatusOK, "데이터베이스 에러")
+					}
+				}
+
+				if (u.Valid()) {
+					// 세션이 유효할 경우
+					newExp := u.Refresh()
+					// Database에서 유효기간 업데이트
+					_, err := db.Exec("update sessions set expiresAt = ? where id = ?", newExp, u.Id)
+					if err != nil {
+						log.Println(err)
+						return c.String(http.StatusOK, "데이터베이스 에러")
+					}
+
+				} else {
+					// 세션이 유효하지 않을경우
+					UUID := uuid.New()				// 랜덤 uuid로 세션아이디 생성
+
+					// User 객체에 세션아이디, 유효기간 저장
+					u.SessionId = UUID.String()
+					u.ExpiresAt = t.Add(time.Hour * 2)
+
+					// Database에 세션저장
+					_, err = db.Exec("insert into sessions values(?, ?, ?)", u.SessionId, u.Id, u.ExpiresAt)
+					if err != nil {
+						log.Println(err)
+						return c.String(http.StatusOK, "데이터베이스 에러")
+					}
+				}
 			}
-			
-			// 이전 페이지로 이동
-			return c.Redirect(http.StatusMovedPermanently, "/")
-		}
+
+			// JSON으로 마샬링 후 세션에 탑재
+			bind, _ := json.Marshal(u)
+
+			sess, _ = session.Get("session", c)
+			sess.Options = &sessions.Options {
+				MaxAge: 3600 * 2,		// 2 hours
+				HttpOnly: true,
+			}
+			sess.Values["user"] = bind
+			currentPage := sess.Values["currentPage"].(string)
+			sess.Save(c.Request(), c.Response())
 		
-		
+			return c.Redirect(http.StatusOK, currentPage)
+		default:
+		return c.String(http.StatusInternalServerError, "Method is not found")
 	}
-	
-	// 에러 고쳐야됨 씨벌
-	
-	return c.String(http.StatusOK, "good")
 }
 
 
 func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 	return func (c echo.Context) error {
-		log.Println("Into middleware")
-		sess, err := session.Get("session", c)
-		
-		if (len(sess.Values) == 0) {
-			log.Println("세션없어요시발")
-			return c.Redirect(http.StatusMovedPermanently, "/login")
-		}
-		
 		s := new(models.Session)
 		
+		log.Println("인증확인 미들웨어")
+		sess, err := session.Get("session", c)
+		sess.Values["currentPage"] = c.Request().RequestURI 
+		
+		// 여기부터 코딩해야됨
+
+		
+		if (len(sess.Values) == 0) {
+			log.Println("인증이 안되어있어 로그인페이지로 이동")
+			return c.Redirect(http.StatusMovedPermanently, "/login")
+		}
+
 		sess.Values["currentPage"] = c.Request().RequestURI
 		s.Id = sess.Values["sessId"].(string)				// session ID
 		log.Println(s.Id)
