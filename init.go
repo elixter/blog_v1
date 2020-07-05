@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/gorilla/sessions"
-	"github.com/gorilla/securecookie"
+	//"github.com/gorilla/securecookie"
 )
 
 var db *sql.DB
@@ -25,13 +25,10 @@ func NewEcho() *echo.Echo {
 	// 미들웨어 체인 순서 잘 생각해서 정리할 것.
 	
 	// session store
-	authKeyOne := securecookie.GenerateRandomKey(64)
-	encryptionKeyOne := securecookie.GenerateRandomKey(32)
+	//authKeyOne := securecookie.GenerateRandomKey(64)
+	//encryptionKeyOne := securecookie.GenerateRandomKey(32)
 
-	store = sessions.NewCookieStore(
-		authKeyOne,
-		encryptionKeyOne,
-	)
+	store = sessions.NewCookieStore([]byte("secret"))
 	
 	// Add middlewares
 	e.Use(middleware.Logger())

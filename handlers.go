@@ -175,9 +175,7 @@ func EditPost (c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "id 정수형 변환 실패")	
 	}
-	
-	log.Println(pid)
-	
+
 	if (c.Request().Method == "GET") {	
 		// Request method가 GET인 경우
 		

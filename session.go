@@ -6,6 +6,7 @@ import (
 	"time"
 	"net/http"
 	"encoding/json"
+	"fmt"
 	
 	"models"
 	
@@ -75,9 +76,9 @@ func Login (c echo.Context) error {
 				_, err := db.Exec("insert into sessions values(?, ?, ?)", u.SessionId, u.Id, u.ExpiresAt)
 				if err != nil {
 					log.Println(err)
-				return c.String(http.StatusOK, "데이터베이스 에러")
+					return c.String(http.StatusOK, "데이터베이스 에러")
 				}
-
+				log.Println("##세션 생성 완료##")
 			} else {
 				// Database에 계정의 세션이 있는경우
 				// 유효기간 확인해서 만료되었으면 재생성, 유요하면 리턴
@@ -98,6 +99,7 @@ func Login (c echo.Context) error {
 
 				if (u.Valid()) {
 					// 세션이 유효할 경우
+					log.Println("##세션이 유효합니다.##")
 					newExp := u.Refresh()
 					// Database에서 유효기간 업데이트
 					_, err := db.Exec("update sessions set expiresAt = ? where id = ?", newExp, u.Id)
@@ -105,9 +107,10 @@ func Login (c echo.Context) error {
 						log.Println(err)
 						return c.String(http.StatusOK, "데이터베이스 에러")
 					}
-
+					
 				} else {
 					// 세션이 유효하지 않을경우
+					log.Println("##세션이 유효하지 않습니다.##")
 					UUID := uuid.New()				// 랜덤 uuid로 세션아이디 생성
 
 					// User 객체에 세션아이디, 유효기간 저장
@@ -124,18 +127,27 @@ func Login (c echo.Context) error {
 			}
 
 			// JSON으로 마샬링 후 세션에 탑재
-			bind, _ := json.Marshal(u)
+			bind, err := json.Marshal(u)
+			if err != nil {
+				log.Println(err)
+			}
 
 			sess, _ = session.Get("session", c)
 			sess.Options = &sessions.Options {
-				MaxAge: 3600 * 2,		// 2 hours
+				MaxAge: 3600,		// hours
 				HttpOnly: true,
 			}
 			sess.Values["user"] = bind
-			currentPage := sess.Values["currentPage"].(string)
+			currentPage := fmt.Sprintf("%v", sess.Values["currentPage"])
+			if currentPage == "<nil>" {
+				currentPage = "/"
+			}
+			log.Println(currentPage)
 			sess.Save(c.Request(), c.Response())
 		
-			return c.Redirect(http.StatusOK, currentPage)
+			log.Println("##세션저장 완료##")
+		
+			return c.Redirect(http.StatusMovedPermanently, currentPage)
 		default:
 		return c.String(http.StatusInternalServerError, "Method is not found")
 	}
@@ -144,55 +156,45 @@ func Login (c echo.Context) error {
 
 func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 	return func (c echo.Context) error {
-		s := new(models.Session)
+		u := new(models.User)
 		
 		log.Println("인증확인 미들웨어")
 		sess, err := session.Get("session", c)
-		sess.Values["currentPage"] = c.Request().RequestURI 
-		
-		// 여기부터 코딩해야됨
-
-		
-		if (len(sess.Values) == 0) {
-			log.Println("인증이 안되어있어 로그인페이지로 이동")
-			return c.Redirect(http.StatusMovedPermanently, "/login")
-		}
-
-		sess.Values["currentPage"] = c.Request().RequestURI
-		s.Id = sess.Values["sessId"].(string)				// session ID
-		log.Println(s.Id)
-		
-		log.Println("쿼리시작")
-		err = db.QueryRow("select uid, createdAt, expiresAt from sessions where id = ?", s.Id).Scan(&s.Uid, &s.CreatedAt, &s.ExpiresAt)
 		if err != nil {
-			log.Println("세션이 존재하지않습니다.")
 			log.Println(err)
-			return c.Redirect(http.StatusMovedPermanently, "/login")
+			return c.String(http.StatusInternalServerError, "세션을 가져올 수 없습니다.")
 		}
-		log.Println("세션이 존재합니다.")
-		log.Println(s.Id)
 		
-		
-		if (s.ExpiresAt.Sub(time.Now()) <= 0) {
-			// 세션이 만료되었을 경우
-			log.Println("세션 만료되었음")
-			_, err := db.Exec("delete from sessions where id = ?", s.Id)		// DB에서 세션삭제
-			if err != nil {
-				log.Fatal(err)
-			}
-			
+		// 현재 페이지 저장
+		currentURI := c.Request().RequestURI
+		if currentURI != "/login" {
+			sess.Values["currentPage"] = currentURI
+		}
+
+		if (len(sess.Values) <= 1/* 현재페이지랑, 자체적 1??? */) {
+			// 쿠키에 세션이 존재하지 않은경우
+			log.Println("인증이 안되어있어 로그인페이지로 이동")
+			// 현재 페이지를 저장하기위해 세션 Save
+			sess.Save(c.Request(), c.Response())
 			return c.Redirect(http.StatusMovedPermanently, "/login")
 		} else {
-			// 세션이 유효한 경우 세션 연장 후 다음 핸들러로 이동
-			updateExp := time.Now().Add(time.Hour)		// 한시간 연장
-			_, err := db.Exec("update sessions set expiresAt = ? where id = ?", updateExp, s.Id)
+			// 쿠키에 세션이 존재하는 경우
+			log.Println("세션이 존재하네????")
+				
+			jUser := sess.Values["user"]
+			fmt.Println("받아오기성공")
+
+			err = json.Unmarshal(jUser.([]byte), &u)
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
 			}
 			
-			next(c)
+			// 세션 유효기간 확인
+			
+			
+			return next(c)
 		}
-		
-		return c.String(http.StatusOK, "failed")
+
+		return next(c)
 	}
 }
