@@ -24,9 +24,9 @@ func main() {
 	
 	// GET Actions
 	e.GET("/", ServePosts)
-	e.GET("/write", NewPost)
 	e.GET("/post", ServePost)
-	e.GET("/delete", DeletePost)
+	e.GET("/write", NewPost, AuthHandler)
+	e.GET("/delete", DeletePost, AuthHandler)
 	e.GET("/edit", EditPost, AuthHandler)
 	
 	e.GET("/login", Login)

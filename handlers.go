@@ -8,10 +8,12 @@ import (
 	"log"
 	"time"
 	"strings"
+	"encoding/json"
 	
 	// open source libraries
 	"github.com/labstack/echo/v4"
 	"github.com/grokify/html-strip-tags-go"
+	"github.com/labstack/echo-contrib/session"
 	
 	// custom libraries
 	"models"
@@ -21,6 +23,9 @@ import (
 // 블로그 첫 화면에 쓰이는 데이터 serving
 func ServePosts (c echo.Context) error {
 	var posts []models.Post
+	var isAdmin int
+	
+	u := new(models.User)
 	
 	Rows, err := db.Query("select * from posts order by id desc")
 	if err != nil {
@@ -42,12 +47,32 @@ func ServePosts (c echo.Context) error {
 		posts = append(posts, p)
 	}
 	
+	// 세션에서 현재 유저 정보 가져오기
+	sess, err := session.Get("session", c)
+	if err != nil {
+		log.Println(err)
+	}
+	
+	// 로그인정보가 존재하는 경우
+	if (len(sess.Values) > 1) {
+		jUser := sess.Values["user"]
+	
+		err = json.Unmarshal(jUser.([]byte), &u)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		isAdmin = u.Admin
+	} else {
+		isAdmin = 0
+	}
+	
 	fmt.Println(len(posts))
 	// Render.
 	return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{
 		"PageTitle": "DevLee",
 		"Posts": posts,
-		"Admin": 1,
+		"Admin": isAdmin,
 		"WriteUrl": "/write",
 	})
 }
@@ -63,17 +88,28 @@ func NewPost (c echo.Context) error {
 	} else if (c.Request().Method == "POST") {
 		// Request method가 POST인 경우
 		p := new(models.Post)
+		u := new(models.User)
+		
+		// 세션에서 현재 유저 정보 가져오기
+		sess, err := session.Get("session", c)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		jUser := sess.Values["user"]
+
+		err = json.Unmarshal(jUser.([]byte), &u)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		// Form에서 작성한 게시글 데이터 받아오기
 		if err := c.Bind(p); err != nil {
 			log.Fatal(err)
 			return c.String(http.StatusInternalServerError, "error")
 		}
 		
-		var sumText string				// Summary text
-		
-		p.Author = "이태원"
-		t := time.Now()
-		p.Date = t
-		p.Updated = t
+		var sumText string	// Summary text
 		
 		// Summary 만들기
 		if (len(p.Content) >= 200) {
@@ -89,12 +125,20 @@ func NewPost (c echo.Context) error {
 				sumText = p.Content
 			}
 		}
+		
+		t := time.Now() // 현재시간 가져오기
+		
+		// Post객체에 각 데이터 넣기
+		p.Author = u.Name
+		p.UDesc = u.Desc 
+		p.Date = t
+		p.Updated = t
 		p.Summary = strip.StripTags(sumText)
-		p.Category = "Tech"
+		p.Category = "Tech"		// 추후 설정하도록 만들 예정
 		
 		
 		// DB insert query
-		_, err := db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, "임시", p.Title, p.Content, p.Summary, p.Date, p.Updated, p.Category)
+		_, err = db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.UDesc, p.Title, p.Content, p.Summary, p.Date, p.Updated, p.Category)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,19 +157,49 @@ func ServePost (c echo.Context) error {
 
 	pid := c.QueryParam("id")
 	p := new(models.Post)
+	u := new(models.User)
+	
+	var isAdmin int
 	
 	intPid, err := strconv.Atoi(pid)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "게시글이 존재하지 않습니다.")	
 	}
 	
+	// Database에서 게시글 쿼리
 	err = db.QueryRow("SELECT * FROM posts WHERE id = ?", intPid).Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category)
 
+	// 세션에서 현재 유저 정보 가져오기
+	sess, err := session.Get("session", c)
+	if err != nil {
+		log.Println(err)
+	}
+	
+	// 로그인정보가 존재하는 경우
+	if (len(sess.Values) > 1) {
+		jUser := sess.Values["user"]
+	
+		err = json.Unmarshal(jUser.([]byte), &u)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		isAdmin = u.Admin
+	} else {
+		isAdmin = 0
+	}
+	
+	log.Println(u.Admin)
+	log.Println(u.Name)
+	
+	log.Println(isAdmin)
+	
+	
 	
 	return c.Render(http.StatusOK, "blog/post.html", map[string]interface{}{
 		"PageTitle": "DevLee",
 		"Post": p,
-		"Admin": 1,
+		"Admin": isAdmin,
 		"Id": p.Id,
 		"EditUrl": "edit",
 		"DeleteUrl": "delete",
