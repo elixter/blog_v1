@@ -58,6 +58,7 @@ func NewPost (c echo.Context) error {
 		// Request method가 GET인 경우
 		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
 			"Url": "/write",
+			"CancelUrl": "/",
 		})
 	} else if (c.Request().Method == "POST") {
 		// Request method가 POST인 경우
@@ -188,6 +189,7 @@ func EditPost (c echo.Context) error {
 			"Id": pid,
 			"Modify": 1,
 			"EditPost": p,
+			"CancelUrl:": "/",
 		})
 	} else if (c.Request().Method == "POST") {
 		// Request method가 POST인 경우

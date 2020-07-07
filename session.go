@@ -81,11 +81,10 @@ func Login (c echo.Context) error {
 				log.Println("##세션 생성 완료##")
 			} else {
 				// Database에 계정의 세션이 있는경우
-				// 유효기간 확인해서 만료되었으면 재생성, 유요하면 리턴
+				// 유효기간 확인해서 만료되었으면 재생성, 유효하면 리턴
 				rows, err := db.Query("select * from sessions where uid = ?", u.Id)
 				if err != nil {
 					log.Println(err)
-					return c.String(http.StatusOK, "데이터베이스 에러")
 				}
 				defer rows.Close()
 				
@@ -118,7 +117,7 @@ func Login (c echo.Context) error {
 					u.ExpiresAt = t.Add(time.Hour * 2)
 
 					// Database에 세션저장
-					_, err = db.Exec("insert into sessions values(?, ?, ?)", u.SessionId, u.Id, u.ExpiresAt)
+					_, err = db.Exec("update sessions set id = ?, expiresAt = ? where uid = ?", u.SessionId, u.ExpiresAt, u.Id)
 					if err != nil {
 						log.Println(err)
 						return c.String(http.StatusOK, "데이터베이스 에러")
@@ -134,11 +133,12 @@ func Login (c echo.Context) error {
 
 			sess, _ = session.Get("session", c)
 			sess.Options = &sessions.Options {
-				MaxAge: 3600,		// hours
+				MaxAge: 3600,		// 1 hour
 				HttpOnly: true,
 			}
 			sess.Values["user"] = bind
 			currentPage := fmt.Sprintf("%v", sess.Values["currentPage"])
+			// 최근 페이지가 없을경우(최초로그인 등...) index.html로 이동
 			if currentPage == "<nil>" {
 				currentPage = "/"
 			}
@@ -154,6 +154,8 @@ func Login (c echo.Context) error {
 }
 
 
+// 인증확인 미들웨어
+// 인증이 필요한 화면에 사용해야함.
 func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 	return func (c echo.Context) error {
 		u := new(models.User)
@@ -171,7 +173,7 @@ func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 			sess.Values["currentPage"] = currentURI
 		}
 
-		if (len(sess.Values) <= 1/* 현재페이지랑, 자체적 1??? */) {
+		if (len(sess.Values) <= 1 /* 왜그런지 모르겠지만 기본 길이 1*/) {
 			// 쿠키에 세션이 존재하지 않은경우
 			log.Println("인증이 안되어있어 로그인페이지로 이동")
 			// 현재 페이지를 저장하기위해 세션 Save
@@ -190,11 +192,13 @@ func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			
 			// 세션 유효기간 확인
-			
-			
-			return next(c)
+			if (u.Valid()) {
+				return next(c)
+			} else {
+				return c.Redirect(http.StatusMovedPermanently, "/login")
+			}
 		}
 
-		return next(c)
+		return c.String(http.StatusInternalServerError, "Something is wrong.")
 	}
 }

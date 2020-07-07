@@ -61,10 +61,10 @@ function post_confirm(url) {
 	}
 }
 
-function cancel_confirm() {
+function cancel_confirm(url) {
 	if (confirm('게시글 작성을 종료하시겠습니까?')) {
 		// Yes click
-		location.href = "/blog"
+		location.href = url;
 	} else {
 		// no click
 		}
