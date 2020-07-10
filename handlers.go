@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 	"strings"
-	"encoding/json"
+	//"encoding/json"
 	
 	// open source libraries
 	"github.com/labstack/echo/v4"
@@ -55,14 +55,17 @@ func ServePosts (c echo.Context) error {
 	
 	// 로그인정보가 존재하는 경우
 	if (len(sess.Values) > 1) {
-		jUser := sess.Values["user"]
-	
-		err = json.Unmarshal(jUser.([]byte), &u)
+		_, err = u.GetUser(sess)
 		if err != nil {
 			log.Println(err)
 		}
 		
-		isAdmin = u.Admin
+		// Database에 유저 세션정보가 있는지 확인
+		if (u.Check(db, "ID")) {
+			isAdmin = u.Admin	
+		} else {
+			isAdmin = 0
+		}
 	} else {
 		isAdmin = 0
 	}
@@ -96,9 +99,7 @@ func NewPost (c echo.Context) error {
 			log.Println(err)
 		}
 		
-		jUser := sess.Values["user"]
-
-		err = json.Unmarshal(jUser.([]byte), &u)
+		u, err = u.GetUser(sess)
 		if err != nil {
 			log.Println(err)
 		}
@@ -175,16 +176,21 @@ func ServePost (c echo.Context) error {
 		log.Println(err)
 	}
 	
+	log.Println(len(sess.Values))
+	
 	// 로그인정보가 존재하는 경우
 	if (len(sess.Values) > 1) {
-		jUser := sess.Values["user"]
-	
-		err = json.Unmarshal(jUser.([]byte), &u)
+		_, err = u.GetUser(sess)
 		if err != nil {
 			log.Println(err)
 		}
 		
-		isAdmin = u.Admin
+		// Database에 유저 세션정보가 있는지 확인
+		if (u.Check(db, "ID")) {			
+			isAdmin = u.Admin
+		} else {
+			isAdmin = 0
+		}
 	} else {
 		isAdmin = 0
 	}

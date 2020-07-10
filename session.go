@@ -183,18 +183,21 @@ func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 			// 쿠키에 세션이 존재하는 경우
 			log.Println("세션이 존재하네????")
 				
-			jUser := sess.Values["user"]
-			fmt.Println("받아오기성공")
-
-			err = json.Unmarshal(jUser.([]byte), &u)
-			if err != nil {
-				log.Println(err)
-			}
+			u.GetUser(sess)
 			
-			// 세션 유효기간 확인
-			if (u.Valid()) {
-				return next(c)
+			if (u.Check(db, "SESSION")) {	
+				// 세션이 DB에 존재하는경우
+				// 세션 유효기간 확인
+				if (u.Valid()) {
+					return next(c)
+				} else {
+					return c.Redirect(http.StatusMovedPermanently, "/login")
+				}
 			} else {
+				// 세션이 DB에 존재하지않는 경우
+				log.Println("인증이 안되어있어 로그인페이지로 이동")
+				// 현재 페이지를 저장하기위해 세션 Save
+				sess.Save(c.Request(), c.Response())
 				return c.Redirect(http.StatusMovedPermanently, "/login")
 			}
 		}

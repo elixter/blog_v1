@@ -2,6 +2,11 @@ package models
 
 import (
 	"time"
+	"encoding/json"
+	"log"
+	"database/sql"
+	
+	"github.com/gorilla/sessions"
 )
 
 type User struct {
@@ -18,9 +23,53 @@ func (u *User) Valid() bool {
 	return u.ExpiresAt.Sub(time.Now()) > 0 
 }
 
+func (u *User) Check(driver *sql.DB, check ... string) bool {
+	// 데이터베이스에 유저 세션이 존재하는지 확인하는 함수
+	// 세션아이디 또는 유저아이디로 확인
+	// check == "ID" - 유저 아이디로 확인
+	// check == "SESSIONS" - 세션 아이디로 확인
+	// Default check = "ID"
+	var sessCheck int
+	
+	switch check[0] {
+		case "ID":
+			err := driver.QueryRow("select count(id) from sessions where uid = ?", u.Id).Scan(&sessCheck)
+			if err != nil {
+				log.Println(err)
+			}
+		case "SESSIONS":
+			err := driver.QueryRow("select count(id) from sessions where id = ?", u.SessionId).Scan(&sessCheck)
+			if err != nil {
+				log.Println(err)
+			}
+		default:
+			err := driver.QueryRow("select count(id) from sessions where uid = ?", u.Id).Scan(&sessCheck)
+			if err != nil {
+				log.Println(err)
+			}
+	}
+	if (sessCheck != 0) {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (u *User) Refresh() time.Time {
 	// Session 30분 연장
 	u.ExpiresAt = u.ExpiresAt.Add(time.Minute * 30)
 	
 	return u.ExpiresAt
+}
+
+func (u *User) GetUser(session *sessions.Session) (*User, error) {
+	// 세션에서 유저정보 가져오기.
+	jUser := session.Values["user"]
+	
+	err := json.Unmarshal(jUser.([]byte), &u)
+	if err != nil {
+		log.Println(err)
+	}
+	
+	return u, err
 }
