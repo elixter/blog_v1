@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   {{template "meta"}}
-	<link rel="stylesheet" href="css/post.css">
+	<link rel="stylesheet" href="/css/post.css">
 </head>
 <body>
   <!-- Start navbar -->
-  {{template "header"}}
+  {{template "header" .Admin}}
   <!-- End navbar -->
   <!-- Start main -->
   <main>
@@ -22,6 +22,7 @@
                 <div class="entry-header-text">
                   <h2 class="entry-title">
                     <a>{{.Title}}</a>
+                    <a class="post-category" href="/blog/search?category={{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
                   </h2>
                   <div class="entry-header-flexbox">
                     <div class="entry-infobox">
@@ -34,7 +35,7 @@
                   </div>
                 </div>
                 <div class="thumbnail">
-                  <img src="./img/bg.jpg">
+                  <img src="/img/bg.jpg">
                 </div>
               </header>
               <!-- End Entry header-->
@@ -46,9 +47,16 @@
                 <div class="entry-main"></div>
 				<script type="text/javascript">
 				 	 document.querySelector('.entry-main').innerHTML = {{.Content}}
-				 </script>  
+				 </script>
               </div>
               <footer class="entry-meta">
+                <div class="tag-links">
+                  {{range $index := .HashTags}}
+                    {{if ne . ""}}
+                      <span><a href="/blog/search?hash={{.}}">{{.}}</a></span>
+                    {{end}}
+                  {{end}}
+                </div>
                 <!-- 여기에 댓글 추가 -->
               </footer>
             </div>
@@ -56,28 +64,32 @@
 		
 		{{end}}
 			
-		{{if .Admin}}
+		{{if eq .Admin 1}}
 			<div>
 				<input class="action-btn" type="button" value="수정" onclick="location.href='{{.EditUrl}}?id={{.Id}}'">
-				<input class="action-btn" type="button" value="삭제" onclick="location.href='{{.DeleteUrl}}?id={{.Id}}'">
+				<input class="action-btn" type="button" value="삭제" onclick="delete_confirm('{{.DeleteUrl}}?id={{.Id}}')">
 			</div>	
 		{{else}}
 		{{end}}
-          <div class="page-num">
-            <ul class="page-num-list">
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-            </ul>
-          </div>
         </div>
         <!-- End Post list -->
         <!-- Side -->
-        {{template "side"}}
+        {{template "side" .Categories}}
         <!-- End Side-->
       </div>
     </div>
+    <script>
+      const imgArr = document.querySelectorAll("img");
+
+      for (let i = 0; i < imgArr.length; i++) {
+        imgArr[i].style.maxWidth = imgArr[i].style.width;
+        imgArr[i].style.maxHeight = imgArr[i].style.height;
+        if (imgArr[i].width + 30 * 2 /*padding*/ > document.activeElement.clientWidth) {
+          imgArr[i].style.width = "100%";
+          imgArr[i].style.height = "auto";
+        }
+      }
+    </script>
   </main>
   <!-- End main -->
   {{template "footer"}}

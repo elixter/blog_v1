@@ -8,10 +8,15 @@ import (
 	"strings"
 	"path/filepath"
 	"html/template"
-	
+
 	// open source go libraries
 	"github.com/labstack/echo/v4"
 )
+
+
+// 환경에 따라서 root Path 바꿔줘야함
+// 구름에서는 그냥 views
+// 집컴에서는 C:/Users/ltw97/Desktop/Blog/blog/views
 
 const (
 	root	= "views"
@@ -24,7 +29,7 @@ func ParseTemplateWithLayout(rootDir string, layoutDir string, fileName string) 
 	cleanLayout := filepath.Clean(rootDir + "/" + layoutDir)
 	pfx := len(cleanLayout) + 1
 	root := template.New("")
-	
+
 	// Parsing layouts
 	err := filepath.Walk(cleanLayout, func(path string, info os.FileInfo, e1 error) error{
 		if !info.IsDir() && strings.HasSuffix(path, ".html") {

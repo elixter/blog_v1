@@ -3,16 +3,19 @@
     <nav class="navbar">
       <div class="navbar-flex-left">
         <div class="navbar-logo">
-          <h1><a href="#">Ston Bridge<span> dev</span></a></h1>
+          <h1><a href="/">Ston Bridge<span> dev</span></a></h1>
         </div>
       </div>
       <div class="navbar-flex-center">
       </div>
       <div class="navbar-flex-right">
         <ul class="navbar-menu">
-          <li><a href="#">Home<div class="navbar-underbar"></div></a></li>
+          {{if ne . -1}}
+            <li><a href="/logout">Logout<div class="navbar-underbar"></div></a></li>
+          {{end}}
+          <li><a href="/">Home<div class="navbar-underbar"></div></a></li>
           <li><a href="#">Project<div class="navbar-underbar"></div></a></li>
-          <li><a href="#">Blog<div class="navbar-underbar"></div></a></li>
+          <li><a href="/blog">Blog<div class="navbar-underbar"></div></a></li>
           <li><a href="#">Contact<div class="navbar-underbar"></div></a></li>
         </ul>
 

@@ -29,16 +29,25 @@ func NewEcho() *echo.Echo {
 	//encryptionKeyOne := securecookie.GenerateRandomKey(32)
 
 	store = sessions.NewCookieStore([]byte("secret"))
+	store.Options = &sessions.Options {
+		Path: "/",
+		MaxAge: 3600,
+		HttpOnly: true,
+	}
 	
 	// Add middlewares
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	//e.Use(middleware.Secure())
 	e.Use(session.Middleware(store))
 	
 	// Static config
+	// 집에서 root는
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root: "statics",
 	}))
+	e.Static("/public", "public")
 	
 	return e
 }

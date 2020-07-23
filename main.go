@@ -1,20 +1,20 @@
 package main
 
 import (
+	"database/sql"
 	// defualt libraries.
 	//"net/http"
 	"log"
-	"database/sql"
-	
-	
+
 	// open source libraries.
 	_ "github.com/go-sql-driver/mysql"
-	
+
+	"controllers"
 )
 
 func main() {
 	// open db
-	db, dbErr = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/blog?parseTime=true&charset=utf8mb4")
+	db, dbErr = sql.Open("mysql", "root:971216@tcp(127.0.0.1:3306)/blog?parseTime=true&charset=utf8mb4")
 	if dbErr != nil {
 		log.Fatal(dbErr)
 	}
@@ -22,21 +22,33 @@ func main() {
 	
 	e := NewEcho()
 	
-	// GET Actions
+	blog := e.Group("/blog")
+	//blog.Use(SessionHandler)
+	
+	// Default Routing
+	// GET Routing
 	e.GET("/", ServePosts)
-	e.GET("/post", ServePost)
-	e.GET("/write", NewPost, AuthHandler)
-	e.GET("/delete", DeletePost, AuthHandler)
-	e.GET("/edit", EditPost, AuthHandler)
-	
 	e.GET("/login", Login)
+	e.GET("/logout", Logout)
 	
-	
-	// Post Actions
-	e.POST("/write", NewPost)
-	e.POST("/edit", EditPost)
-
+	//POST Routing
 	e.POST("/login", Login)
+	
+	// BLOG API Routing
+	// GET Routing
+	blog.GET("", ServePosts)
+	blog.GET("/post", ServePost)
+	blog.GET("/write", NewPost, AuthHandler)
+	blog.GET("/delete", DeletePost, AuthHandler)
+	blog.GET("/edit", EditPost, AuthHandler)
+	blog.GET("/search", ConditianalServePosts)
+	
+	// POST Routing
+	blog.POST("", ServePosts)
+	blog.POST("/write", NewPost)
+	blog.POST("/edit", EditPost)
+	blog.POST("/fileUpload", controllers.CKUpload)
+	blog.POST("/search", ConditianalServePosts)
 	
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))

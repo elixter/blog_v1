@@ -20,7 +20,10 @@ type User struct {
 
 func (u *User) Valid() bool {
 	// Check user's session is valid
-	return u.ExpiresAt.Sub(time.Now()) > 0 
+	log.Println(time.Now())
+	log.Println(u.ExpiresAt)
+	log.Println(u.ExpiresAt.Sub(time.Now()))
+	return u.ExpiresAt.Sub(time.Now()) > 0
 }
 
 func (u *User) Check(driver *sql.DB, check ... string) bool {
@@ -62,9 +65,9 @@ func (u *User) Refresh() time.Time {
 	return u.ExpiresAt
 }
 
-func (u *User) GetUser(session *sessions.Session) (*User, error) {
+func (u *User) GetUser(session *sessions.Session, userKey string) (*User, error) {
 	// 세션에서 유저정보 가져오기.
-	jUser := session.Values["user"]
+	jUser := session.Values[userKey]
 	
 	err := json.Unmarshal(jUser.([]byte), &u)
 	if err != nil {

@@ -14,4 +14,5 @@ type Post struct {
 	Date	time.Time	`json: "date" db: "date" gorm: "date"`
 	Updated	time.Time	`json: "updated" db: "update" gorm: "updated"`
 	Category string `json: category" db: "category" gorm: "category"`
+	HashTags []string
 }

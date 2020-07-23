@@ -5,7 +5,7 @@
 </head>
 <body>
   <!-- Start navbar -->
-  {{template "header"}}
+  {{template "header" .Admin}}
   <!-- End navbar -->
   <!-- Start main -->
   <main>
@@ -13,6 +13,7 @@
       <div class="content-div">
         <!-- Post list -->
         <div class="content-main">
+          {{if .Posts}}
 		{{range .Posts}}
           <article class="post">
             <div class="article-inner">
@@ -20,20 +21,22 @@
               <header class="entry-header">
                 <div class="entry-header-text">
                   <h2 class="entry-title">
-                    <a href="/post?id={{.Id}}">{{.Title}}</a>
+                    <a href="/blog/post?id={{.Id}}">{{.Title}}</a>
+                    <a class="post-category" href="/blog/search?category={{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
                   </h2>
                   <div class="entry-header-flexbox">
                     <div class="entry-infobox">
                       <h5>{{.Author}}
                         <span class="byline"><span class="sep">&nbsp;|&nbsp;
                         </span>{{.Updated.Format "2006.01.02"}}</span>
+
                       </h5>
                       <p class="author-describ">{{.UDesc}}</p>
                     </div>
                   </div>
                 </div>
                 <div class="thumbnail">
-                  <img src="./img/bg.jpg">
+                  <img src="/img/bg.jpg">
                 </div>
               </header>
               <!-- End Entry header-->
@@ -42,33 +45,33 @@
               </div>
               <footer class="entry-meta">
                 <div class="tag-links">
-                  <a href="#">개발</a>
+                  {{range $idx, $index := .HashTags}}
+                    {{if ne . ""}}
+                    <span><a href="/blog/search?hash={{$index}}">{{$index}}</a></span>
+                    {{end}}
+                  {{end}}
                 </div>
                 <div class="entry-meta-right">
-                  <a class="more-link" href="/post?id={{.Id}}">Read More ></a>
+                  <a class="more-link" href="/blog/post?id={{.Id}}">Read More ></a>
                 </div>
               </footer>
             </div>
           </article>
 		{{end}}
-		{{if .Admin}}
+            {{else}}
+            {{template "nopost"}}
+          {{end}}
+		{{if eq .Admin 1}}
 			<div>
 				<input class="action-btn" type="button" value="글쓰기" onclick="location.href='{{.WriteUrl}}'">
 			</div>	
 		{{else}}
 		{{end}}
-          <div class="page-num">
-            <ul class="page-num-list">
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-            </ul>
-          </div>
+          {{template "pageNum" .Pagination}}
         </div>
         <!-- End Post list -->
         <!-- Side -->
-        {{template "side"}}
+        {{template "side" .Categories}}
         <!-- End Side-->
       </div>
     </div>

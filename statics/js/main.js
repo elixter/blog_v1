@@ -62,15 +62,46 @@ function post_confirm(url) {
 }
 
 function cancel_confirm(url) {
-	if (confirm('게시글 작성을 종료하시겠습니까?')) {
-		// Yes click
-		location.href = url;
-	} else {
-		// no click
-		}
-  }
+    if (confirm('게시글 작성을 종료하시겠습니까?')) {
+        // Yes click
+        location.href = url;
+    } else {
+        // no click
+    }
+}
+
+function delete_confirm(url) {
+    if (confirm('게시글을 삭제하시겠습니까?')) {// Yes click
+
+        location.href = url;
+        location.submit();
+    } else {
+        // no click
+
+    }
+}
 
 function intoHTML(className, text) {
-	console.log("test" + className)
+	console.log("test" + className);
 	document.querySelector(className).innerHTML = text;
+}
+
+
+// Paging
+function paging() {
+
+}
+
+// 게시글의 사진크기 조절하는 함수
+function imageFit() {
+    const imgArr = document.querySelectorAll("img");
+
+    for (let i = 0; i < imgArr.length; i++) {
+        imgArr[i].style.maxWidth = imgArr[i].style.width;
+        imgArr[i].style.maxHeight = imgArr[i].style.height;
+        if (imgArr[i].width > window.innerWidth + 30 /*padding*/) {
+            imgArr[i].style.width = "100%";
+            imgArr[i].style.height = "auto";
+        }
+    }
 }
