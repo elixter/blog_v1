@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// open db
-	db, dbErr = sql.Open("mysql", "root:971216@tcp(127.0.0.1:3306)/blog?parseTime=true&charset=utf8mb4")
+	db, dbErr = sql.Open("mysql", "root:@tcp(127.0.0.1:3306)/blog?parseTime=true&charset=utf8mb4")
 	if dbErr != nil {
 		log.Fatal(dbErr)
 	}
