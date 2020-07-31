@@ -18,6 +18,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/grokify/html-strip-tags-go"
 	"github.com/labstack/echo-contrib/session"
+	"github.com/PuerkitoBio/goquery"
 	
 	// custom libraries
 	"models"
@@ -29,6 +30,8 @@ const (
 	newPost			=	0
 	editPost		=	1
 	summaryLength	=	300
+	
+	src			=		2			// In Ckeditor image source's index is 2 with go query selection
 )
 
 type page struct {
@@ -88,12 +91,33 @@ func createSummary(p models.Post) string {
 	return sumText
 }
 
+
+func createThumbnail(content string) string {
+	var thumbnail string
+	contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
+	if err != nil {
+		log.Println(err)
+	}
+	firstImage := contentDoc.Find("img").First()
+	log.Println("img태그 가져오기")
+	if len(firstImage.Nodes) != 0 {
+		thumbnail = firstImage.Nodes[0].Attr[src].Val
+	} else {
+		thumbnail = ""
+	}
+	
+	log.Println("썸네일 추출 완료")
+
+	return thumbnail 
+}
+
 // 블로그 첫 화면에 쓰이는 데이터 serving
 func ServePosts (c echo.Context) error {
 	var posts []models.Post
 	var isAdmin int
 
 	var err error
+	var thumbnail sql.NullString
 	var sync sync2.WaitGroup
 
 	// 카테고리
@@ -139,13 +163,13 @@ func ServePosts (c echo.Context) error {
 	for Rows.Next() {
 		p := models.Post{}
 		var hashs sql.NullString		// 하나로 합쳐져있는 해쉬태그 문자열
-		err := Rows.Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
+		err := Rows.Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &thumbnail, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
 		if err != nil {
 			log.Println(err)
 		}
 
 		p.HashTags = convertHashTag(hashs.String)
-
+		p.Thumbnail = thumbnail.String
 		// posts에 새로 받아온 post append
 		posts = append(posts, p)
 	}
@@ -197,7 +221,7 @@ func NewPost (c echo.Context) error {
 		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
 			"Url": "/blog/write",
 			"CancelUrl": "/",
-			"categories": categories,
+			"Categories": categories,
 			"Admin": 0,				// 어차피 로그인되어야 글을 쓸 수 있어서 0 줬음
 		})
 	} else if c.Request().Method == "POST" {
@@ -221,13 +245,14 @@ func NewPost (c echo.Context) error {
 			log.Fatal(err)
 			return c.String(http.StatusInternalServerError, "error")
 		}
-
+		log.Println("데이터 바인딩할때 체크")
 		// Summary 만들기
 		// p.Content에서 특정길이 문자열에서 html태그 제거한것
 		sumText := createSummary(*p)
 		
-		t := time.Now() // 현재시간 가져오기
 		
+		t := time.Now() // 현재시간 가져오기
+		log.Println("에러 체크 DB에 넣기전")
 		// Post객체에 각 데이터 넣기
 		p.Author = u.Name
 		p.UDesc = u.Desc 
@@ -236,9 +261,11 @@ func NewPost (c echo.Context) error {
 		p.Summary = strip.StripTags(sumText)
 		p.Category = c.FormValue("category")
 		hashTags := c.FormValue("hash")
-
+		p.Thumbnail = createThumbnail(p.Content)
+		
+		
 		// DB insert query
-		_, err = db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.UDesc, p.Title, p.Content, p.Summary, p.Date, p.Updated, p.Category, hashTags)
+		_, err = db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.UDesc, p.Title, p.Thumbnail, p.Content, p.Summary, p.Date, p.Updated, p.Category, hashTags)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -260,6 +287,7 @@ func ServePost (c echo.Context) error {
 	
 	var isAdmin int
 	var hashs sql.NullString		// 하나로 합쳐진 해쉬태그 문자열
+	var thumbnail sql.NullString
 
 	// 카테고리 가져오기
 	categories, _ := getCategories(db)
@@ -270,9 +298,10 @@ func ServePost (c echo.Context) error {
 	}
 	
 	// Database에서 게시글 쿼리
-	err = db.QueryRow("SELECT * FROM posts WHERE id = ?", intPid).Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
+	err = db.QueryRow("SELECT * FROM posts WHERE id = ?", intPid).Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &thumbnail, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
 	p.HashTags = convertHashTag(hashs.String)
-
+	p.Thumbnail = thumbnail.String
+	
 	// 세션에서 현재 유저 정보 가져오기
 	sess, err := session.Get(UserSession, c)
 	if err != nil {
@@ -299,7 +328,7 @@ func ServePost (c echo.Context) error {
 	}
 	
 	log.Printf("%s(admin: %d)is requested to post %s\n", u.Id, u.Admin, p.Title)
-
+	
 	return c.Render(http.StatusOK, "blog/post.html", map[string]interface{}{
 		"PageTitle": pageTitle,
 		"Post": p,
@@ -361,11 +390,16 @@ func EditPost (c echo.Context) error {
 	if (c.Request().Method == "GET") {	
 		// Request method가 GET인 경우
 		err = db.QueryRow("SELECT title, content FROM posts WHERE id = ?", intPid).Scan(&p.Title, &p.Content)
-
+		categories, err := getCategories(db)
+		if err != nil {
+			log.Println(err)	
+		}
+		
 		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
 			"Url": "/blog/edit",
 			"Id": pid,
 			"Modify": editPost,
+			"Categories": categories,
 			"EditPost": p,
 			"CancelUrl:": "/",
 			"Admin": 0,			// 로그인되어야만 수정할 수 있어서 0줌
@@ -380,9 +414,11 @@ func EditPost (c echo.Context) error {
 		
 		t := time.Now()
 		p.Updated = t
+		p.Thumbnail = createThumbnail(p.Content)
+		hashTags := c.FormValue("hash")
 		
 		// DB Update
-		_, err := db.Exec("update posts set title = ?, content = ?, updated = ? where id = ?", p.Title, p.Content, p.Updated, intPid)
+		_, err := db.Exec("update posts set title = ?,thumbnail = ?, content = ?, category = ?, hashtag = ?, updated = ? where id = ?", p.Title, p.Thumbnail, p.Content, p.Category, hashTags, p.Updated, intPid)
 		if err != nil {
 			log.Fatal(err)
 		}

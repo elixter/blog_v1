@@ -9,6 +9,7 @@ type Post struct {
 	Author		string		`json: "author" db: "author" gorm: "author"`
 	UDesc		string		`json: "udesc" db: "udesc" gorm: "udesc"`
 	Title		string		`json: "title" db: "title" gorm: "title"`
+	Thumbnail	string		`json: "thumbnail" db: "thumbnail" gorm: "thumbnail"`
 	Content		string		`json: "content" db: "content" gorm: "content"`
 	Summary		string		`json: "summary" db: "summary" gorm: "summary"`
 	Date	time.Time	`json: "date" db: "date" gorm: "date"`
