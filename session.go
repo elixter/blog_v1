@@ -159,7 +159,7 @@ func Login (c echo.Context) error {
 			log.Printf("%s's Session is saved(sessions id : %s)\n", u.Id, u.SessionId)
 			log.Printf("%s is logged in on %s\n", u.Id, time.Now().Format("2006-01-02 15:04:05"))
 		
-			return c.Redirect(http.StatusMovedPermanently, currentPage)
+			return c.Redirect(http.StatusFound, currentPage)
 		default:
 		return c.String(http.StatusInternalServerError, "Method is not found")
 	}
@@ -175,7 +175,7 @@ func Logout (c echo.Context) error {
 	if sess.Values[CurrentUserKey] == nil {
 		log.Println("로그인이 되어있지 않아요")
 		// index로 이동
-		return c.Redirect(http.StatusSeeOther, "/")
+		return c.Redirect(http.StatusFound, "/")
 	} else {
 		// 로그인이 되어있는 경우
 		u.GetUser(sess, CurrentUserKey)
@@ -198,7 +198,7 @@ func Logout (c echo.Context) error {
 		log.Printf("%s is logged out on %s", u.Id, time.Now().Format("2006-01-02 15:04:05"))
 		
 		// index페이지로 redirect
-		return c.Redirect(http.StatusSeeOther, "/")
+		return c.Redirect(http.StatusFound, "/")
 	}
 	return err
 }
