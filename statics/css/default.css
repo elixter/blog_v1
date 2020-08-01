@@ -202,6 +202,7 @@ body {
 }
 
 .content-main {
+	min-width: 85%;
   padding-right: 15px;
 }
 

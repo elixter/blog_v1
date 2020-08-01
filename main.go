@@ -33,6 +33,7 @@ func main() {
 	
 	//POST Routing
 	e.POST("/login", Login)
+	e.POST("/logout", Logout)
 	
 	// BLOG API Routing
 	// GET Routing
@@ -49,6 +50,7 @@ func main() {
 	blog.POST("/edit", EditPost)
 	blog.POST("/fileUpload", controllers.CKUpload)
 	blog.POST("/search", ConditianalServePosts)
+	blog.POST("/delete", DeletePost, AuthHandler)
 	
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))

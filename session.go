@@ -168,12 +168,14 @@ func Login (c echo.Context) error {
 func Logout (c echo.Context) error {
 	u := new(models.User)
 
-	sess, _ := createSession(UserSession, c)
+	sess, err := createSession(UserSession, c)
+	log.Println(sess.Options.MaxAge)
 
 	// 로그인이 안되어있는경우
 	if sess.Values[CurrentUserKey] == nil {
+		log.Println("로그인이 되어있지 않아요")
 		// index로 이동
-		return c.Redirect(http.StatusBadRequest, "/")
+		return c.Redirect(http.StatusSeeOther, "/")
 	} else {
 		// 로그인이 되어있는 경우
 		u.GetUser(sess, CurrentUserKey)
@@ -188,15 +190,17 @@ func Logout (c echo.Context) error {
 		}
 
 		// 세션쿠키 삭제
-		sess.Options.MaxAge = -1
+		sess.Options = &sessions.Options {
+			MaxAge: -1,
+		}
 		// 유저정보가 삭제된 세션쿠키 저장
 		sess.Save(c.Request(), c.Response())
+		log.Printf("%s is logged out on %s", u.Id, time.Now().Format("2006-01-02 15:04:05"))
+		
+		// index페이지로 redirect
+		return c.Redirect(http.StatusSeeOther, "/")
 	}
-
-	log.Printf("%s is logged out on %s", u.Id, time.Now().Format("2006-01-02 15:04:05"))
-
-	// index페이지로 redirect
-	return c.Redirect(http.StatusMovedPermanently, "/")
+	return err
 }
 
 // 인증확인 미들웨어

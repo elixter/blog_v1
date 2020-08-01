@@ -12,6 +12,8 @@ import (
 	"log"
 	"time"
 	"strings"
+	"os"
+	"path"
 	//"encoding/json"
 	
 	// open source libraries
@@ -345,36 +347,64 @@ func ServePost (c echo.Context) error {
 // 게시글 삭제
 func DeletePost (c echo.Context) error {
 	id := c.QueryParam("id")
-	
 	intId, sconvErr := strconv.Atoi(id)
+
 	if sconvErr != nil {
 		log.Fatal(sconvErr)
 	}
+	var pTitle, pContent string		// 어떤 게시글이 삭제되는지 확인용
 	
-	_, err := db.Exec("delete from posts where id = ?", intId)
+	err := db.QueryRow("select title, content from posts where id = ?", intId).Scan(&pTitle, &pContent)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	
+	_, err = db.Exec("delete from posts where id = ?", intId)
+	if err != nil {
+		log.Println(err)
+	}
+
 	// auto_increment initialize and sort.
 	_, err = db.Exec("ALTER TABLE posts AUTO_INCREMENT=1;")
 	if err != nil {
-		return err
+		log.Println(err)
 	}
-	
+
 	_, err = db.Exec("SET @COUNT = 0;")
 	if err != nil {
-		return err
+		log.Println(err)
 	}
 
 	_, err = db.Exec("UPDATE posts SET id = @COUNT := @COUNT+1;")
 	if err != nil {
-		return err
+		log.Println(err)
 	}
-
-	log.Printf("Post id %d is delete on %s\n", intId, time.Now().Format("2006-01-02 15:04:05"))
 	
-	return c.Redirect(http.StatusMovedPermanently, "/")
+	// 이미지파일 제거
+	contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(pContent))
+	if err != nil {
+		log.Println(err)
+	}
+	images := contentDoc.Find("img")
+	log.Println("img태그 가져오기")
+	
+	var tmp string
+	for i := 0; i < len(images.Nodes); i++ {
+		tmp = images.Nodes[i].Attr[src].Val
+		log.Println(tmp)
+		fErr := os.Remove(path.Base("") + tmp)
+		if fErr != nil { 
+			log.Println(fErr) 
+		}
+	}
+	
+	
+	log.Println("썸네일 추출 완료")
+
+	currentTime := time.Now().Format("2006-01-02 15:04:05")
+	log.Printf("Post Id %d, Title %s is delete on %s\n", intId, pTitle, currentTime)
+	
+	return c.Redirect(http.StatusSeeOther, "/")
 }
 
 // 게시글 수정
@@ -426,7 +456,7 @@ func EditPost (c echo.Context) error {
 		
 		log.Printf("Redirect to %s\n", redirectUrl)
 		
-		return c.Redirect(http.StatusMovedPermanently, redirectUrl)
+		return c.Redirect(http.StatusSeeOther, redirectUrl)
 	}
 	
 	return c.String(http.StatusBadRequest, "bad")

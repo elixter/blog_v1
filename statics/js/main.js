@@ -74,6 +74,7 @@ function delete_confirm(url) {
     if (confirm('게시글을 삭제하시겠습니까?')) {// Yes click
 
         location.href = url;
+		location.method = "post";
         location.submit();
     } else {
         // no click
