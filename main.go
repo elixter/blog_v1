@@ -27,9 +27,11 @@ func main() {
 	
 	// Default Routing
 	// GET Routing
-	e.GET("/", ServePosts)
+	e.GET("/", Index)
 	e.GET("/login", Login)
 	e.GET("/logout", Logout)
+	e.GET("/project", NotFound)
+	e.GET("/contact", NotFound)
 	
 	//POST Routing
 	e.POST("/login", Login)
@@ -43,6 +45,8 @@ func main() {
 	blog.GET("/delete", DeletePost, AuthHandler)
 	blog.GET("/edit", EditPost, AuthHandler)
 	blog.GET("/search", ConditianalServePosts)
+	blog.GET("/login", Login)
+	blog.GET("/logout", Logout)
 	
 	// POST Routing
 	blog.POST("", ServePosts)
@@ -51,6 +55,8 @@ func main() {
 	blog.POST("/fileUpload", controllers.CKUpload)
 	blog.POST("/search", ConditianalServePosts)
 	blog.POST("/delete", DeletePost, AuthHandler)
+	blog.POST("/login", Login)
+	blog.POST("/logout", Logout)
 	
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))

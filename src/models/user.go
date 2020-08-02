@@ -65,14 +65,35 @@ func (u *User) Refresh() time.Time {
 	return u.ExpiresAt
 }
 
-func (u *User) GetUser(session *sessions.Session, userKey string) (*User, error) {
+func GetUser(session *sessions.Session, userKey string) (*User, error) {
+	var err error
+	u := new(User)
+	
 	// 세션에서 유저정보 가져오기.
 	jUser := session.Values[userKey]
-	
-	err := json.Unmarshal(jUser.([]byte), &u)
-	if err != nil {
-		log.Println(err)
+	if jUser != nil {
+		err = json.Unmarshal(jUser.([]byte), &u)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	
 	return u, err
+}
+
+func (u *User) GetAdmin(db *sql.DB, session *sessions.Session, userKey string) int {
+	if session.Values[userKey] != nil {
+		// Database에서 유저세션 정보 확인
+		if u.Check(db, "ID") {
+			if u.Valid() {
+				return 1
+			}
+		} else {
+			return 0
+		}
+	} else {
+		return -1
+	}
+	// 세션에 유저정보가 없으면 -1 반환
+	return -1
 }

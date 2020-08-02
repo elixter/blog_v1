@@ -113,6 +113,26 @@ func createThumbnail(content string) string {
 	return thumbnail 
 }
 
+// index page
+func Index (c echo.Context) error{
+	// 세션에서 현재 유저 정보 가져오기
+	sess, err := session.Get(UserSession, c)
+	if err != nil {
+		log.Println(err)
+	}
+	
+	u, err := models.GetUser(sess, CurrentUserKey)
+	isAdmin := u.GetAdmin(db, sess, CurrentUserKey)
+	
+	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
+		"Admin": isAdmin,
+	})
+}
+
+func NotFound (c echo.Context) error {
+	return c.Render(http.StatusOK, "notfound.html", nil)
+}
+
 // 블로그 첫 화면에 쓰이는 데이터 serving
 func ServePosts (c echo.Context) error {
 	var posts []models.Post
@@ -182,24 +202,9 @@ func ServePosts (c echo.Context) error {
 		log.Println(err)
 	}
 	
-	// 로그인정보가 존재하는 경우
-	if sess.Values[CurrentUserKey] != nil {
-		_, err = u.GetUser(sess, CurrentUserKey)
-		if err != nil {
-			log.Println(err)
-		}
-		
-		// Database에 유저 세션정보가 있는지 확인
-		if u.Check(db, "ID") {
-			if u.Valid() {
-				isAdmin = u.Admin
-			}	
-		} else {
-			isAdmin = 0
-		}
-	} else {
-		isAdmin = -1		// 로그인 되어있지 않은 상태.
-	}
+	u, err = models.GetUser(sess, CurrentUserKey)
+	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
+	fmt.Printf("isAdmin : %d\n", isAdmin)
 
 	// Render.
 	return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{
@@ -237,7 +242,7 @@ func NewPost (c echo.Context) error {
 			log.Println(err)
 		}
 		
-		u, err = u.GetUser(sess, CurrentUserKey)
+		u, err = models.GetUser(sess, CurrentUserKey)
 		if err != nil {
 			log.Println(err)
 		}
@@ -285,7 +290,6 @@ func ServePost (c echo.Context) error {
 
 	pid := c.QueryParam("id")
 	p := new(models.Post)
-	u := new(models.User)
 	
 	var isAdmin int
 	var hashs sql.NullString		// 하나로 합쳐진 해쉬태그 문자열
@@ -310,24 +314,11 @@ func ServePost (c echo.Context) error {
 		log.Println(err)
 	}
 
-	// 로그인정보가 존재하는 경우
-	if (sess.Values[CurrentUserKey] != nil) {
-		_, err = u.GetUser(sess, CurrentUserKey)
-		if err != nil {
-			log.Println(err)
-		}
-		
-		// Database에 유저 세션정보가 있는지 확인
-		if (u.Check(db, "ID")) {			
-			if (u.Valid()) {
-				isAdmin = u.Admin
-			}	
-		} else {
-			isAdmin = 0
-		}
-	} else {
-		isAdmin = -1		// 로그인 되어있지 않은상태
+	u, err := models.GetUser(sess, CurrentUserKey)
+	if err != nil {
+		log.Println(err)
 	}
+	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
 	
 	log.Printf("%s(admin: %d)is requested to post %s\n", u.Id, u.Admin, p.Title)
 	
@@ -404,7 +395,7 @@ func DeletePost (c echo.Context) error {
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	log.Printf("Post Id %d, Title %s is delete on %s\n", intId, pTitle, currentTime)
 	
-	return c.Redirect(http.StatusSeeOther, "/")
+	return c.Redirect(http.StatusFound, "/")
 }
 
 // 게시글 수정
@@ -456,7 +447,7 @@ func EditPost (c echo.Context) error {
 		
 		log.Printf("Redirect to %s\n", redirectUrl)
 		
-		return c.Redirect(http.StatusSeeOther, redirectUrl)
+		return c.Redirect(http.StatusFound, redirectUrl)
 	}
 	
 	return c.String(http.StatusBadRequest, "bad")
@@ -469,7 +460,6 @@ func ConditianalServePosts (c echo.Context) error {
 	var Rows *sql.Rows
 	var err error
 
-	u := new(models.User)
 	pg := new(page)
 
 	// 카테고리
@@ -550,25 +540,12 @@ func ConditianalServePosts (c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 	}
-
-	// 로그인정보가 존재하는 경우
-	if sess.Values[CurrentUserKey] != nil {
-		_, err = u.GetUser(sess, CurrentUserKey)
-		if err != nil {
-			log.Println(err)
-		}
-
-		// Database에 유저 세션정보가 있는지 확인
-		if u.Check(db, "ID") {
-			if u.Valid() {
-				isAdmin = u.Admin
-			}
-		} else {
-			isAdmin = 0
-		}
-	} else {
-		isAdmin = -1		// 로그인 되어있지 않은 상태.
+	
+	u, err := models.GetUser(sess, CurrentUserKey)
+	if err != nil {
+		log.Println(err)
 	}
+	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
 
 	return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{
 		"PageTitle": pageTitle,

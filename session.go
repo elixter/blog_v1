@@ -178,7 +178,7 @@ func Logout (c echo.Context) error {
 		return c.Redirect(http.StatusFound, "/")
 	} else {
 		// 로그인이 되어있는 경우
-		u.GetUser(sess, CurrentUserKey)
+		u, _ = models.GetUser(sess, CurrentUserKey)
 
 		// 세션쿠키에서 user정보 삭제
 		delete(sess.Values, CurrentUserKey)
@@ -225,7 +225,7 @@ func AuthHandler (next echo.HandlerFunc) echo.HandlerFunc {
 			return c.Redirect(http.StatusMovedPermanently, "/login")
 		} else {
 			// 쿠키에 세션이 존재하는 경우
-			u.GetUser(sess, CurrentUserKey)
+			u, _ = models.GetUser(sess, CurrentUserKey)
 			log.Printf("{id: %s, name: %s, sessionId: %s", u.Id, u.Name, u.SessionId)
 
 			if u.Check(db, "SESSION") {
