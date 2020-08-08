@@ -34,6 +34,8 @@ const (
 	summaryLength	=	300
 	
 	src			=		2			// In Ckeditor image source's index is 2 with go query selection
+	
+	writeURL	=	"/blog/write"
 )
 
 type page struct {
@@ -166,7 +168,7 @@ func ServePosts (c echo.Context) error {
 		sync.Done()
 	}()
 
-	cpInt, _ := strconv.Atoi(currentPage)
+	currentPageI, _ := strconv.Atoi(currentPage)
 	fmt.Println(currentPage)
 
 	sync.Wait()
@@ -175,7 +177,7 @@ func ServePosts (c echo.Context) error {
 		Pagination.Length = 0
 	}
 	// 현재 페이지에 해당하는 게시글만 쿼리
-	Rows, err := db.Query("select * from posts where id > ? and id  <= ? order by id desc;", (cpInt - 1) * RowsPerPage, cpInt * RowsPerPage)
+	Rows, err := db.Query("select * from posts where id > ? and id  <= ? order by id desc;", (currentPageI - 1) * RowsPerPage, currentPageI * RowsPerPage)
 	//Rows, err := db.Query("select * from posts order by id desc;")
 	if err != nil {
 		log.Fatal(err)
@@ -551,7 +553,7 @@ func ConditianalServePosts (c echo.Context) error {
 		"PageTitle": pageTitle,
 		"Posts": posts,
 		"Admin": isAdmin,
-		"WriteUrl": "/blog/write",
+		"WriteUrl": writeURL,
 		"Categories": categories,
 		"Pagination": pg,
 	})
