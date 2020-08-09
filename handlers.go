@@ -1,12 +1,8 @@
 package main
 
 import (
-	"database/sql"
-	sync2 "sync"
-
 	// go standard libraries
 	"net/http"
-	"regexp"
 	"strconv"
 	"fmt"
 	"log"
@@ -18,7 +14,6 @@ import (
 	
 	// open source libraries
 	"github.com/labstack/echo/v4"
-	"github.com/grokify/html-strip-tags-go"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/PuerkitoBio/goquery"
 	
@@ -37,83 +32,6 @@ const (
 	
 	writeURL	=	"/blog/write"
 )
-
-type page struct {
-	CurrentPage int
-	Length int
-}
-
-// db에서 카테고리 가져오는 함수
-func getCategories(db *sql.DB) ([]string, error) {
-	var categories []string
-
-	// Database에서 카테고리 가져오기
-	rows, err := db.Query("select category from categories;")
-	if err != nil {
-		log.Println(err)
-	}
-
-	for rows.Next() {
-		var tmp string
-		err = rows.Scan(&tmp)
-		if err != nil {
-			log.Println(err)
-		}
-		categories = append(categories, tmp)
-	}
-
-	return categories, err
-}
-
-func convertHashTag(hashTags string) []string {
-	// "#해쉬태그 #테스트" 와 같은 문자열을
-	// [해쉬태그, 테스트] 로 바꿔주는 함수
-	regExp := regexp.MustCompile("#")
-
-	regedHash := regExp.ReplaceAllLiteralString(hashTags, "")		// 정규화된 해쉬태그들
-
-	return strings.Split(regedHash, " ")		// 공백으로 토큰화하여 리턴
-}
-
-func createSummary(p models.Post) string {
-	// p.Content에서 특정길이 문자열에서 html태그 제거한것
-	var sumText string
-	if len(p.Content) >= summaryLength {
-		if (strings.Contains(p.Content, "&nbsp;")) {
-			sumText = strings.Split(p.Content, "&nbsp;")[0]
-		} else {
-			sumText = p.Content[:summaryLength]
-		}
-	}  else {
-		if (strings.Contains(p.Content, "&nbsp;")) {
-			sumText = strings.Split(p.Content, "&nbsp;")[0]
-		} else {
-			sumText = p.Content
-		}
-	}
-
-	return sumText
-}
-
-
-func createThumbnail(content string) string {
-	var thumbnail string
-	contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
-	if err != nil {
-		log.Println(err)
-	}
-	firstImage := contentDoc.Find("img").First()
-	log.Println("img태그 가져오기")
-	if len(firstImage.Nodes) != 0 {
-		thumbnail = firstImage.Nodes[0].Attr[src].Val
-	} else {
-		thumbnail = ""
-	}
-	
-	log.Println("썸네일 추출 완료")
-
-	return thumbnail 
-}
 
 // index page
 func Index (c echo.Context) error{
@@ -137,65 +55,36 @@ func NotFound (c echo.Context) error {
 
 // 블로그 첫 화면에 쓰이는 데이터 serving
 func ServePosts (c echo.Context) error {
-	var posts []models.Post
 	var isAdmin int
-
 	var err error
-	var thumbnail sql.NullString
-	var sync sync2.WaitGroup
-
-	// 카테고리
-	var categories []string
-	go func() {
-		categories, _ = getCategories(db)
-	}()
-
 	u := new(models.User)
 
-	// 현재 페이지 값
+	categories, err := models.GetCategories(db)
+	if err != nil {
+		log.Println(err)
+	}
+	
 	// Pagination
+	// Current page
 	currentPage := c.FormValue("currentPage")
 	if currentPage == "" {
 		// 초기Request땐 1번으로 지정.
 		currentPage = "1"
 	}
 
-	var totalPost int
-
-	sync.Add(1)
-	go func () {
-		_ = db.QueryRow("select count(*) as totalposts from posts;").Scan(&totalPost)
-		sync.Done()
-	}()
-
-	currentPageI, _ := strconv.Atoi(currentPage)
-	fmt.Println(currentPage)
-
-	sync.Wait()
-	Pagination := page{cpInt, totalPost / RowsPerPage + 1}
-	if totalPost == 0 {
-		Pagination.Length = 0
-	}
-	// 현재 페이지에 해당하는 게시글만 쿼리
-	Rows, err := db.Query("select * from posts where id > ? and id  <= ? order by id desc;", (currentPageI - 1) * RowsPerPage, currentPageI * RowsPerPage)
-	//Rows, err := db.Query("select * from posts order by id desc;")
+	postCount, err := models.GetPostCount(db)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
-	defer Rows.Close()
 	
-	for Rows.Next() {
-		p := models.Post{}
-		var hashs sql.NullString		// 하나로 합쳐져있는 해쉬태그 문자열
-		err := Rows.Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &thumbnail, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
-		if err != nil {
-			log.Println(err)
-		}
+	// Convert string type currentPage to integer type
+	currentPageI, _ := strconv.Atoi(currentPage)
+	Pagination := models.Page{currentPageI, postCount / RowsPerPage + 1}
 
-		p.HashTags = convertHashTag(hashs.String)
-		p.Thumbnail = thumbnail.String
-		// posts에 새로 받아온 post append
-		posts = append(posts, p)
+	// 게시글 가져오기
+	posts, err := models.GetCurrentPagePosts(db, currentPageI, RowsPerPage)
+	if err != nil {
+		log.Println(err)
 	}
 	
 	// 세션에서 현재 유저 정보 가져오기
@@ -205,6 +94,10 @@ func ServePosts (c echo.Context) error {
 	}
 	
 	u, err = models.GetUser(sess, CurrentUserKey)
+	if err != nil {
+		log.Println(err)
+	}
+	
 	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
 	fmt.Printf("isAdmin : %d\n", isAdmin)
 
@@ -225,7 +118,7 @@ func NewPost (c echo.Context) error {
 		// Request method가 GET인 경우
 
 		// Database에서 카테고리 가져오기
-		categories, _ := getCategories(db)
+		categories, _ := models.GetCategories(db)
 
 		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
 			"Url": "/blog/write",
@@ -254,32 +147,25 @@ func NewPost (c echo.Context) error {
 			log.Fatal(err)
 			return c.String(http.StatusInternalServerError, "error")
 		}
-		log.Println("데이터 바인딩할때 체크")
-		// Summary 만들기
-		// p.Content에서 특정길이 문자열에서 html태그 제거한것
-		sumText := createSummary(*p)
-		
-		
+
 		t := time.Now() // 현재시간 가져오기
-		log.Println("에러 체크 DB에 넣기전")
 		// Post객체에 각 데이터 넣기
 		p.Author = u.Name
 		p.UDesc = u.Desc 
 		p.Date = t
 		p.Updated = t
-		p.Summary = strip.StripTags(sumText)
+		p.CreateSummary(summaryLength)
 		p.Category = c.FormValue("category")
 		hashTags := c.FormValue("hash")
-		p.Thumbnail = createThumbnail(p.Content)
-		
-		
-		// DB insert query
-		_, err = db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.UDesc, p.Title, p.Thumbnail, p.Content, p.Summary, p.Date, p.Updated, p.Category, hashTags)
+		_, err = p.CreateThumbnail()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
-
-		log.Printf("Post \"%s\" is posted on %s\n", p.Title, p.Date.Format("2006-01-02 15:04:05"))
+		
+		err = p.NewPost(db, hashTags)
+		if err != nil {
+			log.Println(err)
+		}
 		
 		return c.Redirect(http.StatusMovedPermanently, "/blog")
 	}
@@ -289,26 +175,23 @@ func NewPost (c echo.Context) error {
 
 // 게시글 view
 func ServePost (c echo.Context) error {
-
 	pid := c.QueryParam("id")
-	p := new(models.Post)
-	
+	p := new(models.Post)	
 	var isAdmin int
-	var hashs sql.NullString		// 하나로 합쳐진 해쉬태그 문자열
-	var thumbnail sql.NullString
 
 	// 카테고리 가져오기
-	categories, _ := getCategories(db)
+	categories, err := models.GetCategories(db)
+	if err != nil {
+		log.Println(err)
+	}
 
-	intPid, err := strconv.Atoi(pid)
+	pidI, err := strconv.Atoi(pid)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "게시글이 존재하지 않습니다.")	
 	}
 	
 	// Database에서 게시글 쿼리
-	err = db.QueryRow("SELECT * FROM posts WHERE id = ?", intPid).Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &thumbnail, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
-	p.HashTags = convertHashTag(hashs.String)
-	p.Thumbnail = thumbnail.String
+	err = p.GetPostFromDB(db, pidI)
 	
 	// 세션에서 현재 유저 정보 가져오기
 	sess, err := session.Get(UserSession, c)
@@ -405,15 +288,15 @@ func EditPost (c echo.Context) error {
 	p := new(models.Post)		// 수정할 게시글 object
 	pid := c.QueryParam("id")
 	
-	intPid, err := strconv.Atoi(pid)
+	pidI, err := strconv.Atoi(pid)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "id 정수형 변환 실패")	
 	}
 
 	if (c.Request().Method == "GET") {	
 		// Request method가 GET인 경우
-		err = db.QueryRow("SELECT title, content FROM posts WHERE id = ?", intPid).Scan(&p.Title, &p.Content)
-		categories, err := getCategories(db)
+		p.GetPostFromDB(db, pidI)
+		categories, err := models.GetCategories(db)
 		if err != nil {
 			log.Println(err)	
 		}
@@ -437,18 +320,11 @@ func EditPost (c echo.Context) error {
 		
 		t := time.Now()
 		p.Updated = t
-		p.Thumbnail = createThumbnail(p.Content)
+		p.CreateThumbnail()
 		hashTags := c.FormValue("hash")
-		
-		// DB Update
-		_, err := db.Exec("update posts set title = ?,thumbnail = ?, content = ?, category = ?, hashtag = ?, updated = ? where id = ?", p.Title, p.Thumbnail, p.Content, p.Category, hashTags, p.Updated, intPid)
-		if err != nil {
-			log.Fatal(err)
-		}
+		p.UpdatePost(db, hashTags, pidI)
 		redirectUrl := "/blog/post?id=" + pid
-		
 		log.Printf("Redirect to %s\n", redirectUrl)
-		
 		return c.Redirect(http.StatusFound, redirectUrl)
 	}
 	
@@ -457,84 +333,50 @@ func EditPost (c echo.Context) error {
 
 func ConditianalServePosts (c echo.Context) error {
 	params := c.QueryParams()
-	var posts []models.Post
 	var isAdmin int
-	var Rows *sql.Rows
-	var err error
-
-	pg := new(page)
+	var posts []models.Post
+	var pagination models.Page
 
 	// 카테고리
-	categories, _ := getCategories(db)
+	categories, _ := models.GetCategories(db)
+	// cuurent page
+	currentPage := c.FormValue("currentPage")
+	if currentPage == "" {
+		// 초기Request땐 1번으로 지정.
+		currentPage = "1"
+	}
+	// Convert string type currentPage to integer type
+	currentPageI, _ := strconv.Atoi(currentPage)
 
 	if params["hash"] != nil {
 		// 쿼리 파라미터가 hash일 경우
-		str := params["hash"][0]
-		str = "%" + str + "%"
+		hashTag := params["hash"][0]
+		hashTag = "%" + hashTag + "%"
 
-		// Pagenation
-		currentPage, _ := strconv.Atoi(c.FormValue("currentPage"))
-		if currentPage == 0 {
-			// 초기Request땐 1번으로 지정.
-			currentPage = 1
-		}
-		_ = db.QueryRow("select count(*) as totalposts from posts where hashtag like ?", str).Scan(&pg.Length)
-		pg.CurrentPage = currentPage
-		if pg.Length != 0 {
-			pg.Length = pg.Length/RowsPerPage + 1
-		}
-		Rows, err = db.Query(`select id, author, udesc, title, content, summary, date, updated, category, hashtag 
-									from (
-										select @num := @num + 1 as num,
-											p.id, p.author, p.udesc, p.title, p.content, p.summary, p.date, p.updated, p.category, p.hashtag
-											from (select @num:=0) a, posts p where hashtag like ?) post
-									where post.num > ? and post.num <= ? order by id desc;`, str, (currentPage - 1) * RowsPerPage, currentPage * RowsPerPage)
+		postCount, err := models.GetPostCountByHashTag(db, hashTag)
 		if err != nil {
 			log.Println(err)
-			return err
 		}
-		defer Rows.Close()
+		pagination = models.Page{currentPageI, postCount / RowsPerPage + 1}
+		
+		posts, err = models.GetCurrentPagePostsByHashTag(db, currentPageI, RowsPerPage, hashTag)
+		if err != nil {
+			log.Println(err)
+		}
 	} else if params["category"] != nil {
 		// 쿼리 파라미터가 category일 경우
-		str := params["category"][0]
+		category := params["category"][0]
 
-		currentPage, _ := strconv.Atoi(c.FormValue("currentPage"))
-		if currentPage == 0 {
-			// 초기Request땐 1번으로 지정.
-			currentPage = 1
-		}
-
-		_ = db.QueryRow("select count(*) as totalposts from posts where category=?", str).Scan(&pg.Length)
-		pg.CurrentPage = currentPage
-		if pg.Length != 0 {
-			pg.Length = pg.Length/RowsPerPage + 1
-		}
-
-		Rows, err = db.Query(`select id, author, udesc, title, content, summary, date, updated, category, hashtag 
-									from (
-										select @num := @num + 1 as num,
-										p.id, p.author, p.udesc, p.title, p.content, p.summary, p.date, p.updated, p.category, p.hashtag
-										from (select @num:=0) a, posts p where category = ?) post
-									where post.num > ? and post.num <= ? order by id desc;`, str, (currentPage - 1) * RowsPerPage, currentPage * RowsPerPage)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		defer Rows.Close()
-	}
-
-	for Rows.Next() {
-		p := models.Post{}
-		var hashs sql.NullString		// 하나로 합쳐져있는 해쉬태그 문자열
-		err := Rows.Scan(&p.Id, &p.Author, &p.UDesc, &p.Title, &p.Content, &p.Summary, &p.Date, &p.Updated, &p.Category, &hashs)
+		postCount, err := models.GetPostCountByCategory(db, category)
 		if err != nil {
 			log.Println(err)
 		}
+		pagination = models.Page{currentPageI, postCount / RowsPerPage + 1}
 
-		p.HashTags = convertHashTag(hashs.String)
-
-		// posts에 새로 받아온 post append
-		posts = append(posts, p)
+		posts, err = models.GetCurrentPagePostsByCategory(db, currentPageI, RowsPerPage, category)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	// 세션에서 현재 유저 정보 가져오기
@@ -555,6 +397,6 @@ func ConditianalServePosts (c echo.Context) error {
 		"Admin": isAdmin,
 		"WriteUrl": writeURL,
 		"Categories": categories,
-		"Pagination": pg,
+		"Pagination": pagination,
 	})
 }
