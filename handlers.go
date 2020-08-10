@@ -15,6 +15,7 @@ import (
 	// open source libraries
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo-contrib/session"
+	"github.com/gorilla/sessions"
 	"github.com/PuerkitoBio/goquery"
 	
 	// custom libraries
@@ -119,6 +120,19 @@ func NewPost (c echo.Context) error {
 
 		// Database에서 카테고리 가져오기
 		categories, _ := models.GetCategories(db)
+		
+		// Image handling
+		imgSess, err := session.Get(ImageSession, c)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		imgSess.Options = &sessions.Options {
+			Path: "/",
+			MaxAge: 1800,
+			HttpOnly: true,
+		}
+		imgSess.Save(c.Request(), c.Response())
 
 		return c.Render(http.StatusOK, "blog/write.html", map[string]interface{}{
 			"Url": "/blog/write",
@@ -165,6 +179,31 @@ func NewPost (c echo.Context) error {
 		err = p.NewPost(db, hashTags)
 		if err != nil {
 			log.Println(err)
+		}
+		
+		// image handling
+		contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(p.Content))
+		if err != nil {
+			log.Println(err)
+		}
+		
+		imgSess, err := session.Get(ImageSession, c)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		imgs := contentDoc.Find("img")
+		for i := 0; i < imgs.Length(); i++ {
+			imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1;
+		}
+		
+		for key, val := range imgSess.Values {
+			if val == 0 {
+				fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
+				if fErr != nil { 
+					log.Println(fErr) 
+				}
+			}
 		}
 		
 		return c.Redirect(http.StatusMovedPermanently, "/blog")

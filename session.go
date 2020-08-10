@@ -34,6 +34,7 @@ const (
 	UserSession    = "session"
 	CurrentUserKey = "current_user"
 	CurrentPageKey = "current_page"
+	ImageSession   = "image"
 )
 
 func createSession(name string, ctx echo.Context) (*sessions.Session, error) {
@@ -154,6 +155,13 @@ func Login (c echo.Context) error {
 			if currentPage == "<nil>" {
 				currentPage = "/"
 			}
+			
+			sess.Options = &sessions.Options {
+				Path: "/",
+				MaxAge:   3600, // 1 hour
+				HttpOnly: true,
+			}
+		
 			sess.Save(c.Request(), c.Response())
 		
 			log.Printf("%s's Session is saved(sessions id : %s)\n", u.Id, u.SessionId)

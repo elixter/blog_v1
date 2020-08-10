@@ -10,6 +10,12 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	
+	"github.com/labstack/echo-contrib/session"
+)
+
+const (
+	ImageSession   = "image"
 )
 
 // Reference : https://gist.github.com/tabula-rasa/0f1d55903e0cb0a3f221
@@ -36,6 +42,14 @@ func CKUpload(c echo.Context) error {
 			log.Println(err)
 			return err
 		}
+		
+		imgSess, err := session.Get(ImageSession, c)
+		if err != nil {
+			log.Println(err)
+		}
+		imgSess.Values[uri] = 0
+		
+		imgSess.Save(c.Request(), c.Response())
 
 		CKEdFunc := req.FormValue("CKEditorFuncNum")
 		fmt.Fprintln(c.Response().Writer, "<script>window.parent.CKEDITOR.tools.callFunction("+CKEdFunc+", \""+uri+"\");</script>")
