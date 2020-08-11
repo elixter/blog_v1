@@ -194,7 +194,9 @@ func NewPost (c echo.Context) error {
 		
 		imgs := contentDoc.Find("img")
 		for i := 0; i < imgs.Length(); i++ {
-			imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1;
+			// if value is 0, the image is not exist
+			// else the image is exist.
+			imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
 		}
 		
 		for key, val := range imgSess.Values {
@@ -205,6 +207,12 @@ func NewPost (c echo.Context) error {
 				}
 			}
 		}
+		
+		// 세션 삭제
+		imgSess.Options = &sessions.Options {
+			MaxAge: -1,
+		}
+		imgSess.Save(c.Request(), c.Response())
 		
 		return c.Redirect(http.StatusMovedPermanently, "/blog")
 	}
@@ -262,41 +270,16 @@ func ServePost (c echo.Context) error {
 // 게시글 삭제
 func DeletePost (c echo.Context) error {
 	id := c.QueryParam("id")
-	intId, sconvErr := strconv.Atoi(id)
-
+	pidI, sconvErr := strconv.Atoi(id)
 	if sconvErr != nil {
 		log.Fatal(sconvErr)
 	}
-	var pTitle, pContent string		// 어떤 게시글이 삭제되는지 확인용
-	
-	err := db.QueryRow("select title, content from posts where id = ?", intId).Scan(&pTitle, &pContent)
-	if err != nil {
-		log.Println(err)
-	}
-	
-	_, err = db.Exec("delete from posts where id = ?", intId)
-	if err != nil {
-		log.Println(err)
-	}
-
-	// auto_increment initialize and sort.
-	_, err = db.Exec("ALTER TABLE posts AUTO_INCREMENT=1;")
-	if err != nil {
-		log.Println(err)
-	}
-
-	_, err = db.Exec("SET @COUNT = 0;")
-	if err != nil {
-		log.Println(err)
-	}
-
-	_, err = db.Exec("UPDATE posts SET id = @COUNT := @COUNT+1;")
-	if err != nil {
-		log.Println(err)
-	}
+	p := new(models.Post)
+	p.GetPostFromDB(db, pidI)
+	p.DeletePost(db)
 	
 	// 이미지파일 제거
-	contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(pContent))
+	contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(p.Content))
 	if err != nil {
 		log.Println(err)
 	}
@@ -313,11 +296,8 @@ func DeletePost (c echo.Context) error {
 		}
 	}
 	
-	
-	log.Println("썸네일 추출 완료")
-
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
-	log.Printf("Post Id %d, Title %s is delete on %s\n", intId, pTitle, currentTime)
+	log.Printf("Post Id %d, Title %s is delete on %s\n", pidI, p.Title, currentTime)
 	
 	return c.Redirect(http.StatusFound, "/")
 }

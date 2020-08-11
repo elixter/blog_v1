@@ -75,6 +75,7 @@ func Login (c echo.Context) error {
 				log.Println(err)
 				return c.Render(http.StatusOK, "/login.html", map[string]interface{}{
 					"Failed": 1,
+					"Admin": -1,
 				})
 			}
 

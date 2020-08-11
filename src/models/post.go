@@ -288,4 +288,29 @@ func (p *Post) GetPostFromDB(db *sql.DB, pid int) error {
 	return nil
 }
 
+func (p *Post) DeletePost(db *sql.DB) error {
+	_, err := db.Exec("delete from posts where id = ?", p.Id)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// auto_increment initialize and sort.
+	_, err = db.Exec("ALTER TABLE posts AUTO_INCREMENT=1;")
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = db.Exec("SET @COUNT = 0;")
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = db.Exec("UPDATE posts SET id = @COUNT := @COUNT+1;")
+	if err != nil {
+		log.Println(err)
+	}
+	
+	return nil
+}
+
 
