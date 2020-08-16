@@ -248,13 +248,36 @@ func (p *Post) CreateThumbnail() (string, error) {
 // Database에 게시글 저장하는 함수
 func (p *Post) NewPost(db *sql.DB, hashTags string) error {
 	_, err := db.Exec(`insert into posts values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, p.Id, p.Author, p.UDesc, p.Title, p.Thumbnail, p.Content, p.Summary, p.Date, p.Updated, p.Category, hashTags)
+	if err != nil {
+		log.Println(err)
+		
+		return err
+	}
+	
+	// 해쉬태그부분 나눠서 리팩토링중
+	var pid int
+	err = db.QueryRow(`select id from posts where title = ? AND content = ?`, p.Title, p.Content).Scan(&pid)
+	if err != nil {
+		log.Println(err)
+	}
+	
+	hashTagArr := p.convertHashTag(hashTags)
+	
+	for _, val := range(hashTagArr) {
+		_, err = db.Exec(`INSERT INTO hashtag(tag) SELECT * FROM (SELECT ?) AS tmp WHERE NOT EXISTS(SELECT * FROM hashtag WHERE tag = ?) LIMIT 1;`, val, val)
 		if err != nil {
 			log.Println(err)
-			
-			return err
 		}
-
-		log.Printf("Post \"%s\" is posted on %s\n", p.Title, p.Date.Format("2006-01-02 15:04:05"))
+		
+		
+		_, err = db.Exec(`INSERT INTO post_hashtag(hid, pid) SELECT id, ? FROM hashtag where tag = ?;`, pid, val)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	// -------------------------
+	
+	log.Printf("Post \"%s\" is posted on %s\n", p.Title, p.Date.Format("2006-01-02 15:04:05"))
 	
 	return nil
 }

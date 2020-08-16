@@ -196,16 +196,20 @@ func NewPost (c echo.Context) error {
 		for i := 0; i < imgs.Length(); i++ {
 			// if value is 0, the image is not exist
 			// else the image is exist.
-			imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
+			go func() {
+				imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
+			}()
 		}
 		
 		for key, val := range imgSess.Values {
-			if val == 0 {
-				fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
-				if fErr != nil { 
-					log.Println(fErr) 
+			go func () {
+				if val == 0 {
+					fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
+					if fErr != nil { 
+						log.Println(fErr) 
+					}
 				}
-			}
+			}()
 		}
 		
 		// 세션 삭제
@@ -299,7 +303,7 @@ func DeletePost (c echo.Context) error {
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	log.Printf("Post Id %d, Title %s is delete on %s\n", pidI, p.Title, currentTime)
 	
-	return c.Redirect(http.StatusFound, "/")
+	return c.Redirect(http.StatusFound, "/blog")
 }
 
 // 게시글 수정
@@ -341,9 +345,48 @@ func EditPost (c echo.Context) error {
 		p.Updated = t
 		p.CreateThumbnail()
 		hashTags := c.FormValue("hash")
+		
+		// image handling
+		contentDoc, err := goquery.NewDocumentFromReader(strings.NewReader(p.Content))
+		if err != nil {
+			log.Println(err)
+		}
+		
+		imgSess, err := session.Get(ImageSession, c)
+		if err != nil {
+			log.Println(err)
+		}
+		
+		imgs := contentDoc.Find("img")
+		for i := 0; i < imgs.Length(); i++ {
+			// if value is 0, the image is not exist
+			// else the image is exist.
+			go func() {
+				imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
+			}()
+		}
+		
+		for key, val := range imgSess.Values {
+			go func () {
+				if val == 0 {
+					fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
+					if fErr != nil { 
+						log.Println(fErr) 
+					}
+				}
+			}()
+		}
+		
+		// 세션 삭제
+		imgSess.Options = &sessions.Options {
+			MaxAge: -1,
+		}
+		imgSess.Save(c.Request(), c.Response())
+		
 		p.UpdatePost(db, hashTags, pidI)
 		redirectUrl := "/blog/post?id=" + pid
 		log.Printf("Redirect to %s\n", redirectUrl)
+		
 		return c.Redirect(http.StatusFound, redirectUrl)
 	}
 	
