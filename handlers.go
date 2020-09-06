@@ -29,13 +29,15 @@ const (
 	editPost		=	1
 	summaryLength	=	300
 	
-	src			=		2			// In Ckeditor image source's index is 2 with go query selection
+	src			=		2			// In Ckeditor image source's index is 2 in go query selection
 	
 	writeURL	=	"/blog/write"
 )
 
 // index page
 func Index (c echo.Context) error{
+	var isAdmin int
+	
 	// 세션에서 현재 유저 정보 가져오기
 	sess, err := session.Get(UserSession, c)
 	if err != nil {
@@ -43,7 +45,14 @@ func Index (c echo.Context) error{
 	}
 	
 	u, err := models.GetUser(sess, CurrentUserKey)
-	isAdmin := u.GetAdmin(db, sess, CurrentUserKey)
+	if err != nil {
+		log.Println(err)
+	}
+	if u != nil {
+		isAdmin = u.Admin
+	} else {
+		isAdmin = -1
+	}
 	
 	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
 		"Admin": isAdmin,
@@ -58,7 +67,6 @@ func NotFound (c echo.Context) error {
 func ServePosts (c echo.Context) error {
 	var isAdmin int
 	var err error
-	u := new(models.User)
 
 	categories, err := models.GetCategories(db)
 	if err != nil {
@@ -94,12 +102,15 @@ func ServePosts (c echo.Context) error {
 		log.Println(err)
 	}
 	
-	u, err = models.GetUser(sess, CurrentUserKey)
+	u, err := models.GetUser(sess, CurrentUserKey)
 	if err != nil {
 		log.Println(err)
 	}
-	
-	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
+	if u != nil {
+		isAdmin = u.Admin
+	} else {
+		isAdmin = -1
+	}
 	fmt.Printf("isAdmin : %d\n", isAdmin)
 
 	// Render.
@@ -254,9 +265,13 @@ func ServePost (c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 	}
-	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
-	
-	log.Printf("%s(admin: %d)is requested to post %s\n", u.Id, u.Admin, p.Title)
+	log.Println("여긴가???")
+	if u != nil {
+		isAdmin = u.Admin
+		log.Printf("%s(admin: %d)is requested to post %s\n", u.Id, u.Admin, p.Title)
+	} else {
+		isAdmin = -1
+	}
 	
 	return c.Render(http.StatusOK, "blog/post.html", map[string]interface{}{
 		"PageTitle": pageTitle,
@@ -451,7 +466,11 @@ func ConditianalServePosts (c echo.Context) error {
 	if err != nil {
 		log.Println(err)
 	}
-	isAdmin = u.GetAdmin(db, sess, CurrentUserKey)
+	if u != nil {
+		isAdmin = u.Admin
+	} else {
+		isAdmin = -1
+	}
 
 	return c.Render(http.StatusOK, "blog/index.html", map[string]interface{}{
 		"PageTitle": pageTitle,

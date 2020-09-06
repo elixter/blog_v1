@@ -151,6 +151,7 @@ func Login (c echo.Context) error {
 
 			sess, _ = createSession(UserSession, c)
 			sess.Values[CurrentUserKey] = bind
+
 			currentPage := fmt.Sprintf("%v", sess.Values[CurrentPageKey])
 			// 최근 페이지가 없을경우(최초로그인 등...) index.html로 이동
 			if currentPage == "<nil>" {

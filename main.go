@@ -31,7 +31,7 @@ func main() {
 	e.GET("/login", Login)
 	e.GET("/logout", Logout)
 	e.GET("/project", NotFound)
-	e.GET("/contact", NotFound)
+	e.GET("/about", NotFound)
 	
 	//POST Routing
 	e.POST("/login", Login)
