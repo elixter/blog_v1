@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{template "meta"}}
+</head>
+<body>
+  <!-- Start navbar -->
+  {{template "header" .Admin}}
+  <!-- End navbar -->
+  <!-- Start main -->
+  <main>
+    <div class="content">
+      <div class="content-div">
+        <!-- Post list -->
+        <div class="content-main">
+          {{if .Posts}}
+		{{range .Posts}}
+          <article class="post">
+            <div class="article-inner">
+              <!-- Entry header -->
+              <header class="entry-header">
+                <div class="entry-header-text">
+                  <h2 class="entry-title">
+                    <a href="/blog/post?id={{.Id}}">{{.Title}}</a>
+                    <a class="post-category" href="/blog/search?category={{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
+                  </h2>
+                  <div class="entry-header-flexbox">
+                    <div class="entry-infobox">
+                      <h5>{{.Author}}
+                        <span class="byline"><span class="sep">&nbsp;|&nbsp;
+                        </span>{{.Updated.Format "2006.01.02"}}</span>
+
+                      </h5>
+                      <p class="author-describ">{{.UDesc}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="thumbnail">
+                  <img src="{{.Thumbnail}}">
+                </div>
+              </header>
+              <!-- End Entry header-->
+              <div class="entry-content">
+                <div class="entry-summary">{{.Summary}}</div>
+              </div>
+              <footer class="entry-meta">
+                <div class="tag-links">
+                  {{range $idx, $index := .HashTags}}
+                    {{if ne . ""}}
+                    <span><a href="/blog/search?hash={{$index}}">{{$index}}</a></span>
+                    {{end}}
+                  {{end}}
+                </div>
+                <div class="entry-meta-right">
+                  <a class="more-link" href="/blog/post?id={{.Id}}">Read More ></a>
+                </div>
+              </footer>
+            </div>
+          </article>
+		{{end}}
+            {{else}}
+            {{template "nopost"}}
+          {{end}}
+		{{if eq .Admin 1}}
+			<div>
+				<input class="action-btn" type="button" value="글쓰기" onclick="location.href='{{.WriteUrl}}'">
+			</div>	
+		{{else}}
+		{{end}}
+          {{template "pageNum" .Pagination}}
+        </div>
+        <!-- End Post list -->
+        <!-- Side -->
+        {{template "side" .Categories}}
+        <!-- End Side-->
+      </div>
+    </div>
+  </main>
+  <!-- End main -->
+  {{template "footer"}}
+	<script>
+		imgFit()
+	</script>
+</body>
+</html>
