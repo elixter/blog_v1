@@ -22,7 +22,7 @@
                 <div class="entry-header-text">
                   <h2 class="entry-title">
                     <a>{{.Title}}</a>
-                    <a class="post-category" href="/blog/search?category={{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
+                    <a class="post-category" href="/blog/category/{{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
                   </h2>
                   <div class="entry-header-flexbox">
                     <div class="entry-infobox">
@@ -53,7 +53,7 @@
                 <div class="tag-links">
                   {{range $index := .HashTags}}
                     {{if ne . ""}}
-                      <span><a href="/blog/search?hash={{.}}">{{.}}</a></span>
+                      <span><a href="/blog/hash/{{.}}">{{.}}</a></span>
                     {{end}}
                   {{end}}
                 </div>
@@ -65,9 +65,11 @@
 		{{end}}
 			
 		{{if eq .Admin 1}}
-			<div>
-				<input class="action-btn" type="button" value="수정" onclick="location.href='{{.EditUrl}}?id={{.Id}}'">
-				<input class="action-btn" type="button" value="삭제" onclick="delete_confirm('{{.DeleteUrl}}?id={{.Id}}')">
+			<div style="display: flex;">
+				<input class="action-btn" type="button" value="수정" onclick="location.href='{{.EditUrl}}/{{.Id}}'">
+				<form name="delete" style="margin-left: 5px;">
+					<input class="action-btn" type="button" value="삭제" onclick="delete_confirm('{{.DeleteUrl}}/{{.Id}}')">
+				</form>
 			</div>	
 		{{else}}
 		{{end}}

@@ -40,10 +40,11 @@ func main() {
 	// BLOG API Routing
 	// GET Routing
 	blog.GET("", ServePosts)
+	blog.GET("/:condition/:keyword", ConditianalServePosts)
 	blog.GET("/post", ServePost)
+	blog.GET("/post/:id", ServePost)
 	blog.GET("/write", NewPost, AuthHandler)
-	blog.GET("/delete", DeletePost, AuthHandler)
-	blog.GET("/edit", EditPost, AuthHandler)
+	blog.GET("/edit/:id", EditPost, AuthHandler)
 	blog.GET("/search", ConditianalServePosts)
 	blog.GET("/login", Login)
 	blog.GET("/logout", Logout)
@@ -51,12 +52,11 @@ func main() {
 	// POST Routing
 	blog.POST("", ServePosts)
 	blog.POST("/write", NewPost)
-	blog.POST("/edit", EditPost)
+	blog.POST("/edit/:id", EditPost)
 	blog.POST("/fileUpload", controllers.CKUpload)
-	blog.POST("/search", ConditianalServePosts)
-	blog.POST("/delete", DeletePost, AuthHandler)
 	blog.POST("/login", Login)
 	blog.POST("/logout", Logout)
+	blog.POST("/delete/:id", DeletePost, AuthHandler)
 	
 	// Run server with port 8080
 	e.Logger.Fatal(e.Start(":8080"))

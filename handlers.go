@@ -237,7 +237,7 @@ func NewPost (c echo.Context) error {
 
 // 게시글 view
 func ServePost (c echo.Context) error {
-	pid := c.QueryParam("id")
+	pid := c.Param("id")
 	p := new(models.Post)	
 	var isAdmin int
 
@@ -288,7 +288,7 @@ func ServePost (c echo.Context) error {
 
 // 게시글 삭제
 func DeletePost (c echo.Context) error {
-	id := c.QueryParam("id")
+	id := c.Param("id")
 	pidI, sconvErr := strconv.Atoi(id)
 	if sconvErr != nil {
 		log.Fatal(sconvErr)
@@ -324,7 +324,7 @@ func DeletePost (c echo.Context) error {
 // 게시글 수정
 func EditPost (c echo.Context) error {
 	p := new(models.Post)		// 수정할 게시글 object
-	pid := c.QueryParam("id")
+	pid := c.Param("id")
 	
 	pidI, err := strconv.Atoi(pid)
 	if err != nil {
@@ -399,7 +399,7 @@ func EditPost (c echo.Context) error {
 		imgSess.Save(c.Request(), c.Response())
 		
 		p.UpdatePost(db, hashTags, pidI)
-		redirectUrl := "/blog/post?id=" + pid
+		redirectUrl := "/blog/post/" + pid
 		log.Printf("Redirect to %s\n", redirectUrl)
 		
 		return c.Redirect(http.StatusFound, redirectUrl)
@@ -409,7 +409,9 @@ func EditPost (c echo.Context) error {
 }
 
 func ConditianalServePosts (c echo.Context) error {
-	params := c.QueryParams()
+	condition := c.Param("condition")
+	keyword := c.Param("keyword")
+	
 	var isAdmin int
 	var posts []models.Post
 	var pagination models.Page
@@ -425,9 +427,9 @@ func ConditianalServePosts (c echo.Context) error {
 	// Convert string type currentPage to integer type
 	currentPageI, _ := strconv.Atoi(currentPage)
 
-	if params["hash"] != nil {
+	if condition == "hash" {
 		// 쿼리 파라미터가 hash일 경우
-		hashTag := params["hash"][0]
+		hashTag := keyword
 		hashTag = "%" + hashTag + "%"
 
 		postCount, err := models.GetPostCountByHashTag(db, hashTag)
@@ -440,9 +442,9 @@ func ConditianalServePosts (c echo.Context) error {
 		if err != nil {
 			log.Println(err)
 		}
-	} else if params["category"] != nil {
+	} else if condition == "category" {
 		// 쿼리 파라미터가 category일 경우
-		category := params["category"][0]
+		category := keyword
 
 		postCount, err := models.GetPostCountByCategory(db, category)
 		if err != nil {

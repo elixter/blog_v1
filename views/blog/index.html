@@ -21,8 +21,8 @@
               <header class="entry-header">
                 <div class="entry-header-text">
                   <h2 class="entry-title">
-                    <a href="/blog/post?id={{.Id}}">{{.Title}}</a>
-                    <a class="post-category" href="/blog/search?category={{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
+                    <a href="/blog/post/{{.Id}}">{{.Title}}</a>
+                    <a class="post-category" href="/blog/category/{{.Category}}">&nbsp;|&nbsp;{{.Category}}</a>
                   </h2>
                   <div class="entry-header-flexbox">
                     <div class="entry-infobox">
@@ -45,14 +45,14 @@
               </div>
               <footer class="entry-meta">
                 <div class="tag-links">
-                  {{range $idx, $index := .HashTags}}
+                  {{range $idx, $hash := .HashTags}}
                     {{if ne . ""}}
-                    <span><a href="/blog/search?hash={{$index}}">{{$index}}</a></span>
+                    <span><a href="/blog/hash/{{$hash}}">{{$hash}}</a></span>
                     {{end}}
                   {{end}}
                 </div>
                 <div class="entry-meta-right">
-                  <a class="more-link" href="/blog/post?id={{.Id}}">Read More ></a>
+                  <a class="more-link" href="/blog/post/{{.Id}}">Read More ></a>
                 </div>
               </footer>
             </div>
