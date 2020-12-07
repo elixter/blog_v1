@@ -16,7 +16,7 @@
 - 이미지 업로드
 
 ### handlers.go
-- Echo와 <a href="https://github.com/elixter/blogmodel">Models</a>를 엮어서 비즈니스로직을 담아둔곳.
+- Echo와 <a href="https://github.com/elixter/blogmodel">blogmodel</a>를 엮어서 비즈니스로직을 담아둔곳.
 - #### 주요 함수들
     - ServePosts(c echo.Context) error -> 블로그의 게시글 목록을 최신순으로 보여주는 function
     - NewPost(c echo.Context) error -> http method가 GET이면 글쓰기 화면을, POST이면 작성한 게시글을 DB에 추가후 게시글로 redirect
