@@ -7,7 +7,6 @@
 - Database : MYSQL<br>
 - Backend: Go(Echo framework)<br>
 - Frontend: HTML, CSS, Javascript<br>
-- TextEditor : goorm IDE
 
 
 # 기능
