@@ -207,20 +207,16 @@ func NewPost (c echo.Context) error {
 		for i := 0; i < imgs.Length(); i++ {
 			// if value is 0, the image is not exist
 			// else the image is exist.
-			go func() {
-				imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
-			}()
+			imgSess.Values[imgs.Nodes[0].Attr[src].Val] = 1
 		}
 		
 		for key, val := range imgSess.Values {
-			go func () {
-				if val == 0 {
-					fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
-					if fErr != nil { 
-						log.Println(fErr) 
-					}
+			if val == 0 {
+				fErr := os.Remove(path.Base("") + fmt.Sprintf("%v", key))
+				if fErr != nil { 
+					log.Println(fErr) 
 				}
-			}()
+			}
 		}
 		
 		// 세션 삭제
