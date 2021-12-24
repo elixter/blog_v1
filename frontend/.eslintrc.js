@@ -1,0 +1,43 @@
+module.exports = {
+    extends: [
+        'prettier',
+        'airbnb',
+        'airbnb/hooks',
+        'plugin:prettier/recommended',
+    ],
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint', 'prettier'],
+    env: {
+        browser: true,
+    },
+    rules: {
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': ['error'],
+        'import/extensions': 'off',
+        'import/no-unresolved': 'off',
+        'no-shadow': 'off',
+        'linebreak-style': 'off',
+        '@typescript-eslint/no-shadow': ['error'],
+        'no-control-regex': 'off',
+        'arrow-body-style': ['off'],
+        'react/react-in-jsx-scope': 'off',
+        camelcase: 'off',
+        'no-underscore-dangle': 'off',
+        'no-unused-vars': 'off',
+        'react/jsx-filename-extension': 'off',
+        'react/jsx-props-no-spreading': 'off',
+        'import/prefer-default-export': 'off',
+        'jsx-a11y/label-has-associated-control': 'off',
+        'jsx-a11y/anchor-is-valid': 'off',
+        'jsx-a11y/control-has-associated-label': 'off',
+        'jsx-a11y/click-events-have-key-events': 'off',
+        'jsx-a11y/no-static-element-interactions': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+    },
+};
