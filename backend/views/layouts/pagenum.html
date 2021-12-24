@@ -1,0 +1,61 @@
+{{define "pageNum"}}
+    <div class="page-num">
+        <ul class="page-num-list">
+        </ul>
+    </div>
+
+    <form name="paging" method="post">
+        <input type="hidden" name="currentPage">
+    </form>
+
+    <style>
+        .page-num-list li a {
+            padding: 0 7px;
+        }
+    </style>
+    <script>
+        function pagenav(num) {
+            document.paging.currentPage.value = num;
+            document.paging.submit();
+        }
+        function pagination(currentPage, len) {
+            var ul = document.querySelector(".page-num-list");
+            var i = 1;
+            var max;
+            const maxLen = Number(len);
+
+            console.log(currentPage);
+            console.log(len);
+
+            if (len == 0) return;
+
+            if (maxLen > 5) {
+                if (currentPage > 2) {
+                    i = currentPage - 2;
+                    max = i + 4;
+                } else if (currentPage > maxLen - 2) {
+                    i = maxLen - 4;
+                    max = len;
+                }
+            } else {
+                max = 1;
+            }
+
+            for (; i <= max; i++) {
+                console.log(i)
+                var li = document.createElement("li");
+                var a = document.createElement("a");
+                if (currentPage == i) {
+                    li.style.backgroundColor = "#191919";
+                    a.style.color = "#ededed"
+                }
+                a.href = "javascript:pagenav('" + String(i) + "')";
+                a.innerText = String(i);
+                li.appendChild(a);
+                ul.appendChild(li);
+            }
+        }
+
+        pagination({{.CurrentPage}}, {{.Length}});
+    </script>
+{{end}}
