@@ -1,8 +1,10 @@
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
+import { StaticPath } from './components/pagePath/pagePath';
 
-const App = function () {
+const test = () => {
 	return (
 		<div className="App">
 			<header className="App-header">
@@ -15,6 +17,16 @@ const App = function () {
 				</a>
 			</header>
 		</div>
+	);
+};
+
+const App = function () {
+	return (
+		<BrowserRouter>
+			<Switch>
+				<Route exact path={StaticPath.MAIN} component={test} />
+			</Switch>
+		</BrowserRouter>
 	);
 };
 
