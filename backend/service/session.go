@@ -1,20 +1,20 @@
-package main
+package session
 
 import (
-	// go standard libraries
-	"log"
-	"time"
-	"net/http"
 	"encoding/json"
 	"fmt"
-	
+	// go standard libraries
+	"log"
+	"net/http"
+	"time"
+
 	"models"
-	
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
 	// open source libraries
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/gorilla/sessions"
-	
+
 	"github.com/google/uuid"
 )
 
@@ -37,7 +37,7 @@ const (
 	ImageSession   = "image"
 )
 
-func createSession(name string, ctx echo.Context) (*sessions.Session, error) {
+func (s ) createSession(name string, ctx echo.Context) (*sessions.Session, error) {
 	sess, err := session.Get(name, ctx)
 	/*
 	sess.Options = &sessions.Options{
