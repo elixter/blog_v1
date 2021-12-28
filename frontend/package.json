@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
@@ -19,11 +21,15 @@
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@types/react-router-dom": "^5.3.2",
+    "axios": "^0.24.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-material-ui-carousel": "^3.1.1",
     "react-router-dom": "^5.3.0",
     "react-scripts": "5.0.0",
+    "recoil": "^0.5.2",
+    "styled-components": "^5.3.3",
+    "swr": "^1.1.2",
     "typescript": "^4.5.4",
     "web-vitals": "^2.1.2"
   },
@@ -54,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.19",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^7.32.0",
