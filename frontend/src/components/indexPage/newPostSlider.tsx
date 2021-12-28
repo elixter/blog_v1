@@ -9,7 +9,6 @@ const useStyle = makeStyles({
 	prevIcon: {
 		width: '25px',
 		height: '25px',
-		marginLeft: '3%',
 		color: 'white',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -18,7 +17,6 @@ const useStyle = makeStyles({
 	nextIcon: {
 		width: '25px',
 		height: '25px',
-		marginLeft: '3%',
 		color: 'white',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -78,7 +76,7 @@ const PrevButton = function () {
 	const style = useStyle();
 
 	return (
-		<button className={style.nextIcon} type="button">
+		<button className={style.prevIcon} type="button">
 			<FontAwesomeIcon icon={faAngleLeft} />
 		</button>
 	);
