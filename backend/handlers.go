@@ -1,25 +1,25 @@
 package main
 
 import (
+	"blog/service"
+	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"log"
 	// go standard libraries
 	"net/http"
-	"strconv"
-	"fmt"
-	"log"
-	"time"
-	"strings"
 	"os"
 	"path"
+	"strconv"
+	"strings"
+	"time"
 	//"encoding/json"
-	
 	// open source libraries
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/gorilla/sessions"
-	"github.com/PuerkitoBio/goquery"
-	
+
 	// custom libraries
-	"models"
+	"github.com/elixter/blogmodel"
 )
 
 const (
@@ -39,12 +39,12 @@ func Index (c echo.Context) error{
 	var isAdmin int
 	
 	// 세션에서 현재 유저 정보 가져오기
-	sess, err := session.Get(UserSession, c)
+	sess, err := session.Get(service.UserSession, c)
 	if err != nil {
 		log.Println(err)
 	}
 	
-	u, err := models.GetUser(sess, CurrentUserKey)
+	u, err := models.GetUser(sess, service.CurrentUserKey)
 	if err != nil {
 		log.Println(err)
 	}
@@ -97,12 +97,12 @@ func ServePosts (c echo.Context) error {
 	}
 	
 	// 세션에서 현재 유저 정보 가져오기
-	sess, err := session.Get(UserSession, c)
+	sess, err := session.Get(service.UserSession, c)
 	if err != nil {
 		log.Println(err)
 	}
 	
-	u, err := models.GetUser(sess, CurrentUserKey)
+	u, err := models.GetUser(sess, service.CurrentUserKey)
 	if err != nil {
 		log.Println(err)
 	}
@@ -133,7 +133,7 @@ func NewPost (c echo.Context) error {
 		categories, _ := models.GetCategories(db)
 		
 		// Image handling
-		imgSess, err := session.Get(ImageSession, c)
+		imgSess, err := session.Get(service.ImageSession, c)
 		if err != nil {
 			log.Println(err)
 		}
@@ -157,12 +157,12 @@ func NewPost (c echo.Context) error {
 		u := new(models.User)
 
 		// 세션에서 현재 유저 정보 가져오기
-		sess, err := session.Get(UserSession, c)
+		sess, err := session.Get(service.UserSession, c)
 		if err != nil {
 			log.Println(err)
 		}
 		
-		u, err = models.GetUser(sess, CurrentUserKey)
+		u, err = models.GetUser(sess, service.CurrentUserKey)
 		if err != nil {
 			log.Println(err)
 		}
@@ -198,7 +198,7 @@ func NewPost (c echo.Context) error {
 			log.Println(err)
 		}
 		
-		imgSess, err := session.Get(ImageSession, c)
+		imgSess, err := session.Get(service.ImageSession, c)
 		if err != nil {
 			log.Println(err)
 		}
@@ -252,12 +252,12 @@ func ServePost (c echo.Context) error {
 	err = p.GetPostFromDB(db, pidI)
 	
 	// 세션에서 현재 유저 정보 가져오기
-	sess, err := session.Get(UserSession, c)
+	sess, err := session.Get(service.UserSession, c)
 	if err != nil {
 		log.Println(err)
 	}
 
-	u, err := models.GetUser(sess, CurrentUserKey)
+	u, err := models.GetUser(sess, service.CurrentUserKey)
 	if err != nil {
 		log.Println(err)
 	}
@@ -363,7 +363,7 @@ func EditPost (c echo.Context) error {
 			log.Println(err)
 		}
 		
-		imgSess, err := session.Get(ImageSession, c)
+		imgSess, err := session.Get(service.ImageSession, c)
 		if err != nil {
 			log.Println(err)
 		}
@@ -455,12 +455,12 @@ func ConditianalServePosts (c echo.Context) error {
 	}
 
 	// 세션에서 현재 유저 정보 가져오기
-	sess, err := session.Get(UserSession, c)
+	sess, err := session.Get(service.UserSession, c)
 	if err != nil {
 		log.Println(err)
 	}
 	
-	u, err := models.GetUser(sess, CurrentUserKey)
+	u, err := models.GetUser(sess, service.CurrentUserKey)
 	if err != nil {
 		log.Println(err)
 	}

@@ -1,14 +1,14 @@
-package session
+package service
 
 import (
 	"encoding/json"
 	"fmt"
+	models "github.com/elixter/blogmodel"
+
 	// go standard libraries
 	"log"
 	"net/http"
 	"time"
-
-	"models"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
