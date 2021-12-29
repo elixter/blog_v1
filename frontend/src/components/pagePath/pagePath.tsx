@@ -1,6 +1,7 @@
 export enum StaticPath {
 	MAIN = '/',
 	PROFILE = '/profile',
+	BLOG = '/blog',
 }
 
 export enum QueryPath {}

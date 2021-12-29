@@ -1,11 +1,14 @@
 import Grid from '../utils/gridCard/gird';
 import Card from '../utils/gridCard/card';
+import profile from '../../static/img/profile.jpg';
 
 const IndexContent = function () {
 	return (
 		<div className="main-content">
-			<h1 className="tit">Elixter&apos;s personal platform</h1>
-			<p className="txt">This website is built for web fullstack study. I want to create scalable website.</p>
+			<div className="desc">
+				<h1 className="tit">Elixter&apos;s personal platform</h1>
+				<p className="txt">This website is built for web fullstack study. I want to create scalable website.</p>
+			</div>
 			<div className="content-info">
 				<Grid>
 					<Card>

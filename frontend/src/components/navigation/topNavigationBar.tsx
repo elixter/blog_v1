@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import useAuthentication, { UserType } from '../authentication/hooks/useAuthentication';
 import AuthNavigation from './authNavigation/authNavigation';
 import UserNavigation from './userNavigation/userNavigation';
@@ -24,7 +25,20 @@ const TopNavigationBar = function () {
 				<Logo />
 			</div>
 			<div className="hd-center">
-				<div className="hd-menu" />
+				<div className="hd-menu">
+					<Link to="/about" className="menu-tit">
+						About
+					</Link>
+					<Link to="/blog" className="menu-tit">
+						Blog
+					</Link>
+					<Link to="/project" className="menu-tit">
+						project
+					</Link>
+					<Link to="/chat" className="menu-tit">
+						chat
+					</Link>
+				</div>
 			</div>
 			<div className="hd-right">
 				{user && (user.type === UserType.Login ? <UserNavigation user={user} /> : <AuthNavigation />)}
