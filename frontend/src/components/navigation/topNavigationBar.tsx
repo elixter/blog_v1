@@ -19,7 +19,7 @@ const TopNavigationBar = function () {
 	}, [onScroll, top]);
 
 	return (
-		<div className={`header ${top ? 'top' : 'non-top'}`} onScroll={onScroll}>
+		<div className={`header ${top ? 'top' : 'non-top'}`}>
 			<div className="hd-left">
 				<Logo />
 			</div>
