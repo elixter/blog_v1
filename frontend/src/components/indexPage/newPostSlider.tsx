@@ -61,13 +61,13 @@ const SlideItem = function ({ post }: slideItemProps) {
 									<Link to="">{post.title}</Link>
 								</h2>
 								<span>2021-12-27 월</span>
+								{/* <div className="post-summary">{post.summary}</div> */}
 							</div>
 							<Link className="content-more" to="">
 								View more
 							</Link>
 						</div>
 					</div>
-					{/* <div className="post-summary">{post.summary}</div> */}
 				</div>
 			</div>
 		</Paper>
