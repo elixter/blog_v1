@@ -9,7 +9,7 @@ const IndexContent = function () {
 				<h1 className="tit">Elixter&apos;s personal platform</h1>
 				<p className="txt">This website is built for web fullstack study. I want to create scalable website.</p>
 			</div>
-			<div className="content-info">
+			<div className="content">
 				<Grid>
 					<Card>
 						<img
@@ -37,7 +37,7 @@ const IndexContent = function () {
 							src="https://a.cdn-hotels.com/gdcs/production187/d231/629d8820-8f10-11e8-b6b0-0242ac110007.jpg?impolicy=fcrop&w=1600&h=1066&q=medium"
 						/>
 						<article className="content">
-							<h3 className="tit">Chat</h3>
+							<h3 className="tit">Contact</h3>
 							<p>Simple chatting with other users</p>
 						</article>
 					</Card>

@@ -50,15 +50,24 @@ const SlideItem = function ({ post }: slideItemProps) {
 					backgroundImage: `url(${post.thumbnail})`,
 				}}
 			>
-				{/* <div className="slide-tit"> */}
-				{/*	<h2>New contents</h2> */}
-				{/* </div> */}
-				<div className="post-info">
-					<h2 className="tit">
-						<Link to="">{post.title}</Link>
-					</h2>
-					<span>2021-12-27 월</span>
-					<div className="post-summary">{post.summary}</div>
+				<div className="slide-content">
+					<div className="content-wrapper">
+						<div className="slide-tit">
+							<h1>Latest contents</h1>
+						</div>
+						<div className="content-body">
+							<div className="content-info">
+								<h2 className="tit">
+									<Link to="">{post.title}</Link>
+								</h2>
+								<span>2021-12-27 월</span>
+							</div>
+							<Link className="content-more" to="">
+								View more
+							</Link>
+						</div>
+					</div>
+					{/* <div className="post-summary">{post.summary}</div> */}
 				</div>
 			</div>
 		</Paper>
@@ -93,6 +102,7 @@ const NewPostSlider = function ({ newPosts }: newPostSliderProps) {
 				navButtonsWrapperProps={{ style: { padding: '0 .7% 0 .7%' } }}
 				NextIcon={<NextButton />}
 				PrevIcon={<PrevButton />}
+				navButtonsAlwaysVisible
 			>
 				{newPosts.map((newPost, i) => (
 					<SlideItem key={newPost.id} post={newPost} />
