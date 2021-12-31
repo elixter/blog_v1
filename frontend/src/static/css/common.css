@@ -186,7 +186,7 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .main .blog-top { width: 100%; height: 400px; background-size: cover; align-items: center; background: #0f0f0f; }
 .main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .7; overflow-y: hidden; object-fit: cover;  }
 /*.main .blog-top::after { content:""; position: absolute; left: 0; top: 0; width: 100%; height: 400px; background-size: cover; background: url(https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf) no-repeat; opacity: .7; }*/
-.main .blog-top .top-content { position: absolute; top: 170px; width: 100%; box-sizing: border-box; z-index: 1000; color: white; text-align: center; }
+.main .blog-top .top-content { position: absolute; top: 190px; width: 100%; box-sizing: border-box; z-index: 1000; color: white; text-align: center; }
 .main .blog-top .top-content h1 { font-size: 40px; }
 
 .blog-content { padding: 0 10% 0 10%; width: 80%; }
@@ -197,9 +197,10 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-hd h1 { font-size: 35px; }
 .post-list-hd .more { font-size: 20px; font-weight: bold; color: var(--base-color); }
 
-.post-list-items { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem;}
+.post-list-items { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem;}
 
-.post-list-item img { width: 100%; }
+.post-list-item img { width: 100%; height: 50%; object-fit: cover; }
 .post-list-item .tit { margin-top: 15px; font-size: 2.5em; }
-.post-list-item .post-summary { margin: 5px 0 25px 0; font-size: 1.6em; }
+.post-list-item .post-summary { width: 100%; margin: 5px 0 25px 0; font-size: 1.6em; overflow: hidden; text-overflow: ellipsis; line-height: 1.2em; height: 3.6em;  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .post-list-item .post-item-bt { font-size: 1.6em; align-items: baseline; color: var(--base-color); display: flex; width: 100%; justify-content: space-between; }
+.post-list-item .post-item-bt .hashtags .hashtag { margin-right: 2px; }

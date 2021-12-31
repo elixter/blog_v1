@@ -33,10 +33,10 @@ const TopNavigationBar = function () {
 						Blog
 					</Link>
 					<Link to="/project" className="menu-tit">
-						project
+						Project
 					</Link>
 					<Link to="/chat" className="menu-tit">
-						chat
+						Contact
 					</Link>
 				</div>
 			</div>
