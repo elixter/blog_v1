@@ -144,7 +144,7 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 
 .top { background: linear-gradient(to bottom,rgba(0,0,0,.7) 10%,rgba(0,0,0,0)); }
 .non-top { background: #1f1f1f; }
-.header { display: flex; color: white; z-index: 1000; position: fixed; top: 0; width: 100%; height: 50px; align-items: center; justify-content: space-between; transition: .5s; }
+.header { display: flex; color: white; z-index: 100000; position: fixed; top: 0; width: 100%; height: 50px; align-items: center; justify-content: space-between; transition: .5s; }
 .header .hd-left { margin-left: 5%; }
 .header .hd-left .logo { display: flex; font-size: 25px; align-items: baseline; }
 .header .hd-left .logo span { font-size: 20px; }
@@ -191,7 +191,7 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 
 .blog-content { padding: 0 10% 0 10%; width: 80%; }
 
-.post-list { margin-top: 30px; }
+.post-list { margin: 30px 0 70px 0; }
 
 .post-list-hd { width: 100%; display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
 .post-list-hd h1 { font-size: 35px; }
