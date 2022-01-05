@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
-import { Paper, Button } from '@mui/material';
+import { Paper } from '@mui/material';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { makeStyles } from '@mui/styles';
@@ -49,14 +50,25 @@ const SlideItem = function ({ post }: slideItemProps) {
 					backgroundImage: `url(${post.thumbnail})`,
 				}}
 			>
-				<div className="slide-tit">
-					<h2>최근 게시물</h2>
+				<div className="slide-content">
+					<div className="content-wrapper">
+						<div className="slide-tit">
+							<h1>Latest contents</h1>
+						</div>
+						<div className="content-body">
+							<div className="content-info">
+								<h2 className="tit">
+									<Link to="">{post.title}</Link>
+								</h2>
+								<span>2021-12-27 월</span>
+								{/* <div className="post-summary">{post.summary}</div> */}
+							</div>
+							<Link className="content-more" to="">
+								View more
+							</Link>
+						</div>
+					</div>
 				</div>
-				<div className="post-info">
-					<h2 className="tit">{post.title}</h2>
-					<span>2021-12-27 월</span>
-				</div>
-				<div className="post-summary">{post.summary}</div>
 			</div>
 		</Paper>
 	);
@@ -87,9 +99,10 @@ const NewPostSlider = function ({ newPosts }: newPostSliderProps) {
 		<div className="new-post-slider">
 			<Carousel
 				indicators={false}
-				navButtonsWrapperProps={{ style: { padding: '0 2% 0 2%' } }}
+				navButtonsWrapperProps={{ style: { padding: '0 .7% 0 .7%' } }}
 				NextIcon={<NextButton />}
 				PrevIcon={<PrevButton />}
+				navButtonsAlwaysVisible
 			>
 				{newPosts.map((newPost, i) => (
 					<SlideItem key={newPost.id} post={newPost} />

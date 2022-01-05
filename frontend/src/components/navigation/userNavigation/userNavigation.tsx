@@ -56,35 +56,27 @@ const UserNavigation = function ({ user }: Props) {
 	}, [closeMenu]);
 
 	return (
-		<>
-			<div className="header">
-				<Logo />
-				<div className="hd-menu" />
-
-				<div className="hd-profile" onClick={toggleMenu} tabIndex={0} role="button" onKeyDown={toggleMenu}>
-					<div className="user-info js-more">
-						<ProfileImage src={user?.profile?.profileImage?.url || ''} />
-						<div className="user-id">{user?.profile?.name} 님</div>
-					</div>
-
-					<DropMenu open={flag}>
-						<Link to={StaticPath.PROFILE}>내 정보</Link>
-						<button
-							type="button"
-							style={{
-								width: '100%',
-							}}
-							// onClick={async () => {
-							// 	fetch();
-							// }}
-						>
-							로그아웃
-						</button>
-					</DropMenu>
-				</div>
+		<div className="hd-profile" onClick={toggleMenu} tabIndex={0} role="button" onKeyDown={toggleMenu}>
+			<div className="user-info js-more">
+				<ProfileImage src={user?.profile?.profileImage?.url || ''} />
+				<div className="user-id">{user?.profile?.name} 님</div>
 			</div>
-			);
-		</>
+
+			<DropMenu open={flag}>
+				<Link to={StaticPath.PROFILE}>내 정보</Link>
+				<button
+					type="button"
+					style={{
+						width: '100%',
+					}}
+					// onClick={async () => {
+					// 	fetch();
+					// }}
+				>
+					로그아웃
+				</button>
+			</DropMenu>
+		</div>
 	);
 };
 
