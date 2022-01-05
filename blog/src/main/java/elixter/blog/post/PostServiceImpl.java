@@ -11,12 +11,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void create(Post post) {
+    public void createPost(Post post) {
         postRepository.save(post);
     }
 
     @Override
-    public void delete(Long id) {
+    public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
 
@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void update(Post post) {
+    public void updatePost(Post post) {
         postRepository.update(post);
     }
 }

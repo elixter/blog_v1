@@ -23,7 +23,7 @@ public class PostServiceTest {
     void createPost() {
         Long postId = 1L;
         Post post = new Post(postId, "테스트", "테스트", "카테고리", "img.com");
-        postService.create(post);
+        postService.createPost(post);
 
         Post foundPost = postService.findPost(postId);
         Assertions.assertThat(foundPost).isEqualTo(post);
@@ -38,11 +38,11 @@ public class PostServiceTest {
         Post post4 = new Post(4L, "테스트", "테스트", "카테고리2", "img.com");
         Post post5 = new Post(5L, "테스트", "테스트", "카테고리3", "img.com");
 
-        postService.create(post1);
-        postService.create(post2);
-        postService.create(post3);
-        postService.create(post4);
-        postService.create(post5);
+        postService.createPost(post1);
+        postService.createPost(post2);
+        postService.createPost(post3);
+        postService.createPost(post4);
+        postService.createPost(post5);
 
         ArrayList<Post> postsByCategory = postService.findAllPostsByCategory("카테고리");
 
