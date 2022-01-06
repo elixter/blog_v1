@@ -15,7 +15,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
 
     @Override
     public Hashtag findByValue(String value) {
-        Hashtag result = new Hashtag(-1L, "");
+        Hashtag result = new Hashtag(-1L, "", -1L);
 
         for (Map.Entry<Long, Hashtag> hashtag : store.entrySet()) {
             Hashtag currentHashtag = hashtag.getValue();

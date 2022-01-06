@@ -1,5 +1,6 @@
 package elixter.blog.post;
 
+import com.google.gson.Gson;
 import elixter.blog.AppConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
