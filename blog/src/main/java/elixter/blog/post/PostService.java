@@ -1,12 +1,12 @@
 package elixter.blog.post;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface PostService {
     void createPost(Post post);
-    void deletePost(Long id);
     void updatePost(Post post);
-    Post findPost(Long id);
-    ArrayList<Post> findAllPosts();
-    ArrayList<Post> findAllPostsByCategory(String category);
+    Post findPostById(Long id);
+    List<Post> findAllPost();
+    List<Post> findAllPostByCategory(String category);
+    List<Post> findAllPostByHashtag(String hashtag);
 }

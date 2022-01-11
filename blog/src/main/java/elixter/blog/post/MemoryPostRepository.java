@@ -1,12 +1,22 @@
 package elixter.blog.post;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.stereotype.Component;
 
+import java.util.*;
+
+@Component
 public class MemoryPostRepository implements PostRepository {
+    private static Map<Long, Post> store = new HashMap<>();
 
-    static private Map<Long, Post> store = new HashMap<>();
+    @Override
+    public void save(Post post) {
+        store.put(post.getId(), post);
+    }
+
+    @Override
+    public void update(Post post) {
+        store.put(post.getId(), post);
+    }
 
     @Override
     public Post findById(Long id) {
@@ -14,12 +24,24 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public ArrayList<Post> findAllByCategory(String category) {
-        ArrayList<Post> result = new ArrayList<>();
+    public List<Post> findAll() {
+        List<Post> result = new ArrayList<>();
 
-        for (Map.Entry<Long, Post> post : store.entrySet()) {
+        for (Map.Entry<Long, Post>post : store.entrySet()) {
+            result.add(post.getValue());
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<Post> findAllByCategory(String category) {
+        List<Post> result = new ArrayList<>();
+
+        for (Map.Entry<Long, Post>post : store.entrySet()) {
             Post currentPost = post.getValue();
-            if (currentPost.getCategory() == category) {
+
+            if (currentPost.getCategory().equals(category)) {
                 result.add(currentPost);
             }
         }
@@ -28,29 +50,12 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public ArrayList<Post> findAll() {
-        ArrayList<Post> result = new ArrayList<>();
-
-        for (Map.Entry<Long, Post> post : store.entrySet()) {
-            Post currentPost = post.getValue();
-            result.add(currentPost);
-        }
-
-        return result;
+    public List<Post> findAllByHashtag(String hashtag) {
+        return null;
     }
 
     @Override
-    public void save(Post post) {
-        store.put(post.getId(), post);
-    }
-
-    @Override
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         store.remove(id);
-    }
-
-    @Override
-    public void update(Post post) {
-        store.put(post.getId(), post);
     }
 }

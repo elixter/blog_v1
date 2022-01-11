@@ -7,13 +7,27 @@ public class Post {
     private String category;
     private String thumbnail;
 
+    public Post() {
+
+    }
+
     public Post(Long id, String title, String content, String category, String thumbnail) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
         this.thumbnail = thumbnail;
+    }
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", category='" + category + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                '}';
     }
 
     public Long getId() {
@@ -56,3 +70,5 @@ public class Post {
         this.thumbnail = thumbnail;
     }
 }
+
+
