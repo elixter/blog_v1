@@ -9,4 +9,5 @@ public interface PostService {
     List<Post> findAllPost();
     List<Post> findAllPostByCategory(String category);
     List<Post> findAllPostByHashtag(String hashtag);
+    void deletePost(Long id);
 }

@@ -54,4 +54,18 @@ public class PostController {
 
         postService.createPost(createPostBody);
     }
+
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public void PutUpdatePostHandler(@RequestBody Post updatePostBody) {
+        LOGGER.debug("Request body : {}", updatePostBody);
+
+        postService.updatePost(updatePostBody);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void DeletePostHandler(@PathVariable Long id) {
+        LOGGER.debug("Target post id : {}", id);
+
+        postService.deletePost(id);
+    }
 }

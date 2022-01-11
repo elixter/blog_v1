@@ -43,4 +43,9 @@ public class PostServiceImpl implements PostService {
     public List<Post> findAllPostByHashtag(String hashtag) {
         return postRepository.findAllByHashtag(hashtag);
     }
+
+    @Override
+    public void deletePost(Long id) {
+        postRepository.delete(id);
+    }
 }
