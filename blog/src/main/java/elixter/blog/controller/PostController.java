@@ -1,5 +1,7 @@
-package elixter.blog.service;
+package elixter.blog.controller;
 
+import elixter.blog.domain.Post;
+import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,6 @@ public class PostController {
     @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
-
-        Post post = new Post(1L, "test", "test", "test", "test");
-        postService.createPost(post);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

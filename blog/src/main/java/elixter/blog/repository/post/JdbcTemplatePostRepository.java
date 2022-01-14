@@ -1,12 +1,11 @@
-package elixter.blog.service;
+package elixter.blog.repository.post;
 
+import elixter.blog.domain.Post;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
 @RequiredArgsConstructor
 public class JdbcTemplatePostRepository implements PostRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -44,7 +42,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ?", postRowMapper());
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ?", postRowMapper(), id);
         return result.stream().findAny();
     }
 
@@ -55,7 +53,8 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public List<Post> findByCategory(String category) {
-        return null;
+        List<Post> result = jdbcTemplate.query("select * from posts where category = ?", postRowMapper(), category);
+        return result;
     }
 
     @Override

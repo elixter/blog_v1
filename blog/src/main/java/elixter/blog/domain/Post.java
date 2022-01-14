@@ -1,4 +1,4 @@
-package elixter.blog.service;
+package elixter.blog.domain;
 
 public class Post {
     private Long id;

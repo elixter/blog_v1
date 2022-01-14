@@ -1,9 +1,14 @@
 package elixter.blog.service;
 
 import elixter.blog.AppConfig;
+import elixter.blog.domain.Post;
+import elixter.blog.service.post.PostService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,15 +24,21 @@ public class PostServiceImplTest {
     @Test
     void createPost() {
         Post post = new Post();
+
         post.setTitle("test");
         post.setContent("test");
         post.setCategory("test");
         post.setThumbnail("test");
 
-        postService.createPost(post);
-
+        Long id = postService.createPost(post);
+        post.setId(id);
         assertThat(postService).isInstanceOf(PostService.class);
-        assertThat(postService.findPostById(1L)).isEqualTo(post);
-        assertThat(postService.findPostById(2L)).isEqualTo(null);
+
+        Post result1 = postService.findPostById(1L).get();
+        assertThat(result1).isEqualTo(post);
+
+        Assertions.assertThrows(NoSuchElementException.class, () -> {
+           postService.findPostById(2L);
+        });
     }
 }

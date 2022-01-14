@@ -1,5 +1,7 @@
-package elixter.blog.service;
+package elixter.blog.service.post;
 
+import elixter.blog.domain.Post;
+import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +14,10 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
 
     @Override
-    public void createPost(Post post) {
+    public Long createPost(Post post) {
         postRepository.save(post);
+
+        return post.getId();
     }
 
     @Override
@@ -23,6 +27,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Optional<Post> findPostById(Long id) {
+        Post reuslt = postRepository.findById(id).get();
+        System.out.println("reuslt = " + reuslt);
+
         return postRepository.findById(id);
     }
 
