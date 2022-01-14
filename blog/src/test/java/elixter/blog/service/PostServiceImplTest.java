@@ -1,7 +1,6 @@
-package elixter.blog.post;
+package elixter.blog.service;
 
 import elixter.blog.AppConfig;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -19,7 +18,12 @@ public class PostServiceImplTest {
 
     @Test
     void createPost() {
-        Post post = new Post(1L, "test", "test", "test", "test");
+        Post post = new Post();
+        post.setTitle("test");
+        post.setContent("test");
+        post.setCategory("test");
+        post.setThumbnail("test");
+
         postService.createPost(post);
 
         assertThat(postService).isInstanceOf(PostService.class);

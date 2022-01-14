@@ -1,16 +1,22 @@
-package elixter.blog.post;
+package elixter.blog.service;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 @Component
+@Primary
 public class MemoryPostRepository implements PostRepository {
     private static Map<Long, Post> store = new HashMap<>();
+    private static long sequence = 0;
 
     @Override
-    public void save(Post post) {
+    public Post save(Post post) {
+        post.setId(++sequence);
         store.put(post.getId(), post);
+
+        return post;
     }
 
     @Override
@@ -19,8 +25,8 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public Post findById(Long id) {
-        return store.get(id);
+    public Optional<Post> findById(Long id) {
+        return Optional.ofNullable(store.get(id));
     }
 
     @Override
@@ -35,7 +41,7 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAllByCategory(String category) {
+    public List<Post> findByCategory(String category) {
         List<Post> result = new ArrayList<>();
 
         for (Map.Entry<Long, Post>post : store.entrySet()) {
@@ -50,12 +56,16 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAllByHashtag(String hashtag) {
+    public List<Post> findByHashtag(String hashtag) {
         return null;
     }
 
     @Override
     public void delete(Long id) {
         store.remove(id);
+    }
+
+    public void clearStore() {
+        store.clear();
     }
 }

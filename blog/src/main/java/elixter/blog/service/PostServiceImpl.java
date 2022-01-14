@@ -1,18 +1,15 @@
-package elixter.blog.post;
+package elixter.blog.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-
-    @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
 
     @Override
     public void createPost(Post post) {
@@ -25,23 +22,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findPostById(Long id) {
+    public Optional<Post> findPostById(Long id) {
         return postRepository.findById(id);
     }
 
     @Override
-    public List<Post> findAllPost() {
+    public List<Post> findPost() {
         return postRepository.findAll();
     }
 
     @Override
-    public List<Post> findAllPostByCategory(String category) {
-        return postRepository.findAllByCategory(category);
+    public List<Post> findPostByCategory(String category) {
+        return postRepository.findByCategory(category);
     }
 
     @Override
-    public List<Post> findAllPostByHashtag(String hashtag) {
-        return postRepository.findAllByHashtag(hashtag);
+    public List<Post> findPostByHashtag(String hashtag) {
+        return postRepository.findByHashtag(hashtag);
     }
 
     @Override
