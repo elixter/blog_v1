@@ -1,5 +1,6 @@
 package elixter.blog.repository.post;
 
+import elixter.blog.Constants;
 import elixter.blog.domain.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -38,6 +39,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         parameters.put("content", post.getContent());
         parameters.put("category", post.getCategory());
         parameters.put("thumbnail", post.getThumbnail());
+        parameters.put("status", Constants.recordStatusExist);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         post.setId(key.longValue());
@@ -52,7 +54,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ?", postRowMapper(), id);
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), Constants.recordStatusExist, id);
         return result.stream().findAny();
     }
 
@@ -69,7 +71,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void delete(Long id) {
-
+        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), Constants.recordStatusDeleted, id);
     }
 
     private RowMapper<Post> postRowMapper() {
