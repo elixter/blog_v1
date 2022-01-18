@@ -3,12 +3,12 @@ package elixter.blog.repository.post;
 import elixter.blog.domain.Post;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Component
-@Primary
+@Repository
 public class MemoryPostRepository implements PostRepository {
     private static Map<Long, Post> store = new HashMap<>();
     private static long sequence = 0;
@@ -60,11 +60,6 @@ public class MemoryPostRepository implements PostRepository {
         }
 
         return result;
-    }
-
-    @Override
-    public List<Post> findByHashtag(String hashtag) {
-        return null;
     }
 
     @Override

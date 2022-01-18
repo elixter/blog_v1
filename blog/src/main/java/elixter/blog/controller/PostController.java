@@ -5,6 +5,7 @@ import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/api/post")
 public class PostController {
-
     private final PostService postService;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 

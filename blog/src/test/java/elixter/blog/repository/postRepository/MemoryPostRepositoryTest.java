@@ -1,4 +1,4 @@
-package elixter.blog.repository;
+package elixter.blog.repository.postRepository;
 
 import elixter.blog.domain.Post;
 import elixter.blog.repository.post.MemoryPostRepository;

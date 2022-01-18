@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> findPostByHashtag(String hashtag) {
-        return postRepository.findByHashtag(hashtag);
+        return null;
     }
 
     @Override

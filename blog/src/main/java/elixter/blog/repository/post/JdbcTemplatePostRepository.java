@@ -1,12 +1,15 @@
 package elixter.blog.repository.post;
 
 import elixter.blog.domain.Post;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -14,9 +17,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@RequiredArgsConstructor
+@Primary
+@Repository
 public class JdbcTemplatePostRepository implements PostRepository {
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public JdbcTemplatePostRepository(DataSource datasource) {
+        System.out.println("dataSource = " + datasource);
+        jdbcTemplate = new JdbcTemplate(datasource);
+    }
 
     @Override
     public Post save(Post post) {
@@ -37,7 +47,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-
+        jdbcTemplate.update("update posts set title = ?, content = ?,  category = ?, thumbnail = ? where id = ?", post.getTitle(), post.getContent(), post.getCategory(), post.getThumbnail(), post.getId());
     }
 
     @Override
@@ -55,11 +65,6 @@ public class JdbcTemplatePostRepository implements PostRepository {
     public List<Post> findByCategory(String category) {
         List<Post> result = jdbcTemplate.query("select * from posts where category = ?", postRowMapper(), category);
         return result;
-    }
-
-    @Override
-    public List<Post> findByHashtag(String hashtag) {
-        return null;
     }
 
     @Override
