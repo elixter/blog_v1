@@ -34,11 +34,11 @@ public class PostServiceImplTest {
         assertThat(postService).isInstanceOf(PostService.class);
 
         Post result1 = postService.findPostById(id).get();
+        post.setCreateAt(result1.getCreateAt());
+        post.setUpdateAt(result1.getUpdateAt());
         assertThat(result1).isEqualTo(post);
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> {
-           postService.findPostById(id + 1);
-        });
+        assertThat(postService.findPostById(id + 104340).isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -59,6 +59,9 @@ public class PostServiceImplTest {
         postService.updatePost(post);
 
         Post result = postService.findPostById(id).get();
+
+        post.setCreateAt(result.getCreateAt());
+        post.setUpdateAt(result.getUpdateAt());
 
         System.out.println("result = " + result);
 

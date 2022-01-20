@@ -39,7 +39,9 @@ public class JdbcTemplatePostRepository implements PostRepository {
         parameters.put("content", post.getContent());
         parameters.put("category", post.getCategory());
         parameters.put("thumbnail", post.getThumbnail());
-        parameters.put("status", Constants.recordStatusExist);
+        parameters.put("status", post.getStatus());
+        parameters.put("create_at", post.getCreateAt());
+        parameters.put("update_at", post.getUpdateAt());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         post.setId(key.longValue());
@@ -49,12 +51,15 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-        jdbcTemplate.update("update posts set title = ?, content = ?,  category = ?, thumbnail = ? where id = ?", post.getTitle(), post.getContent(), post.getCategory(), post.getThumbnail(), post.getId());
+        jdbcTemplate.update(
+                "update posts set title = ?, content = ?,  category = ?, thumbnail = ?, update_at = ? where id = ?",
+                post.getTitle(), post.getContent(), post.getCategory(), post.getThumbnail(), post.getUpdateAt(), post.getId()
+                );
     }
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), Constants.recordStatusExist, id);
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, Constants.recordStatusExist);
         return result.stream().findAny();
     }
 
@@ -65,7 +70,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public List<Post> findByCategory(String category) {
-        List<Post> result = jdbcTemplate.query("select * from posts where category = ?", postRowMapper(), category);
+        List<Post> result = jdbcTemplate.query("select * from posts where category = ? and status = ?", postRowMapper(), category, Constants.recordStatusExist);
         return result;
     }
 

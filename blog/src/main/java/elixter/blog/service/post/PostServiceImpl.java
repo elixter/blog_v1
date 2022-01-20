@@ -5,6 +5,7 @@ import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,15 +23,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(Post post) {
+        post.setUpdateAt(LocalDateTime.now());
         postRepository.update(post);
     }
 
     @Override
     public Optional<Post> findPostById(Long id) {
-        Post reuslt = postRepository.findById(id).get();
-        System.out.println("reuslt = " + reuslt);
+        Optional<Post> result = postRepository.findById(id);
+        System.out.println("reuslt = " + result);
 
-        return postRepository.findById(id);
+        return result;
     }
 
     @Override
