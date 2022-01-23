@@ -28,15 +28,20 @@ public class PostController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Post> GetAllPostsHandler(@RequestParam(value = "category", required = false) String category) {
+    public List<Post> GetAllPostsHandler(
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "hashtag", required = false) String hashtag
+    ) {
         List<Post> result;
 
         LOGGER.debug("category : {}", category);
 
-        if (category == null) {
+        if (category == null && hashtag == null) {
             result = postService.findPost();
-        } else {
+        } else if (category != null) {
             result = postService.findPostByCategory(category);
+        } else {
+            result = postService.findPostByHashtag(hashtag);
         }
 
         return result;
@@ -46,7 +51,7 @@ public class PostController {
     public void PostCreatePostHandler(@RequestBody Post createPostBody) {
         LOGGER.debug("Request body : {}", createPostBody);
 
-        Long nextId = (long)postService.findPost().size() + 1;
+        Long nextId = (long) postService.findPost().size() + 1;
 
         createPostBody.setId(nextId);
 

@@ -63,6 +63,11 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
+    public List<Post> findByHashtag(String hashtag) {
+        return null;
+    }
+
+    @Override
     public void delete(Long id) {
         store.remove(id);
     }

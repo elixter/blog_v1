@@ -12,6 +12,7 @@ public interface PostRepository {
     Optional<Post> findById(Long id);
     List<Post> findAll();
     List<Post> findByCategory(String category);
+    List<Post> findByHashtag(String hashtag);
 
     void delete(Long id);
 }

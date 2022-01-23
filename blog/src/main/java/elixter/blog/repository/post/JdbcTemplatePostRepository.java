@@ -79,6 +79,11 @@ public class JdbcTemplatePostRepository implements PostRepository {
         jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), Constants.recordStatusDeleted, id);
     }
 
+    @Override
+    public List<Post> findByHashtag(String hashtag) {
+        return null;
+    }
+
     private RowMapper<Post> postRowMapper() {
         return new RowMapper<Post>() {
             @Override
