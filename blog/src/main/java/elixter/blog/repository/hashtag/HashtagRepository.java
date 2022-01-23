@@ -9,7 +9,7 @@ public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
 
     Optional<Hashtag> findById(Long id);
-    Optional<Hashtag> findByTag(String tag);
+    List<Hashtag> findByTag(String tag);
     List<Hashtag> findAll();
     List<Hashtag> findByPostId(Long postId);
 

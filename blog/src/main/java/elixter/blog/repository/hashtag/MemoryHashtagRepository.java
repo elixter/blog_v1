@@ -23,17 +23,17 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public Optional<Hashtag> findByTag(String tag) {
-        Hashtag result = null;
+    public List<Hashtag> findByTag(String tag) {
+        List<Hashtag> result = new ArrayList<>();
 
         for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
             Hashtag currentHashTag = currentEntry.getValue();
             if (currentHashTag.getTag().equals(tag)) {
-                result = currentHashTag;
+                result.add(currentHashTag);
             }
         }
 
-        return Optional.ofNullable(result);
+        return result;
     }
 
     @Override
@@ -79,5 +79,9 @@ public class MemoryHashtagRepository implements HashtagRepository {
         }
 
         removeList.forEach(hashtag -> hashtagStore.remove(hashtag.getId()));
+    }
+
+    public void clearStore() {
+        hashtagStore.clear();
     }
 }
