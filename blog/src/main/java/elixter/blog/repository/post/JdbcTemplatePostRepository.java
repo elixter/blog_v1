@@ -54,7 +54,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         jdbcTemplate.update(
                 "update posts set title = ?, content = ?,  category = ?, thumbnail = ?, update_at = ? where id = ?",
                 post.getTitle(), post.getContent(), post.getCategory(), post.getThumbnail(), post.getUpdateAt(), post.getId()
-                );
+        );
     }
 
     @Override
@@ -81,7 +81,12 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public List<Post> findByHashtag(String hashtag) {
-        return null;
+        return jdbcTemplate.query(
+                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ?",
+                postRowMapper(),
+                hashtag,
+                Constants.recordStatusExist
+        );
     }
 
     private RowMapper<Post> postRowMapper() {
