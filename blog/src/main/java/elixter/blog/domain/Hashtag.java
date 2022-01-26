@@ -15,6 +15,7 @@ public class Hashtag {
     private Long postId;
 
     // TODO: hashtag DDL value 이름 tag로 바꾸기
+    // TODO: hashtag 테이블에 status 컬럼 추가
     public Hashtag() {
     }
 
