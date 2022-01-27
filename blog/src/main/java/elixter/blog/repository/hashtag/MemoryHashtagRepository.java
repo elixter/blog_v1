@@ -1,10 +1,12 @@
 package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.Hashtag;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Primary
 @Repository
 public class MemoryHashtagRepository implements HashtagRepository {
     private static Map<Long, Hashtag> hashtagStore = new HashMap<>();
