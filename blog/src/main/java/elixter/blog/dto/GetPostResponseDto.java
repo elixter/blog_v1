@@ -1,0 +1,38 @@
+package elixter.blog.dto;
+
+import elixter.blog.domain.Hashtag;
+import elixter.blog.domain.Post;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+public class GetPostResponseDto {
+    private Long id;
+    private String title;
+    private String content;
+    private String category;
+    private String thumbnail;
+    private LocalDateTime updateAt;
+    private List<String> hashtags;
+
+    public void postMapping(Post post) {
+        id = post.getId();
+        title = post.getTitle();
+        content = post.getContent();
+        category = post.getCategory();
+        thumbnail = post.getThumbnail();
+        updateAt = post.getUpdateAt();
+    }
+
+    public void hashtagMapping(List<Hashtag> hashtagList) {
+        for (Hashtag hashtag : hashtagList) {
+            hashtags.add(hashtag.getTag());
+        }
+    }
+}
