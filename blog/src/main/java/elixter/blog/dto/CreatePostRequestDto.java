@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @AllArgsConstructor
 public class CreatePostRequestDto {
     private String title;

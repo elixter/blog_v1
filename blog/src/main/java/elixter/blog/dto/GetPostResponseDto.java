@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,8 +19,13 @@ public class GetPostResponseDto {
     private String content;
     private String category;
     private String thumbnail;
+    private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private List<String> hashtags;
+
+    public GetPostResponseDto() {
+        hashtags = new ArrayList<>();
+    }
 
     public void postMapping(Post post) {
         id = post.getId();
@@ -27,6 +33,7 @@ public class GetPostResponseDto {
         content = post.getContent();
         category = post.getCategory();
         thumbnail = post.getThumbnail();
+        createAt = post.getCreateAt();
         updateAt = post.getUpdateAt();
     }
 

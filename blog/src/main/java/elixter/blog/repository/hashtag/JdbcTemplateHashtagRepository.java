@@ -3,12 +3,14 @@ package elixter.blog.repository.hashtag;
 import elixter.blog.Constants;
 import elixter.blog.domain.Hashtag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,13 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Primary
 @Repository
 public class JdbcTemplateHashtagRepository implements HashtagRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public JdbcTemplateHashtagRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public JdbcTemplateHashtagRepository(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override

@@ -4,6 +4,7 @@ import elixter.blog.domain.Hashtag;
 import elixter.blog.domain.Post;
 import elixter.blog.dto.CreatePostRequestDto;
 import elixter.blog.dto.GetPostResponseDto;
+import elixter.blog.dto.UpdatePostRequestDto;
 import elixter.blog.service.hashtag.HashtagService;
 import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
@@ -14,11 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-// TODO: 한글 꺠짐 현성과 Post 요청했을 경우 헤더 파싱 안된다는 에러 고쳐야함
 
 @RestController
 @RequestMapping(value = "/api/post")
@@ -41,40 +41,48 @@ public class PostController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetPostResponseDto GetPostHandler(@PathVariable Long id) {
-        GetPostResponseDto responseBody = new GetPostResponseDto();
+        GetPostResponseDto result = new GetPostResponseDto();
         try {
             Post post = postService.findPostById(id).get();
-            responseBody.postMapping(post);
+            result.postMapping(post);
         }
         catch (NoSuchElementException e) {
             throw new DataNotFoundException();
         }
 
         List<Hashtag> hashtags = hashtagService.findHashtagByPostId(id);
-        responseBody.hashtagMapping(hashtags);
+        result.hashtagMapping(hashtags);
 
-        return responseBody;
+        return result;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<Post> GetAllPostsHandler(
+    public List<GetPostResponseDto> GetAllPostsHandler(
             @RequestParam(value = "searchType", required = false) String searchType,
             @RequestParam(value = "searchValue", required = false) String searchValue
     ) {
-        List<Post> result;
+        List<GetPostResponseDto> result = new ArrayList<>();
+        List<Post> postList;
 
         LOGGER.debug("searchType : {}, searchValue : {}", searchType, searchValue);
 
         switch(searchType) {
             case "category":
-                result = postService.findPostByCategory(searchValue);
+                postList = postService.findPostByCategory(searchValue);
                 break;
             case "hashtag":
-                result = postService.findPostByHashtag(searchValue);
+                postList = postService.findPostByHashtag(searchValue);
                 break;
             default:
-                result = postService.findPost();
+                postList = postService.findPost();
                 break;
+        }
+
+        for (Post post : postList) {
+            GetPostResponseDto postResponse = new GetPostResponseDto();
+            postResponse.postMapping(post);
+            postResponse.hashtagMapping(hashtagService.findHashtagByPostId(post.getId()));
+            result.add(postResponse);
         }
 
         return result;
@@ -82,7 +90,7 @@ public class PostController {
 
     @Transactional
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Post PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
+    public Long PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
         LOGGER.debug("Request body : {}", createPostBody);
 
         Post post = createPostBody.PostMapping();
@@ -92,15 +100,18 @@ public class PostController {
         List<Hashtag> hashtags = createPostBody.HashtagListMapping(post.getId());
         hashtagService.createHashtags(hashtags);
 
-        return post;
+        return postId;
     }
 
     @Transactional
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public void PutUpdatePostHandler(@RequestBody Post updatePostBody) {
+    public void PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
         LOGGER.debug("Request body : {}", updatePostBody);
 
-        postService.updatePost(updatePostBody);
+        Post post = updatePostBody.PostMapping();
+        postService.updatePost(post);
+
+        List<Hashtag> hashtags = updatePostBody.HashtagListMapping();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

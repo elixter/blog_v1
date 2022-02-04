@@ -24,7 +24,7 @@ public class UpdatePostRequestDto {
 
     public Post PostMapping() {
         Post post = new Post();
-
+        post.setId(postId);
         post.setTitle(title);
         post.setCategory(category);
         post.setContent(content);
