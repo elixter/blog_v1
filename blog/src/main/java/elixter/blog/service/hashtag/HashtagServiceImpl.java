@@ -56,4 +56,9 @@ public class HashtagServiceImpl implements HashtagService {
     public void deleteHashtagByTag(String tag) {
         repository.deleteByTag(tag);
     }
+
+    @Override
+    public void deleteHashtagByPostId(Long postId) {
+        repository.deleteByPostId(postId);
+    }
 }

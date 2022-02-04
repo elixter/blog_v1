@@ -15,4 +15,5 @@ public interface HashtagRepository {
 
     void deleteById(Long id);
     void deleteByTag(String tag);
+    void deleteByPostId(Long postId);
 }

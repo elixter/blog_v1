@@ -84,6 +84,20 @@ public class MemoryHashtagRepository implements HashtagRepository {
         removeList.forEach(hashtag -> hashtagStore.remove(hashtag.getId()));
     }
 
+    @Override
+    public void deleteByPostId(Long postId) {
+        List<Hashtag> removeList = new ArrayList<>();
+
+        for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
+            Hashtag currentHashtag = currentEntry.getValue();
+            if (currentHashtag.getPostId().equals(postId)) {
+                removeList.add(currentHashtag);
+            }
+        }
+
+        removeList.forEach(hashtag -> hashtagStore.remove(hashtag.getId()));
+    }
+
     public void clearStore() {
         hashtagStore.clear();
     }

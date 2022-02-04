@@ -75,6 +75,11 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         jdbcTemplate.update("update hashtags set status = ? where tag = ?", hashtagRowMapper(), Constants.recordStatusDeleted, tag);
     }
 
+    @Override
+    public void deleteByPostId(Long postId) {
+        jdbcTemplate.update("delete from hashtags where post_id = ?", postId);
+    }
+
     private RowMapper<Hashtag> hashtagRowMapper() {
         return new RowMapper<Hashtag>() {
             @Override

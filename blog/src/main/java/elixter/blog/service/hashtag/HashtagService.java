@@ -15,4 +15,5 @@ public interface HashtagService {
     List<Hashtag> findHashtagByPostId(Long postId);
     void deleteHashtagById(Long id);
     void deleteHashtagByTag(String tag);
+    void deleteHashtagByPostId(Long postId);
 }

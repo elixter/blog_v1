@@ -140,4 +140,22 @@ public class MemoryHashtagRepositoryTest {
         List<Hashtag> result = repository.findByTag("소통해요");
         Assertions.assertThat(result.size()).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("게시글 아이디로 삭제 테스트")
+    void deleteByPostId() {
+        Hashtag hashtag = new Hashtag();
+        hashtag.setTag("소통해요");
+        hashtag.setPostId(666L);
+        repository.save(hashtag);
+
+        Hashtag hashtag2 = new Hashtag();
+        hashtag2.setTag("소통해요");
+        hashtag2.setPostId(666L);
+        repository.save(hashtag2);
+
+        repository.deleteByPostId(666L);
+        List<Hashtag> result = repository.findByPostId(666L);
+        Assertions.assertThat(result.size()).isEqualTo(0);
+    }
 }
