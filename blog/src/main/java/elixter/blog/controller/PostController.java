@@ -2,15 +2,14 @@ package elixter.blog.controller;
 
 import elixter.blog.domain.Hashtag;
 import elixter.blog.domain.Post;
-import elixter.blog.dto.CreatePostRequestDto;
-import elixter.blog.dto.GetPostResponseDto;
-import elixter.blog.dto.UpdatePostRequestDto;
+import elixter.blog.dto.post.CreatePostRequestDto;
+import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.hashtag.HashtagService;
 import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RestController
+@Transactional
 @RequestMapping(value = "/api/post")
 public class PostController {
 
@@ -88,7 +87,6 @@ public class PostController {
         return result;
     }
 
-    @Transactional
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Long PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
         LOGGER.debug("Request body : {}", createPostBody);
@@ -103,7 +101,6 @@ public class PostController {
         return postId;
     }
 
-    @Transactional
     @RequestMapping(value = "", method = RequestMethod.PUT)
     public void PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
         LOGGER.debug("Request body : {}", updatePostBody);
@@ -112,6 +109,8 @@ public class PostController {
         postService.updatePost(post);
 
         List<Hashtag> hashtags = updatePostBody.HashtagListMapping();
+        hashtagService.deleteHashtagById(post.getId());
+        hashtagService.createHashtags(hashtags);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -119,5 +118,6 @@ public class PostController {
         LOGGER.debug("Target post id : {}", id);
 
         postService.deletePost(id);
+        hashtagService.deleteHashtagByPostId(id);
     }
 }

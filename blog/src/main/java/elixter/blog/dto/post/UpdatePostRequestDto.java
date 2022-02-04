@@ -1,4 +1,4 @@
-package elixter.blog.dto;
+package elixter.blog.dto.post;
 
 import elixter.blog.domain.Hashtag;
 import elixter.blog.domain.Post;
