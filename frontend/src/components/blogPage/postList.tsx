@@ -1,13 +1,27 @@
 import { Link } from 'react-router-dom';
-import { memo } from 'react';
-import PostItem, { Post } from './postItem';
+import { memo, useState } from 'react';
+import PostItem from './postItem';
+import { DEFAULT_PAGE_SIZE, GetPostListParams } from '../api/post/types';
+import usePostList from '../hooks/usePostList';
+import { CircleLoading } from '../utils/loading/CircularLoading';
 
 type Props = {
 	categoryName: string;
-	posts: Post[];
 };
 
-const PostList = function ({ categoryName, posts }: Props) {
+const PostList = function ({ categoryName }: Props) {
+	const [postListParams, setPostListParams] = useState(
+		new GetPostListParams({
+			curPage: '0',
+			pageSize: DEFAULT_PAGE_SIZE,
+			filterType: 'category',
+			filterString: categoryName,
+		})
+	);
+	const { data, mutate } = usePostList({
+		params: postListParams,
+	});
+
 	return (
 		<div className="post-list">
 			<div className="post-list-hd">
@@ -17,9 +31,10 @@ const PostList = function ({ categoryName, posts }: Props) {
 				</Link>
 			</div>
 			<div className="post-list-items">
-				{posts.map((post, i) => {
-					return <PostItem post={post} />;
-				})}
+				{(data &&
+					data.posts.map((post, i) => {
+						return <PostItem post={post} />;
+					})) || <CircleLoading />}
 			</div>
 		</div>
 	);

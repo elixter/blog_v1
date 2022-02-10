@@ -1,12 +1,6 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-
-export type Post = {
-	title: string;
-	summary: string;
-	thumbnail: string;
-	hashtag: string[];
-};
+import { Post } from '../api/post/types';
 
 type Props = {
 	post: Post;
@@ -20,11 +14,11 @@ const PostItem = function ({ post }: Props) {
 				<h2>Title</h2>
 			</div>
 			<div className="post-summary">
-				<span>{post.summary}</span>
+				<span>{post.content.substring(0, post.content.length % 10)}</span>
 			</div>
 			<div className="post-item-bt">
 				<div className="hashtags">
-					{post.hashtag.map((hashtag, i) => {
+					{post.hashtags.map((hashtag, i) => {
 						return <Link className="hashtag" to="">{`#${hashtag}`}</Link>;
 					})}
 				</div>
