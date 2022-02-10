@@ -18,9 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+// TODO: apply pagination and serachfilter like url below
+// TODO: http://localhost:8080/api/posts?curPage=0&pageSize=4&sort=&filterType=category&filterString=category1
+
+// TODO: apply chunk insert on hashtagList
+// TODO: apply pagination on every repository
+
 @RestController
 @Transactional
-@RequestMapping(value = "/api/post")
+@RequestMapping(value = "/api/posts")
 public class PostController {
 
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Data not found")
@@ -57,20 +63,22 @@ public class PostController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<GetPostResponseDto> GetAllPostsHandler(
-            @RequestParam(value = "searchType", required = false) String searchType,
-            @RequestParam(value = "searchValue", required = false) String searchValue
+            @RequestParam(value = "curPage", required = false) Number curPage,
+            @RequestParam(value = "pageSize", required = false) Number pageSize,
+            @RequestParam(value = "filterType", required = false) String filterType,
+            @RequestParam(value = "filterString", required = false) String filterString
     ) {
         List<GetPostResponseDto> result = new ArrayList<>();
         List<Post> postList;
 
-        LOGGER.debug("searchType : {}, searchValue : {}", searchType, searchValue);
+        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
 
-        switch(searchType) {
+        switch(filterType) {
             case "category":
-                postList = postService.findPostByCategory(searchValue);
+                postList = postService.findPostByCategory(filterString);
                 break;
             case "hashtag":
-                postList = postService.findPostByHashtag(searchValue);
+                postList = postService.findPostByHashtag(filterString);
                 break;
             default:
                 postList = postService.findPost();
