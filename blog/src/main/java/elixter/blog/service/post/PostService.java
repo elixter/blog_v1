@@ -9,8 +9,8 @@ public interface PostService {
     Long createPost(Post post);
     void updatePost(Post post);
     Optional<Post> findPostById(Long id);
-    List<Post> findPost();
-    List<Post> findPostByCategory(String category);
-    List<Post> findPostByHashtag(String hashtag);
+    List<Post> findPost(Long offset, Long limit);
+    List<Post> findPostByCategory(String category, Long offset, Long limit);
+    List<Post> findPostByHashtag(String hashtag, Long offset, Long limit);
     void deletePost(Long id);
 }

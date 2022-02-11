@@ -22,7 +22,7 @@ public class HashtagServiceImpl implements HashtagService {
     @Override
     public List<Long> createHashtags(List<Hashtag> hashtags) {
         List<Long> result = new ArrayList<>();
-        hashtags.forEach(hashtag -> result.add(repository.save(hashtag).getId()));
+       repository.batchSave(hashtags);
 
         return result;
     }

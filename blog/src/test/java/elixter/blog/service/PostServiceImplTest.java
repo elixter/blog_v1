@@ -2,7 +2,6 @@ package elixter.blog.service;
 
 import elixter.blog.domain.Post;
 import elixter.blog.service.post.PostService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,8 +100,8 @@ public class PostServiceImplTest {
         Long id4 = postService.createPost(post4);
         post4.setId(id4);
 
-        List<Post> result1 = postService.findPostByCategory("test");
-        List<Post> result2 = postService.findPostByCategory("test_category");
+        List<Post> result1 = postService.findPostByCategory("test", 0L, 1000L);
+        List<Post> result2 = postService.findPostByCategory("test_category", 0L, 1000L);
 
         List<Post> expect1 = new ArrayList<>();
         expect1.add(post);

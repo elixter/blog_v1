@@ -13,10 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Primary
 @Repository
@@ -42,6 +39,26 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         hashtag.setId(key.longValue());
 
         return hashtag;
+    }
+
+    @Override
+    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("hashtags").usingGeneratedKeyColumns("id");
+
+        List<MapSqlParameterSource> batchParams = new ArrayList<>();
+
+        for (Hashtag hashtag : hashtags) {
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("tag", hashtag.getTag());
+            parameters.put("post_id", hashtag.getPostId());
+            parameters.put("status", Constants.recordStatusExist);
+            batchParams.add(new MapSqlParameterSource(parameters));
+        }
+
+        jdbcInsert.executeBatch(batchParams.toArray(new MapSqlParameterSource[0]));
+
+        return null;
     }
 
     @Override

@@ -53,7 +53,12 @@ public class JdbcTemplatePostRepository implements PostRepository {
     public void update(Post post) {
         jdbcTemplate.update(
                 "update posts set title = ?, content = ?,  category = ?, thumbnail = ?, update_at = ? where id = ?",
-                post.getTitle(), post.getContent(), post.getCategory(), post.getThumbnail(), post.getUpdateAt(), post.getId()
+                post.getTitle(),
+                post.getContent(),
+                post.getCategory(),
+                post.getThumbnail(),
+                post.getUpdateAt(),
+                post.getId()
         );
     }
 
@@ -64,13 +69,21 @@ public class JdbcTemplatePostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
-        return null;
+    public List<Post> findAll(Long offset, Long limit) {
+        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), Constants.recordStatusExist, offset, limit);
+        return result;
     }
 
     @Override
-    public List<Post> findByCategory(String category) {
-        List<Post> result = jdbcTemplate.query("select * from posts where category = ? and status = ?", postRowMapper(), category, Constants.recordStatusExist);
+    public List<Post> findByCategory(String category, Long offset, Long limit) {
+        List<Post> result = jdbcTemplate.query(
+                "select * from posts where category = ? and status = ? limit ?, ?",
+                postRowMapper(),
+                category,
+                Constants.recordStatusExist,
+                offset,
+                limit
+        );
         return result;
     }
 
@@ -80,12 +93,14 @@ public class JdbcTemplatePostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findByHashtag(String hashtag) {
+    public List<Post> findByHashtag(String hashtag, Long offset, Long limit) {
         return jdbcTemplate.query(
-                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ?",
+                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? limit ?, ?",
                 postRowMapper(),
                 hashtag,
-                Constants.recordStatusExist
+                Constants.recordStatusExist,
+                offset,
+                limit
         );
     }
 

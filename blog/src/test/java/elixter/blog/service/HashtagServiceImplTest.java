@@ -39,7 +39,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
-            hashtag.setPostId((long) i);
+            hashtag.setPostId(193L);
 
             hashtagList.add(hashtag);
         }

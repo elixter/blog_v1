@@ -18,12 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-// TODO: apply pagination and serachfilter like url below
-// TODO: http://localhost:8080/api/posts?curPage=0&pageSize=4&sort=&filterType=category&filterString=category1
-
-// TODO: apply chunk insert on hashtagList
-// TODO: apply pagination on every repository
-
 @RestController
 @Transactional
 @RequestMapping(value = "/api/posts")
@@ -73,15 +67,18 @@ public class PostController {
 
         LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
 
+        Long offset = curPage.longValue() * pageSize.longValue();
+        Long limit = offset + pageSize.longValue();
+
         switch(filterType) {
             case "category":
-                postList = postService.findPostByCategory(filterString);
+                postList = postService.findPostByCategory(filterString, offset, limit);
                 break;
             case "hashtag":
-                postList = postService.findPostByHashtag(filterString);
+                postList = postService.findPostByHashtag(filterString, offset, limit);
                 break;
             default:
-                postList = postService.findPost();
+                postList = postService.findPost(offset, limit);
                 break;
         }
 

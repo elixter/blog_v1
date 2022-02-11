@@ -21,6 +21,11 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
+    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+        return null;
+    }
+
+    @Override
     public Optional<Hashtag> findById(Long id) {
         return Optional.ofNullable(hashtagStore.get(id));
     }

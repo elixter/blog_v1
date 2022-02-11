@@ -35,7 +35,7 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll() {
+    public List<Post> findAll(Long offset, Long limit) {
         List<Post> result = new ArrayList<>();
 
         for (Map.Entry<Long, Post>post : store.entrySet()) {
@@ -46,7 +46,7 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findByCategory(String category) {
+    public List<Post> findByCategory(String category, Long offset, Long limit) {
         List<Post> result = new ArrayList<>();
 
         for (Map.Entry<Long, Post>post : store.entrySet()) {
@@ -61,7 +61,7 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findByHashtag(String hashtag) {
+    public List<Post> findByHashtag(String hashtag, Long offset, Long limit) {
         return null;
     }
 

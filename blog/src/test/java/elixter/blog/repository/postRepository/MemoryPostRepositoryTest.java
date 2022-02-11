@@ -49,7 +49,7 @@ public class MemoryPostRepositoryTest {
         post2.setThumbnail("http://www.testimage.com");
         repository.save(post2);
 
-        List<Post> result = repository.findByCategory("test category1");
+        List<Post> result = repository.findByCategory("test category1", 0L, 1000L);
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(post1);
@@ -71,7 +71,7 @@ public class MemoryPostRepositoryTest {
         post2.setThumbnail("http://www.testimage.com");
         repository.save(post2);
 
-        List<Post> result = repository.findAll();
+        List<Post> result = repository.findAll(0L, 1000L);
 
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).contains(post1);

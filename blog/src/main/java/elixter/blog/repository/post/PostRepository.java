@@ -10,9 +10,9 @@ public interface PostRepository {
     void update(Post post);
 
     Optional<Post> findById(Long id);
-    List<Post> findAll();
-    List<Post> findByCategory(String category);
-    List<Post> findByHashtag(String hashtag);
+    List<Post> findAll(Long offset, Long limit);
+    List<Post> findByCategory(String category, Long offset, Long limit);
+    List<Post> findByHashtag(String hashtag, Long offset, Long limit);
 
     void delete(Long id);
 }

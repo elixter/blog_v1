@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
+    List<Hashtag> batchSave(List<Hashtag> hashtags);
 
     Optional<Hashtag> findById(Long id);
     List<Hashtag> findByTag(String tag);
