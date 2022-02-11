@@ -28,7 +28,7 @@ const PostList = function ({ categoryName }: Props) {
 		<div className="post-list">
 			<div className="post-list-hd">
 				<h1>{categoryName}</h1>
-				<Link className="more" to={`/blog/category/${categoryName}`}>
+				<Link className="more" to={`/blog/posts?category=${categoryName}`}>
 					All Articles
 				</Link>
 			</div>

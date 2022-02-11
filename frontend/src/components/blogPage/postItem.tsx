@@ -24,7 +24,7 @@ const PostItem = function ({ post }: Props) {
 			<div className="post-item-bt">
 				<div className="hashtags">
 					{post.hashtags.map((hashtag, i) => {
-						return <Link className="hashtag" to={`/blog/hashtag/${hashtag}`}>{`#${hashtag}`}</Link>;
+						return <Link className="hashtag" to={`/blog/posts?hashtag=${hashtag}`}>{`#${hashtag}`}</Link>;
 					})}
 				</div>
 				<Link className="post-more" to={`/blog/posts/${post.id}`}>
