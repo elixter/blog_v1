@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @Transactional
+//@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @RequestMapping(value = "/api/posts")
 public class PostController {
 
@@ -65,7 +66,9 @@ public class PostController {
         List<GetPostResponseDto> result = new ArrayList<>();
         List<Post> postList;
 
-        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
+//        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
+
+        System.out.printf("curPage : %s, pageSize: %s, filterType : %s, filterString : %s", curPage, pageSize, filterType, filterString);
 
         Long offset = curPage.longValue() * pageSize.longValue();
         Long limit = offset + pageSize.longValue();
