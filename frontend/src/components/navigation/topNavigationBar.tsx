@@ -6,7 +6,7 @@ import UserNavigation from './userNavigation/userNavigation';
 import Logo from './logo/logo';
 
 const TopNavigationBar = function () {
-	const { user } = useAuthentication();
+	// const { user } = useAuthentication();
 	const [top, setTop] = useState(true);
 	const onScroll = useCallback(() => {
 		if (document.documentElement.scrollTop > 0) {
@@ -41,7 +41,8 @@ const TopNavigationBar = function () {
 				</div>
 			</div>
 			<div className="hd-right">
-				{user && (user.type === UserType.Login ? <UserNavigation user={user} /> : <AuthNavigation />)}
+				<AuthNavigation />
+				{/* {user && (user.type === UserType.Login ? <UserNavigation user={user} /> : <AuthNavigation />)} */}
 			</div>
 		</div>
 	);
