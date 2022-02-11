@@ -203,4 +203,5 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-item .tit { margin-top: 15px; font-size: 2.5em; }
 .post-list-item .post-summary { width: 100%; margin: 5px 0 25px 0; font-size: 1.6em; overflow: hidden; text-overflow: ellipsis; line-height: 1.2em; height: 3.6em;  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .post-list-item .post-item-bt { font-size: 1.6em; align-items: baseline; color: var(--base-color); display: flex; width: 100%; justify-content: space-between; }
-.post-list-item .post-item-bt .hashtags .hashtag { margin-right: 2px; }
+.post-list-item .post-item-bt .hashtags { display: flex; flex-wrap: wrap; max-width: 67%; }
+.post-list-item .post-item-bt .hashtags .hashtag { font-size: 13px; margin-right: 2px; }
