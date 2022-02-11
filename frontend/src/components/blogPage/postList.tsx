@@ -22,11 +22,13 @@ const PostList = function ({ categoryName }: Props) {
 		params: postListParams,
 	});
 
+	console.log(data?.posts);
+
 	return (
 		<div className="post-list">
 			<div className="post-list-hd">
 				<h1>{categoryName}</h1>
-				<Link className="more" to={`/blog/${categoryName}`}>
+				<Link className="more" to={`/blog/category/${categoryName}`}>
 					All Articles
 				</Link>
 			</div>

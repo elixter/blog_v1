@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../api/post/types';
+import config from '../config';
 
 type Props = {
 	post: Post;
@@ -9,20 +10,24 @@ type Props = {
 const PostItem = function ({ post }: Props) {
 	return (
 		<div className="post-list-item">
-			<img alt="thumbnail" src={post.thumbnail} />
+			<Link to={`/blog/posts/${post.id}`}>
+				<img alt="thumbnail" src={post.thumbnail} />
+			</Link>
 			<div className="tit">
-				<h2>Title</h2>
+				<Link to={`/blog/posts/${post.id}`}>
+					<h2>{post.title}</h2>
+				</Link>
 			</div>
 			<div className="post-summary">
-				<span>{post.content.substring(0, post.content.length % 10)}</span>
+				<span>{post.content.substring(0, Math.min(50, post.content.length))}</span>
 			</div>
 			<div className="post-item-bt">
 				<div className="hashtags">
 					{post.hashtags.map((hashtag, i) => {
-						return <Link className="hashtag" to="">{`#${hashtag}`}</Link>;
+						return <Link className="hashtag" to={`/blog/hashtag/${hashtag}`}>{`#${hashtag}`}</Link>;
 					})}
 				</div>
-				<Link className="post-more" to="">
+				<Link className="post-more" to={`/blog/posts/${post.id}`}>
 					Read more
 				</Link>
 			</div>
