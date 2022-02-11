@@ -1,0 +1,29 @@
+{{define "header"}}
+<header class="navbar-header">
+    <nav class="navbar">
+      <div class="navbar-flex-left">
+        <div class="navbar-logo">
+          <h1><a href="/">Ston Bridge<span> dev</span></a></h1>
+        </div>
+      </div>
+      <div class="navbar-flex-center">
+      </div>
+      <div class="navbar-flex-right">
+        <ul class="navbar-menu">
+          {{if ne . -1}}
+            <li><a href="/logout" target="_parent">Logout<div class="navbar-underbar"></div></a></li>
+          {{end}}
+          <li><a href="/">Home<div class="navbar-underbar"></div></a></li>
+          <li><a href="/project">Project<div class="navbar-underbar"></div></a></li>
+          <li><a href="/blog">Blog<div class="navbar-underbar"></div></a></li>
+          <li><a href="/about">About<div class="navbar-underbar"></div></a></li>
+        </ul>
+
+        <div class="navbar-toggleBtn">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+      </div>
+    </nav>
+</header>
+{{end}}

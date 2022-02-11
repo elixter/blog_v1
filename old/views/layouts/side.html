@@ -1,0 +1,14 @@
+{{define "side"}}
+	<div class="content-side">
+		<div class="blog-category">
+			<ul class="category-list">
+				{{range .}}
+				<li><a href="/blog/search?category={{.}}">{{.}}</a></li>
+				{{end}}
+			</ul>
+		</div>
+		<div class="pop-tags">
+			<a href="#"></a>
+		</div>
+	</div>
+{{end}}
