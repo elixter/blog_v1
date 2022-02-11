@@ -3,6 +3,7 @@ package elixter.blog.controller;
 import elixter.blog.domain.Hashtag;
 import elixter.blog.domain.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
+import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.hashtag.HashtagService;
@@ -57,13 +58,13 @@ public class PostController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<GetPostResponseDto> GetAllPostsHandler(
+    public GetAllPostsResponseDto GetAllPostsHandler(
             @RequestParam(value = "curPage", required = false) Number curPage,
             @RequestParam(value = "pageSize", required = false) Number pageSize,
             @RequestParam(value = "filterType", required = false) String filterType,
             @RequestParam(value = "filterString", required = false) String filterString
     ) {
-        List<GetPostResponseDto> result = new ArrayList<>();
+        GetAllPostsResponseDto result = new GetAllPostsResponseDto();
         List<Post> postList;
 
 //        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
@@ -89,7 +90,7 @@ public class PostController {
             GetPostResponseDto postResponse = new GetPostResponseDto();
             postResponse.postMapping(post);
             postResponse.hashtagMapping(hashtagService.findHashtagByPostId(post.getId()));
-            result.add(postResponse);
+            result.getPosts().add(postResponse);
         }
 
         return result;
