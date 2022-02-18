@@ -10,11 +10,11 @@ type Props = {
 const PostContent = function ({ post }: Props) {
 	return (
 		<div className="main">
-			<div className="blog-top">
+			<div className="blog-top post-top">
 				<img alt="bg" className="bg-img" src={post.thumbnail} />
 				<div className="top-content">
 					<h1>{post.title}</h1>
-					<span>{post.category}</span>
+					<p>{post.category}</p>
 					<p>{timeFormat(post.updateAt)}</p>
 					<div className="hashtags">
 						{post.hashtags.map((hashtag, i) => {
@@ -29,7 +29,16 @@ const PostContent = function ({ post }: Props) {
 					</div>
 				</div>
 			</div>
-			<div className="blog-content">
+			<div className="post-content">
+				<button
+					className="back-btn"
+					type="button"
+					onClick={() => {
+						window.history.back();
+					}}
+				>
+					back
+				</button>
 				<ReactMarkdown>{post.content}</ReactMarkdown>
 			</div>
 		</div>

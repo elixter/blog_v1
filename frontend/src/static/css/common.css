@@ -184,11 +184,10 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .grid-card .content .tit { font-size: 20px; }
 
 .main .blog-top { width: 100%; height: 400px; background-size: cover; align-items: center; background: #0f0f0f; }
-.main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .7; overflow-y: hidden; object-fit: cover;  }
+.main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .6; overflow-y: hidden; object-fit: cover;  }
 /*.main .blog-top::after { content:""; position: absolute; left: 0; top: 0; width: 100%; height: 400px; background-size: cover; background: url(https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf) no-repeat; opacity: .7; }*/
 .main .blog-top .top-content { position: absolute; top: 190px; width: 100%; box-sizing: border-box; z-index: 1000; color: white; text-align: center; }
 .main .blog-top .top-content h1 { font-size: 40px; }
-.main .blog-top .top-content .hashtags .hashtag { font-size: 14px; margin-right: 2px; }
 
 .blog-content { padding: 0 10% 0 10%; width: 80%; }
 
@@ -206,3 +205,8 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-item .post-item-bt { font-size: 1.6em; align-items: baseline; color: var(--base-color); display: flex; width: 100%; justify-content: space-between; }
 .post-list-item .post-item-bt .hashtags { display: flex; flex-wrap: wrap; max-width: 67%; }
 .post-list-item .post-item-bt .hashtags .hashtag { font-size: 13px; margin-right: 2px; }
+
+.post-top .top-content {position: relative; }
+.post-top .top-content .hashtags .hashtag { font-size: 14px; margin-right: 2px; }
+.back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 0;}
+.post-content { margin-top: 20px; padding: 0 10% 0 10%; width: 80%; }
