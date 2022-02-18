@@ -4,8 +4,10 @@ export enum StaticPath {
 	BLOG = '/blog',
 }
 
-export enum QueryPath {}
+export enum DynamicPath {
+	BLOG_POST_DETAIL = '/blog/posts/:postId',
+}
 
-export enum DynamicPath {}
+export enum QueryPath {}
 
 export type PagePathKey = keyof typeof StaticPath;

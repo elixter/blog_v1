@@ -4,6 +4,7 @@ import PostItem from './postItem';
 import { DEFAULT_PAGE_SIZE, GetPostListParams } from '../api/post/types';
 import usePostList from '../hooks/usePostList';
 import { CircleLoading } from '../utils/loading/CircularLoading';
+import { StaticPath } from '../pagePath/pagePath';
 
 type Props = {
 	categoryName: string;
@@ -35,7 +36,7 @@ const PostList = function ({ categoryName }: Props) {
 			<div className="post-list-items">
 				{(data &&
 					data.posts.map((post, i) => {
-						return <PostItem post={post} />;
+						return <PostItem key={post.id} post={post} />;
 					})) || <CircleLoading />}
 			</div>
 		</div>

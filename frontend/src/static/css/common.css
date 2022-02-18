@@ -188,6 +188,7 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 /*.main .blog-top::after { content:""; position: absolute; left: 0; top: 0; width: 100%; height: 400px; background-size: cover; background: url(https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf) no-repeat; opacity: .7; }*/
 .main .blog-top .top-content { position: absolute; top: 190px; width: 100%; box-sizing: border-box; z-index: 1000; color: white; text-align: center; }
 .main .blog-top .top-content h1 { font-size: 40px; }
+.main .blog-top .top-content .hashtags .hashtag { font-size: 14px; margin-right: 2px; }
 
 .blog-content { padding: 0 10% 0 10%; width: 80%; }
 
