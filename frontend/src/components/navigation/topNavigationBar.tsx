@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuthentication, { UserType } from '../authentication/hooks/useAuthentication';
 import AuthNavigation from './authNavigation/authNavigation';
@@ -48,4 +48,4 @@ const TopNavigationBar = function () {
 	);
 };
 
-export default TopNavigationBar;
+export default memo(TopNavigationBar);

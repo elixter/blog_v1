@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Post } from '../../api/post/types';
 import PostContent from './postContent';
 import usePost from '../../hooks/usePost';

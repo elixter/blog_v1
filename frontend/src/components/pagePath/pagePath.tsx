@@ -2,6 +2,7 @@ export enum StaticPath {
 	MAIN = '/',
 	PROFILE = '/profile',
 	BLOG = '/blog',
+	BLOG_NEW_POST = '/blog/new',
 }
 
 export enum DynamicPath {

@@ -210,3 +210,10 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-top .top-content .hashtags .hashtag { font-size: 14px; margin-right: 2px; }
 .back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 0;}
 .post-content { margin-top: 20px; padding: 0 10% 0 10%; width: 80%; }
+
+.new-post-main { margin-top: 50px; }
+.WYSIWYG-editor { height: 600px; overflow: scroll; }
+.postEditor p { font-size: 12px; }
+.postEditor h1 { font-size: 30px; }
+.postEditor h2 { font-size: 24px; }
+.postEditor h3 { font-size: 20px; }
