@@ -40,7 +40,7 @@ public class PostController {
         this.hashtagService = hashtagService;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetPostResponseDto GetPostHandler(@PathVariable Long id) {
         GetPostResponseDto result = new GetPostResponseDto();
         try {
@@ -57,7 +57,7 @@ public class PostController {
         return result;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping
     public GetAllPostsResponseDto GetAllPostsHandler(
             @RequestParam(value = "curPage", required = false) Number curPage,
             @RequestParam(value = "pageSize", required = false) Number pageSize,
@@ -67,9 +67,7 @@ public class PostController {
         GetAllPostsResponseDto result = new GetAllPostsResponseDto();
         List<Post> postList;
 
-//        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
-
-        System.out.printf("curPage : %s, pageSize: %s, filterType : %s, filterString : %s", curPage, pageSize, filterType, filterString);
+        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
 
         Long offset = curPage.longValue() * pageSize.longValue();
         Long limit = offset + pageSize.longValue();
@@ -96,7 +94,7 @@ public class PostController {
         return result;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @PostMapping
     public Long PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
         LOGGER.debug("Request body : {}", createPostBody);
 
@@ -110,7 +108,7 @@ public class PostController {
         return postId;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @PutMapping
     public void PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
         LOGGER.debug("Request body : {}", updatePostBody);
 
@@ -122,7 +120,7 @@ public class PostController {
         hashtagService.createHashtags(hashtags);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public void DeletePostHandler(@PathVariable Long id) {
         LOGGER.debug("Target post id : {}", id);
 
