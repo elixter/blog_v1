@@ -1,13 +1,19 @@
-import { Editor, EditorContent } from '@tiptap/react';
+import { useEffect, useRef } from 'react';
+import { Editor } from '@toast-ui/react-editor';
+import axios from 'axios';
 
 type Props = {
-	editor: Editor | null;
+	setText: any;
 };
 
-const PostEditor = function ({ editor }: Props) {
+const PostEditor = function () {
 	return (
 		<div className="postEditor">
-			<EditorContent editor={editor} />
+			<Editor
+				onChange={() => {
+					console.log('change');
+				}}
+			/>
 		</div>
 	);
 };

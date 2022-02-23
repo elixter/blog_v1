@@ -1,56 +1,30 @@
-import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { Highlight } from '@tiptap/extension-highlight';
-import { Typography } from '@tiptap/extension-typography';
-import { Blockquote } from '@tiptap/extension-blockquote';
-import { Color } from '@tiptap/extension-color';
-import { Dropcursor } from '@tiptap/extension-dropcursor';
-import { useEffect, useState } from 'react';
-import { CKEditor, CKEditorEventAction, useCKEditor } from 'ckeditor4-react';
+import { useEffect, useRef, useState } from 'react';
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import PostEditor from './postEditor';
 
 const NewPostMain = function () {
 	const [title, setTitle] = useState('');
 	const [category, setCategory] = useState('');
 	const [thumbnail, setThumbnail] = useState('');
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: {
-					levels: [1, 2, 3],
-				},
-			}),
-			Highlight,
-			Typography,
-			Blockquote,
-			Color,
-			Dropcursor,
-		],
-		editorProps: {
-			attributes: {
-				class: 'WYSIWYG-editor',
-			},
-		},
-		content: '<p>Hello World!</p>',
-	});
+	const [content, setContent] = useState('');
+	const editorRef = useRef<Editor>(null);
 
-	// const { editor, status, error, loading } = useCKEditor({
-	// 	config: {},
-	// 	debug: true,
-	// 	dispatchEvent: ({ type, payload }) => {
-	// 		if (type === CKEditorEventAction.instanceReady) {
-	// 			alert('Editor is ready!');
-	// 		}
-	// 	},
-	// 	editorUrl: 'https://cdn.ckeditor.com/4.17.2/standard/ckeditor.js',
-	// 	element: null,
-	// 	type: 'classic',
-	// 	subscribeTo: ['instanceReady'],
-	// });
+	useEffect(() => {
+		if (editorRef.current) {
+			editorRef.current.getInstance().removeHook('addImageBlobHook');
+		}
+
+		return () => {};
+	}, [editorRef]);
+
+	const onChange = () => {
+		const markdown = editorRef.current?.getInstance().getMarkdown();
+		setContent(markdown || '');
+	};
 
 	const onSave = () => {
-		const content = editor?.getHTML();
-		console.log(content);
+		console.log('save!');
 	};
 
 	return (
@@ -58,8 +32,15 @@ const NewPostMain = function () {
 			<button type="button" onClick={onSave}>
 				저장
 			</button>
-			{/* <CKEditor initData={<p>This is an example CKEditor 4 WYSIWYG editor instance.</p>} /> */}
-			<PostEditor editor={editor} />
+			<Editor
+				initialValue="hello react editor world!"
+				previewStyle="vertical"
+				height="600px"
+				initialEditType="markdown"
+				useCommandShortcut
+				ref={editorRef}
+				onChange={onChange}
+			/>
 		</div>
 	);
 };

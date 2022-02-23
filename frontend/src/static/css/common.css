@@ -217,3 +217,5 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .postEditor h1 { font-size: 30px; }
 .postEditor h2 { font-size: 24px; }
 .postEditor h3 { font-size: 20px; }
+
+.post-content .conetnt {}
