@@ -6,9 +6,13 @@ import { Blockquote } from '@tiptap/extension-blockquote';
 import { Color } from '@tiptap/extension-color';
 import { Dropcursor } from '@tiptap/extension-dropcursor';
 import { useEffect, useState } from 'react';
+import { CKEditor, CKEditorEventAction, useCKEditor } from 'ckeditor4-react';
 import PostEditor from './postEditor';
 
 const NewPostMain = function () {
+	const [title, setTitle] = useState('');
+	const [category, setCategory] = useState('');
+	const [thumbnail, setThumbnail] = useState('');
 	const editor = useEditor({
 		extensions: [
 			StarterKit.configure({
@@ -29,9 +33,20 @@ const NewPostMain = function () {
 		},
 		content: '<p>Hello World!</p>',
 	});
-	const [title, setTitle] = useState('');
-	const [category, setCategory] = useState('');
-	const [thumbnail, setThumbnail] = useState('');
+
+	// const { editor, status, error, loading } = useCKEditor({
+	// 	config: {},
+	// 	debug: true,
+	// 	dispatchEvent: ({ type, payload }) => {
+	// 		if (type === CKEditorEventAction.instanceReady) {
+	// 			alert('Editor is ready!');
+	// 		}
+	// 	},
+	// 	editorUrl: 'https://cdn.ckeditor.com/4.17.2/standard/ckeditor.js',
+	// 	element: null,
+	// 	type: 'classic',
+	// 	subscribeTo: ['instanceReady'],
+	// });
 
 	const onSave = () => {
 		const content = editor?.getHTML();
@@ -43,6 +58,7 @@ const NewPostMain = function () {
 			<button type="button" onClick={onSave}>
 				저장
 			</button>
+			{/* <CKEditor initData={<p>This is an example CKEditor 4 WYSIWYG editor instance.</p>} /> */}
 			<PostEditor editor={editor} />
 		</div>
 	);
