@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../../api/post/types';
 import PostEditor from './postEditor';
-import { timeFormat } from '../../utils';
 
 type Props = {
 	post: Post;

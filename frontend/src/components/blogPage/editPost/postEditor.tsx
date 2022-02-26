@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
-import Prism from 'prismjs';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-scala';
+import 'prismjs/components/prism-go';
 import 'prismjs/themes/prism.css';
 
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -11,6 +13,8 @@ import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
 import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+
+import Prism from '../../prism';
 
 type Props = {
 	content: string;
@@ -30,6 +34,9 @@ const PostEditor = function ({ content, setContent }: Props) {
 
 	const onChange = () => {
 		const markdown = editorRef.current?.getInstance().getMarkdown();
+
+		console.log(Prism.languages);
+
 		setContent(markdown || '');
 	};
 
@@ -42,7 +49,7 @@ const PostEditor = function ({ content, setContent }: Props) {
 				initialEditType="markdown"
 				useCommandShortcut
 				ref={editorRef}
-				plugins={[colorSyntax, [codeSyntaxHighlight, { highlighter: Prism }]]}
+				plugins={[[codeSyntaxHighlight, { highlighter: Prism }], colorSyntax]}
 				onChange={onChange}
 			/>
 		</div>
