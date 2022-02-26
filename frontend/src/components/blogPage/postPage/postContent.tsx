@@ -1,5 +1,9 @@
 import { memo, useEffect, useRef } from 'react';
 import { Viewer } from '@toast-ui/react-editor';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism.css';
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
 import { Post } from '../../api/post/types';
 import PostContentTop from './postContentTop';
 
@@ -29,7 +33,7 @@ const PostContent = function ({ post }: Props) {
 				>
 					back
 				</button>
-				<Viewer ref={viewerRef} />
+				<Viewer ref={viewerRef} plugins={[[codeSyntaxHighlight, { highlighter: Prism }]]} />
 			</div>
 		</div>
 	);
