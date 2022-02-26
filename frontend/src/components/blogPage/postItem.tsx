@@ -7,6 +7,9 @@ type Props = {
 };
 
 const PostItem = function ({ post }: Props) {
+	const regex = /(<([^>]+)>)/gi;
+	const content = post.content.replace(regex, '');
+
 	return (
 		<div className="post-list-item">
 			<Link to={`blog/posts/${post.id}`}>
@@ -18,7 +21,7 @@ const PostItem = function ({ post }: Props) {
 				</Link>
 			</div>
 			<div className="post-summary">
-				<span>{post.content.substring(0, Math.min(50, post.content.length))}</span>
+				<span>{content.substring(0, Math.min(50, post.content.length))}</span>
 			</div>
 			<div className="post-item-bt">
 				<div className="hashtags">
