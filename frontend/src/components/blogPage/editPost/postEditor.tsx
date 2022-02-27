@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { Dispatch, memo, SetStateAction, useCallback, useEffect, useRef } from 'react';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-scala';
 import 'prismjs/components/prism-go';
@@ -32,13 +32,10 @@ const PostEditor = function ({ content, setContent }: Props) {
 		return () => {};
 	}, [editorRef]);
 
-	const onChange = () => {
+	const onChange = useCallback(() => {
 		const markdown = editorRef.current?.getInstance().getMarkdown();
-
-		console.log(Prism.languages);
-
 		setContent(markdown || '');
-	};
+	}, [setContent]);
 
 	return (
 		<div className="postEditor">
@@ -56,4 +53,4 @@ const PostEditor = function ({ content, setContent }: Props) {
 	);
 };
 
-export default PostEditor;
+export default memo(PostEditor);

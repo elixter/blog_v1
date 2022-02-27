@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { BaseSyntheticEvent, memo, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../../api/post/types';
 import PostEditor from './postEditor';
+import Selector from '../../utils/selector';
 
 type Props = {
 	post: Post;
@@ -15,18 +16,30 @@ const EditorMain = function ({ post }: Props) {
 	const [thumbnail, setThumbnail] = useState(post.thumbnail);
 	const [content, setContent] = useState(post.content);
 
+	const options: string[] = ['test1', 'test2'];
+
+	const onTitleChange = useCallback((e: BaseSyntheticEvent) => {
+		setTitle(e.target.value);
+	}, []);
+
+	const onCategoryChange = useCallback((e: BaseSyntheticEvent) => {
+		setCategory(e.target.value);
+	}, []);
+
 	return (
-		<div className="main">
+		<div className="editor-main">
 			<div className="blog-top post-top">
 				<img alt="bg" className="bg-img" src={post.thumbnail} />
 			</div>
 			<div className="top-content">
 				<h1 className="post-title">
-					<textarea placeholder={title} maxLength={50} />
+					<input className="input-tit" placeholder="제목 없음" maxLength={50} onChange={onTitleChange} />
 				</h1>
-				<div>
-					<p>{post.category}</p>
-				</div>
+				<Selector defaultValue={category} onChange={onCategoryChange}>
+					<option>category1</option>
+					<option>category2</option>
+					<option>category3</option>
+				</Selector>
 				<div className="hashtags">
 					{post.hashtags.map((hashtag, i) => {
 						return (
@@ -39,9 +52,11 @@ const EditorMain = function ({ post }: Props) {
 					})}
 				</div>
 			</div>
-			<PostEditor content={content} setContent={setContent} />
+			<div className="main-content">
+				<PostEditor content={content} setContent={setContent} />
+			</div>
 		</div>
 	);
 };
 
-export default EditorMain;
+export default memo(EditorMain);
