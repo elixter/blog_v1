@@ -10,7 +10,7 @@ const HashtagList = function ({ hashtags, setHashtags }: Props) {
 	return (
 		<>
 			{hashtags.map((hashtag, i) => {
-				return <HashTagItem hashtag={hashtag} key={hashtag + Date.now()} />;
+				return <HashTagItem hashtag={hashtag} key={hashtag} />;
 			})}
 		</>
 	);

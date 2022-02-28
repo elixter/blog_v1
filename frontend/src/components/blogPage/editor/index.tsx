@@ -46,6 +46,8 @@ const EditorMain = function ({ post }: Props) {
 			<div className="main-content">
 				<PostEditor content={content} setContent={setContent} />
 			</div>
+			<button type="button">등록</button>
+			<button type="button">취소</button>
 		</div>
 	);
 };
