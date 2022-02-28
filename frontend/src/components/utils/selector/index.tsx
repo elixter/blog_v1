@@ -9,10 +9,6 @@ type Props = {
 const Selector = function ({ children, defaultValue, onChange }: Props) {
 	const selectRef = useRef<HTMLSelectElement>(null);
 
-	useEffect(() => {
-		console.log(children);
-	}, [children]);
-
 	return (
 		<div className="selector-wrapper">
 			<select defaultValue={defaultValue} onChange={onChange} ref={selectRef}>

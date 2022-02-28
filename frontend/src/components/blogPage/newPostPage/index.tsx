@@ -1,5 +1,5 @@
 import { Post } from '../../api/post/types';
-import EditorMain from '../editPost';
+import EditorMain from '../editor';
 
 const NewPostMain = function () {
 	const defaultPost: Post = {

@@ -1,8 +1,8 @@
 import { BaseSyntheticEvent, memo, useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Post } from '../../api/post/types';
 import PostEditor from './postEditor';
 import Selector from '../../utils/selector';
+import HashTagEditor from './hashtagEditor';
 
 type Props = {
 	post: Post;
@@ -15,6 +15,7 @@ const EditorMain = function ({ post }: Props) {
 	const [category, setCategory] = useState(post.category);
 	const [thumbnail, setThumbnail] = useState(post.thumbnail);
 	const [content, setContent] = useState(post.content);
+	const [hashtags, setHashtags] = useState(post.hashtags);
 
 	const options: string[] = ['test1', 'test2'];
 
@@ -40,17 +41,7 @@ const EditorMain = function ({ post }: Props) {
 					<option>category2</option>
 					<option>category3</option>
 				</Selector>
-				<div className="hashtags">
-					{post.hashtags.map((hashtag, i) => {
-						return (
-							<Link
-								key={hashtag + post.id}
-								className="hashtag"
-								to={`/blog/posts?hashtag=${hashtag}`}
-							>{`#${hashtag}`}</Link>
-						);
-					})}
-				</div>
+				<HashTagEditor hashtags={hashtags} setHashtags={setHashtags} />
 			</div>
 			<div className="main-content">
 				<PostEditor content={content} setContent={setContent} />
