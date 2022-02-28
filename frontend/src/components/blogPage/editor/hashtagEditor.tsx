@@ -12,7 +12,7 @@ const HashtagEditor = function ({ hashtags, setHashtags }: Props) {
 
 	const onKeyDown = useCallback(
 		(e) => {
-			if (e.keyCode === 32 || e.key === ' ') {
+			if (e.keyCode === 32 || e.keyCode === 13 || e.key === ' ') {
 				if (tag === '' || tag === ' ') {
 					e.target.value = null;
 					setTag('');
@@ -34,13 +34,24 @@ const HashtagEditor = function ({ hashtags, setHashtags }: Props) {
 	);
 
 	const onChange = useCallback((e) => {
-		setTag(e.target.value);
+		if (e.target.value === ' ') {
+			e.target.value = null;
+			setTag('');
+		} else {
+			setTag(e.target.value);
+		}
 	}, []);
 
 	return (
 		<div className="hashtags">
 			<HashtagList hashtags={hashtags} setHashtags={setHashtags} />
-			<input className="input-hashtag" placeholder="태그 추가" onChange={onChange} onKeyDown={onKeyDown} />
+			<input
+				className="input-hashtag"
+				placeholder="태그 추가"
+				maxLength={30}
+				onChange={onChange}
+				onKeyDown={onKeyDown}
+			/>
 		</div>
 	);
 };
