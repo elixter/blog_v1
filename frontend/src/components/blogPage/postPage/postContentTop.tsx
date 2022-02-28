@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../../api/post/types';
 import { timeFormat } from '../../utils';
+import HashtagList from '../editor/hashtagList';
 
 type Props = {
 	post: Post;
@@ -19,15 +20,7 @@ const PostContentTop = function ({ post }: Props) {
 					<p>{post.category}</p>
 					<p>{timeFormat(post.updateAt)}</p>
 					<div className="hashtags">
-						{post.hashtags.map((hashtag, i) => {
-							return (
-								<Link
-									key={hashtag + post.id}
-									className="hashtag"
-									to={`/blog/posts?hashtag=${hashtag}`}
-								>{`#${hashtag}`}</Link>
-							);
-						})}
+						<HashtagList hashtags={post.hashtags} />
 					</div>
 				</div>
 			</div>

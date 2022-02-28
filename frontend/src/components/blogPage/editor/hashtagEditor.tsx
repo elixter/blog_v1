@@ -44,7 +44,7 @@ const HashtagEditor = function ({ hashtags, setHashtags }: Props) {
 
 	return (
 		<div className="hashtags">
-			<HashtagList hashtags={hashtags} setHashtags={setHashtags} />
+			<HashtagList hashtags={hashtags} />
 			<input
 				className="input-hashtag"
 				placeholder="태그 추가"

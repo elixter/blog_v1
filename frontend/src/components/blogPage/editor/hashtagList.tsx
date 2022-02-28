@@ -1,12 +1,11 @@
-import { Dispatch, memo, SetStateAction } from 'react';
+import { memo } from 'react';
 import HashTagItem from './hashtagItem';
 
 type Props = {
 	hashtags: string[];
-	setHashtags: Dispatch<SetStateAction<string[]>>;
 };
 
-const HashtagList = function ({ hashtags, setHashtags }: Props) {
+const HashtagList = function ({ hashtags }: Props) {
 	return (
 		<>
 			{hashtags.map((hashtag, i) => {
