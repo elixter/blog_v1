@@ -14,13 +14,13 @@ const HashtagEditor = function ({ hashtags, setHashtags }: Props) {
 		(e) => {
 			if (e.keyCode === 32 || e.keyCode === 13 || e.key === ' ') {
 				if (tag === '' || tag === ' ') {
-					e.target.value = null;
+					e.target.value = '';
 					setTag('');
 					return;
 				}
 				if (hashtags.includes(tag)) {
 					// clear if already have same tag.
-					e.target.value = null;
+					e.target.value = '';
 					setTag('');
 					return;
 				}
@@ -29,13 +29,21 @@ const HashtagEditor = function ({ hashtags, setHashtags }: Props) {
 				setTag('');
 				e.target.value = '';
 			}
+
+			if (e.keyCode === 8) {
+				if (tag === '' && hashtags.length > 0) {
+					e.target.value = hashtags[hashtags.length - 1];
+					setTag(hashtags[hashtags.length - 1]);
+					setHashtags(hashtags.slice(0, -1));
+				}
+			}
 		},
 		[hashtags, setHashtags, tag]
 	);
 
 	const onChange = useCallback((e) => {
 		if (e.target.value === ' ') {
-			e.target.value = null;
+			e.target.value = '';
 			setTag('');
 		} else {
 			setTag(e.target.value);
