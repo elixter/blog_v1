@@ -1,8 +1,12 @@
 import { BaseSyntheticEvent, memo, useCallback, useEffect, useState } from 'react';
-import { Post } from '../../api/post/types';
+import axios from 'axios';
+import { CreatePostDto, Post } from '../../api/post/types';
 import PostEditor from './postEditor';
 import Selector from '../../utils/selector';
 import HashTagEditor from './hashtagEditor';
+import config from '../../config';
+import { createPost } from '../../api/post';
+import { DynamicPath } from '../../pagePath/pagePath';
 
 type Props = {
 	post: Post;
@@ -27,6 +31,22 @@ const EditorMain = function ({ post }: Props) {
 		setCategory(e.target.value);
 	}, []);
 
+	const onSave = useCallback(() => {
+		const createPostRequestBody: CreatePostDto = {
+			title,
+			category,
+			content,
+			thumbnail,
+			hashtags,
+		};
+
+		createPost(createPostRequestBody).then((res) => {
+			if (res.status === 200) {
+				document.location.href = `/blog/posts/${res.data}`;
+			}
+		});
+	}, [category, content, hashtags, thumbnail, title]);
+
 	return (
 		<div className="editor-main">
 			<div className="blog-top post-top">
@@ -45,9 +65,19 @@ const EditorMain = function ({ post }: Props) {
 			</div>
 			<div className="main-content">
 				<PostEditor content={content} setContent={setContent} />
+				<button className="editor-btn" type="button" onClick={onSave}>
+					등록
+				</button>
+				<button
+					className="editor-btn cancel"
+					type="button"
+					onClick={() => {
+						window.history.back();
+					}}
+				>
+					취소
+				</button>
 			</div>
-			<button type="button">등록</button>
-			<button type="button">취소</button>
 		</div>
 	);
 };

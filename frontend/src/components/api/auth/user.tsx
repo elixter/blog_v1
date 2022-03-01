@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { UserProfile } from '../hooks/useAuthentication';
+import { UserProfile } from '../../authentication/hooks/useAuthentication';
 
 const axiosConfig: AxiosRequestConfig = {
 	withCredentials: true,

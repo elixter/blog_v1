@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 import { AxiosError } from 'axios';
-import { IGetPostListParams, Posts } from '../api/post/types';
-import { getPostList } from '../api/post';
-import { sleep } from '../utils';
+import { IGetPostListParams, Posts } from '../../api/post/types';
+import { getPostList } from '../../api/post';
+import { sleep } from '../../utils';
 
 type Props =
 	| {

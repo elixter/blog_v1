@@ -212,7 +212,7 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .top-content .hashtags { display: flex; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
 .top-content .hashtags .hashtag-wrap { margin: 5px 0; }
 .top-content .hashtags .hashtag { border-radius: 5px; background-color: var(--base-color); padding: 3px 5px; font-size: 14px; margin-right: 5px; margin-top: 3px; color: #f0f0f0; white-space: nowrap; }
-.back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 0;}
+.back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 5px;}
 .post-content { margin-top: 20px; padding: 0 10% 0 10%; width: 80%; }
 
 .post-title input { border: none; padding: 5px; text-overflow: clip; }
@@ -235,3 +235,6 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .selector-wrapper select { width: 100%; padding: 5px; text-align: center;  font-size: 1.4em; background: #f0f0f0; border-radius: 5px; }
 .selector-wrapper select option { padding: 5px; border-radius: 15px; }
 .input-hashtag { margin: 10px 0; font-size: 13px; background: none; cursor: auto; }
+
+.editor-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 5px; }
+.cancel { color: #0f0f0f; }

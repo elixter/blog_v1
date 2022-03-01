@@ -1,8 +1,8 @@
 import useSWR from 'swr';
-import { Post } from '../api/post/types';
+import { Post } from '../../api/post/types';
 import usePostLocation from './usePostLocation';
-import { getPost } from '../api/post';
-import { sleep } from '../utils';
+import { getPost } from '../../api/post';
+import { sleep } from '../../utils';
 
 const usePost = () => {
 	const { postId } = usePostLocation();

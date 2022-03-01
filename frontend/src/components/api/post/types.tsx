@@ -61,3 +61,11 @@ export interface Post {
 	updateAt: Date;
 	hashtags: Array<string>;
 }
+
+export interface CreatePostDto {
+	title: string;
+	content: string;
+	category: string;
+	thumbnail: string;
+	hashtags: Array<string>;
+}
