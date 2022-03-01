@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+// TODO: 이미지 처리, hashtag 검색
 @RestController
 @Transactional
 //@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
