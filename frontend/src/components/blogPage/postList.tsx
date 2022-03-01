@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { memo, useState } from 'react';
 import PostItem from './postItem';
 import { DEFAULT_PAGE_SIZE, GetPostListParams } from '../api/post/types';
-import usePostList from '../hooks/usePostList';
+import usePostList from '../hooks/post/usePostList';
 import { CircleLoading } from '../utils/loading/CircularLoading';
 import { StaticPath } from '../pagePath/pagePath';
 

@@ -1,29 +1,24 @@
-import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
+import { Viewer } from '@toast-ui/react-editor';
+import 'prismjs/themes/prism.css';
+import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight.css';
+import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
 import { Post } from '../../api/post/types';
 import PostContentTop from './postContentTop';
+
+import Prism from '../../prism';
 
 type Props = {
 	post: Post;
 };
 
 const PostContent = function ({ post }: Props) {
-	const editor = useEditor({
-		extensions: [
-			StarterKit.configure({
-				heading: {
-					levels: [1, 2, 3],
-				},
-			}),
-		],
-		editorProps: {
-			attributes: {
-				class: 'WYSIWYG-editor',
-			},
-		},
-		content: `${post.content}`,
-		editable: false,
+	const viewerRef = useRef<Viewer>(null);
+
+	useEffect(() => {
+		if (viewerRef.current) {
+			viewerRef.current.getInstance().setMarkdown(post.content);
+		}
 	});
 
 	return (
@@ -39,10 +34,7 @@ const PostContent = function ({ post }: Props) {
 				>
 					back
 				</button>
-				{/* <div>{post.content}</div> */}
-				<div className="postEditor">
-					<EditorContent editor={editor} />
-				</div>
+				<Viewer ref={viewerRef} plugins={[[codeSyntaxHighlight, { highlighter: Prism }]]} />
 			</div>
 		</div>
 	);

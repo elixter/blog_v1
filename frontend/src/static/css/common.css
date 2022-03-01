@@ -184,10 +184,11 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .grid-card .content .tit { font-size: 20px; }
 
 .main .blog-top { width: 100%; height: 400px; background-size: cover; align-items: center; background: #0f0f0f; }
-.main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .6; overflow-y: hidden; object-fit: cover;  }
+.main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .7; overflow-y: hidden; object-fit: cover;  }
+
 /*.main .blog-top::after { content:""; position: absolute; left: 0; top: 0; width: 100%; height: 400px; background-size: cover; background: url(https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf) no-repeat; opacity: .7; }*/
-.main .blog-top .top-content { position: absolute; top: 190px; width: 100%; box-sizing: border-box; z-index: 1000; color: white; text-align: center; }
-.main .blog-top .top-content h1 { font-size: 40px; }
+.top-content { position: absolute; width: 100%; box-sizing: border-box; z-index: 1000; color: #0f0f0f; text-align: center; }
+.top-content h1 { font-size: 40px; }
 
 .blog-content { padding: 0 10% 0 10%; width: 80%; }
 
@@ -206,14 +207,34 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-item .post-item-bt .hashtags { display: flex; flex-wrap: wrap; max-width: 67%; }
 .post-list-item .post-item-bt .hashtags .hashtag { font-size: 13px; margin-right: 2px; }
 
-.post-top .top-content {position: relative; }
-.post-top .top-content .hashtags .hashtag { font-size: 14px; margin-right: 2px; }
-.back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 0;}
+.post-top { margin-bottom: 30px; }
+.top-content {position: relative; }
+.top-content .hashtags { display: flex; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+.top-content .hashtags .hashtag-wrap { margin: 5px 0; }
+.top-content .hashtags .hashtag { border-radius: 5px; background-color: var(--base-color); padding: 3px 5px; font-size: 14px; margin-right: 5px; margin-top: 3px; color: #f0f0f0; white-space: nowrap; }
+.back-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 5px;}
 .post-content { margin-top: 20px; padding: 0 10% 0 10%; width: 80%; }
 
-.new-post-main { margin-top: 50px; }
+.post-title input { border: none; padding: 5px; text-overflow: clip; }
+
+.edit-post-main { margin-top: 50px; }
 .WYSIWYG-editor { height: 600px; overflow: scroll; }
-.postEditor p { font-size: 12px; }
-.postEditor h1 { font-size: 30px; }
-.postEditor h2 { font-size: 24px; }
-.postEditor h3 { font-size: 20px; }
+.post-editor p { font-size: 12px; }
+.post-editor h1 { font-size: 30px; }
+.post-editor h2 { font-size: 24px; }
+.post-editor h3 { font-size: 20px; }
+
+.editor-main {  }
+.editor-main .blog-top { width: 100%; height: 400px; background-size: cover; align-items: center; background: #0f0f0f; }
+.editor-main .blog-top .bg-img { position: absolute; width: 100%; height: 400px; opacity: .7; overflow-y: hidden; object-fit: cover;  }
+.editor-main .input-tit { resize: none; background: none; border: none; width: 100%; height: fit-content; cursor: auto; }
+.editor-main .top-content { margin: 0 5%; width: 90%; }
+.editor-main .main-content { margin: 0 5%; }
+
+.selector-wrapper { width: 200px; margin: 10px 0; }
+.selector-wrapper select { width: 100%; padding: 5px; text-align: center;  font-size: 1.4em; background: #f0f0f0; border-radius: 5px; }
+.selector-wrapper select option { padding: 5px; border-radius: 15px; }
+.input-hashtag { margin: 10px 0; font-size: 13px; background: none; cursor: auto; }
+
+.editor-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 5px; }
+.cancel { color: #0f0f0f; }
