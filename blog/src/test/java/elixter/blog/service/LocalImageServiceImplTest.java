@@ -30,6 +30,6 @@ public class LocalImageServiceImplTest {
 
         String resultUrl = imageService.save(mockMultipartFile);
 
-        Assertions.assertThat(resultUrl).isEqualTo("localhost:8080\\static\\img\\힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(resultUrl).isEqualTo("localhost:8080/static/img/힘들때 웃는자가 일류다.png");
     }
 }
