@@ -1,11 +1,31 @@
 package elixter.blog.service.image;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+
+@Slf4j
 @Component
-public class LocalImageServiceImpl implements ImageService {
+public class LocalImageServiceImpl implements ImageService{
+    static String SERVER_PREFIX = "localhost:8080";
+    static String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
+
     @Override
-    public String save(byte[] imageData) {
-        return "";
+    public String save(MultipartFile imageData) throws IOException, IllegalStateException {
+        log.debug("contentType : {}", imageData.getContentType());
+
+        File folder = new File(IMAGE_FILE_FOLDER);
+        if (!folder.exists()) folder.mkdirs();
+
+        File destination = new File(IMAGE_FILE_FOLDER + File.separator + imageData.getOriginalFilename());
+        imageData.transferTo(destination);
+
+        String resultUrl = SERVER_PREFIX + "/static/img/" + destination.getName();
+        log.debug("resultUrl : {}", resultUrl);
+
+        return resultUrl;
     }
 }
