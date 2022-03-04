@@ -24,6 +24,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    // TODO: 에러처리 다시해야됨
     @PostMapping
     public ImageUploadResponseDto PostUploadImageHandler(@RequestPart MultipartFile image) throws IOException, HttpClientErrorException {
         if (!image.getContentType().startsWith("image")) {
