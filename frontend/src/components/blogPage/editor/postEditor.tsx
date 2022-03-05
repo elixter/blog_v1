@@ -14,7 +14,9 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 
+import axios from 'axios';
 import Prism from '../../prism';
+import config from '../../config';
 
 type Props = {
 	content: string;
@@ -24,13 +26,18 @@ type Props = {
 const PostEditor = function ({ content, setContent }: Props) {
 	const editorRef = useRef<Editor>(null);
 
-	useEffect(() => {
-		if (editorRef.current) {
-			editorRef.current.getInstance().removeHook('addImageBlobHook');
-		}
+	const imageBlobHook = (blob: any, callback: any) => {
+		(async () => {
+			const formData = new FormData();
+			formData.append('image', blob);
+			const response = await axios.post(`${config.SERVER_PREFIX}/api/image`, formData, {
+				withCredentials: true,
+				headers: { 'content-type': 'multipart/formdata' },
+			});
 
-		return () => {};
-	}, [editorRef]);
+			callback(response.data.url, '');
+		})();
+	};
 
 	const onChange = useCallback(() => {
 		const markdown = editorRef.current?.getInstance().getMarkdown();
@@ -48,6 +55,9 @@ const PostEditor = function ({ content, setContent }: Props) {
 				ref={editorRef}
 				plugins={[[codeSyntaxHighlight, { highlighter: Prism }], colorSyntax]}
 				onChange={onChange}
+				hooks={{
+					addImageBlobHook: imageBlobHook,
+				}}
 			/>
 		</div>
 	);
