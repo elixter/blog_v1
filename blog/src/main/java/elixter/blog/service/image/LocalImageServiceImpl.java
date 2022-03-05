@@ -10,8 +10,8 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class LocalImageServiceImpl implements ImageService{
-    static String SERVER_PREFIX = "localhost:8080";
-    static String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
+    private static final String SERVER_PREFIX = "http://localhost:8080";
+    private static final String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
 
     @Override
     public String save(MultipartFile imageData) throws IOException, IllegalStateException {
