@@ -10,8 +10,6 @@ type Props = {
 	post: Post;
 };
 
-// TODO: 카테고리 drop menu, 썸네일 업로드 아이콘 및 기타 처리
-
 const EditorMain = function ({ post }: Props) {
 	const [title, setTitle] = useState(post.title);
 	const [category, setCategory] = useState(post.category);
