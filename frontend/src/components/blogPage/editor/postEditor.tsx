@@ -14,9 +14,8 @@ import 'tui-color-picker/dist/tui-color-picker.css';
 import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css';
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
 
-import axios from 'axios';
 import Prism from '../../prism';
-import config from '../../config';
+import { uploadImage } from '../../api/image';
 
 type Props = {
 	content: string;
@@ -28,14 +27,8 @@ const PostEditor = function ({ content, setContent }: Props) {
 
 	const imageBlobHook = (blob: any, callback: any) => {
 		(async () => {
-			const formData = new FormData();
-			formData.append('image', blob);
-			const response = await axios.post(`${config.SERVER_PREFIX}/api/image`, formData, {
-				withCredentials: true,
-				headers: { 'content-type': 'multipart/formdata' },
-			});
-
-			callback(response.data.url, '');
+			const url = await uploadImage(blob);
+			callback(url, '');
 		})();
 	};
 

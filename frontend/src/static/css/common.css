@@ -238,3 +238,9 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 
 .editor-btn { font-size: 1.6em; color: var(--base-color); margin: 16px 5px; }
 .cancel { color: #0f0f0f; }
+
+.edit-thumb { display: none; }
+.upload-btn { background: rgba(125, 125, 125, .7); border-radius: 20px; padding: 15px;  position: absolute; display: flex; z-index: 1; justify-content: center; color: #f0f0f0; transition: .2s; fill: #f0f0f0; left: 50%; top: 23%; transform: translate(-50%, -50%); }
+.upload-btn span { margin-right: 10px; font-size: 1.6em; }
+.upload-btn svg { width: 1.6em; }
+.upload-btn:hover { background: #f0f0f0; color: var(--base-color); fill: var(--base-color); }
