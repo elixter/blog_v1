@@ -1,7 +1,7 @@
 package elixter.blog.repository.imageRepository;
 
 import elixter.blog.domain.Image;
-import elixter.blog.repository.image.JdbcTemplateLocalImageRepository;
+import elixter.blog.repository.image.JdbcTemplateImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @SpringBootTest
 public class JdbcTemplateImageRepositoryTest {
     @Autowired
-    JdbcTemplateLocalImageRepository imageRepository;
+    JdbcTemplateImageRepository imageRepository;
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(path));

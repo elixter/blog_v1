@@ -4,6 +4,7 @@ import elixter.blog.Constants;
 import elixter.blog.domain.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,28 +18,22 @@ import java.util.Map;
 
 @Slf4j
 @Repository
-public class JdbcTemplateLocalImageRepository implements ImageRepository {
-    private static final String SERVER_PREFIX = "http://localhost:8080";
+@Qualifier("jdbcTemplateImageRepository")
+public class JdbcTemplateImageRepository implements ImageRepository {
     private static final String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
 
     private final JdbcTemplate jdbcTemplate;
+    private final ImageStorage imageStorage;
 
     @Autowired
-    public JdbcTemplateLocalImageRepository(DataSource dataSource) {
+    public JdbcTemplateImageRepository(DataSource dataSource, @Qualifier("localImageStorage") ImageStorage imageStorage) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.imageStorage = imageStorage;
     }
 
     @Override
     public Image save(MultipartFile multipartFile) throws IOException {
-        log.debug("contentType : {}", multipartFile.getContentType());
-
-        File folder = new File(IMAGE_FILE_FOLDER);
-        if (!folder.exists()) folder.mkdirs();
-
-        File destination = new File(IMAGE_FILE_FOLDER + File.separator + multipartFile.getOriginalFilename());
-        multipartFile.transferTo(destination);
-
-        String resultUrl = SERVER_PREFIX + "/api/image/" + destination.getName();
+        String resultUrl = imageStorage.save(multipartFile);
         log.debug("resultUrl : {}", resultUrl);
 
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -54,6 +49,13 @@ public class JdbcTemplateLocalImageRepository implements ImageRepository {
         return new Image(key.longValue(), multipartFile.getOriginalFilename(), resultUrl, "PENDING");
     }
 
+    /***
+     *
+     * @param name - Origin image name
+     * @return Image data as byte array
+     *
+     * This method is Only used for get local saved image data.
+     */
     @Override
     public byte[] get(String name) {
         FileInputStream fis = null;
