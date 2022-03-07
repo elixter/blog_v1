@@ -14,6 +14,11 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public String save(MultipartFile image) throws IOException {
-        return imageRepository.save(image);
+        return imageRepository.save(image).getUrl();
+    }
+
+    @Override
+    public byte[] getImageByName(String name) {
+        return imageRepository.get(name);
     }
 }

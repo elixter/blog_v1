@@ -4,14 +4,19 @@ import elixter.blog.domain.Image;
 import elixter.blog.repository.image.JdbcTemplateLocalImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class LocalImageRepositoryTest {
-    JdbcTemplateLocalImageRepository imageRepository = new JdbcTemplateLocalImageRepository(DataSource);
+@SpringBootTest
+public class JdbcTemplateImageRepositoryTest {
+    @Autowired
+    JdbcTemplateLocalImageRepository imageRepository;
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(path));
@@ -19,11 +24,13 @@ public class LocalImageRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
 
         Image savedImage = imageRepository.save(mockMultipartFile);
+        System.out.println("savedImage = " + savedImage);
 
-        Assertions.assertThat(savedImage.getUrl()).isEqualTo("http://localhost:8080/static/img/힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(savedImage.getUrl()).isEqualTo("http://localhost:8080/api/image/힘들때 웃는자가 일류다.png");
     }
 }
