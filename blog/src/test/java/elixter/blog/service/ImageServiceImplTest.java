@@ -2,19 +2,17 @@ package elixter.blog.service;
 
 import elixter.blog.service.image.ImageService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 @SpringBootTest
-public class LocalImageServiceImplTest {
+public class ImageServiceImplTest {
 
     @Autowired
     ImageService imageService;
@@ -30,6 +28,6 @@ public class LocalImageServiceImplTest {
 
         String resultUrl = imageService.save(mockMultipartFile);
 
-        Assertions.assertThat(resultUrl).isEqualTo("localhost:8080/static/img/힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(resultUrl).isEqualTo("http://localhost:8080/static/img/힘들때 웃는자가 일류다.png");
     }
 }
