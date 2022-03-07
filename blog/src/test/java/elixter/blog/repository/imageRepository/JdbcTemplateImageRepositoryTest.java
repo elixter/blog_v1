@@ -1,6 +1,7 @@
 package elixter.blog.repository.imageRepository;
 
-import elixter.blog.repository.image.LocalImageRepository;
+import elixter.blog.domain.Image;
+import elixter.blog.repository.image.JdbcTemplateLocalImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -10,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class LocalImageRepositoryTest {
-    LocalImageRepository imageRepository = new LocalImageRepository();
+    JdbcTemplateLocalImageRepository imageRepository = new JdbcTemplateLocalImageRepository(DataSource);
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(path));
@@ -21,8 +22,8 @@ public class LocalImageRepositoryTest {
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
 
-        String resultUrl = imageRepository.save(mockMultipartFile);
+        Image savedImage = imageRepository.save(mockMultipartFile);
 
-        Assertions.assertThat(resultUrl).isEqualTo("http://localhost:8080/static/img/힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(savedImage.getUrl()).isEqualTo("http://localhost:8080/static/img/힘들때 웃는자가 일류다.png");
     }
 }
