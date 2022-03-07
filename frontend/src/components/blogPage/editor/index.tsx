@@ -1,4 +1,5 @@
 import { BaseSyntheticEvent, memo, useCallback, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { CreatePostDto, Post } from '../../api/post/types';
 import PostEditor from './postEditor';
 import Selector from '../../utils/selector';
@@ -18,6 +19,7 @@ const EditorMain = function ({ post }: Props) {
 	const [hashtags, setHashtags] = useState(post.hashtags);
 
 	const thumbnailRef = useRef<HTMLInputElement | null>(null);
+	const history = useHistory();
 	const options: string[] = ['test1', 'test2'];
 
 	const onTitleChange = useCallback((e: BaseSyntheticEvent) => {
@@ -39,10 +41,10 @@ const EditorMain = function ({ post }: Props) {
 
 		createPost(createPostRequestBody).then((res) => {
 			if (res.status === 200) {
-				document.location.href = `/blog/posts/${res.data}`;
+				history.push(`/blog/posts/${res.data}`);
 			}
 		});
-	}, [category, content, hashtags, thumbnail, title]);
+	}, [category, content, hashtags, history, thumbnail, title]);
 
 	const onChangeImage = useCallback(async () => {
 		const input = thumbnailRef.current as HTMLInputElement;
