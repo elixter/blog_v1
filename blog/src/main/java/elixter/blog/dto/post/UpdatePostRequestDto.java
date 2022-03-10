@@ -1,7 +1,7 @@
 package elixter.blog.dto.post;
 
-import elixter.blog.domain.Hashtag;
-import elixter.blog.domain.Post;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.post.Post;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

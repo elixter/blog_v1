@@ -1,7 +1,8 @@
 package elixter.blog.repository.hashtag;
 
 import elixter.blog.Constants;
-import elixter.blog.domain.Hashtag;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.hashtag.SearchHashtag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -83,6 +84,11 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
+    public List<SearchHashtag> searchTag(String tag) {
+        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag", searchHashtagsRowMapper(), '%'+tag+'%');
+    }
+
+    @Override
     public void deleteById(Long id) {
         jdbcTemplate.update("update hashtags set status = ? where id = ?", hashtagRowMapper(), Constants.recordStatusDeleted, id);
     }
@@ -107,6 +113,15 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
                 hashtag.setPostId(rs.getLong("post_id"));
 
                 return hashtag;
+            }
+        };
+    }
+
+    private RowMapper<SearchHashtag> searchHashtagsRowMapper() {
+        return new RowMapper<SearchHashtag>() {
+            @Override
+            public SearchHashtag mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new SearchHashtag(rs.getString("tag"), rs.getLong("tag_count"));
             }
         };
     }

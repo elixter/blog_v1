@@ -1,6 +1,6 @@
 package elixter.blog.service.post;
 
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

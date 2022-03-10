@@ -1,6 +1,7 @@
 package elixter.blog.repository.hashtag;
 
-import elixter.blog.domain.Hashtag;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.hashtag.SearchHashtag;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,8 @@ public interface HashtagRepository {
     List<Hashtag> findByTag(String tag);
     List<Hashtag> findAll();
     List<Hashtag> findByPostId(Long postId);
+
+    List<SearchHashtag> searchTag(String tag);
 
     void deleteById(Long id);
     void deleteByTag(String tag);

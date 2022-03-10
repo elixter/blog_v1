@@ -1,6 +1,6 @@
 package elixter.blog.repository.post;
 
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;

@@ -1,6 +1,6 @@
 package elixter.blog.service;
 
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 import elixter.blog.service.post.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

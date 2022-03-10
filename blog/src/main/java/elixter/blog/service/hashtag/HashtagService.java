@@ -1,7 +1,7 @@
 package elixter.blog.service.hashtag;
 
-import elixter.blog.domain.Hashtag;
-import elixter.blog.domain.Post;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.hashtag.SearchHashtag;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +13,7 @@ public interface HashtagService {
     List<Hashtag> findAllHashtag();
     List<Hashtag> findHashtagByTag(String tag);
     List<Hashtag> findHashtagByPostId(Long postId);
+    List<SearchHashtag> searchHashtagsByTag(String tag);
     void deleteHashtagById(Long id);
     void deleteHashtagByTag(String tag);
     void deleteHashtagByPostId(Long postId);

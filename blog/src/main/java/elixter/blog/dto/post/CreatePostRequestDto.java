@@ -1,9 +1,8 @@
 package elixter.blog.dto.post;
 
-import elixter.blog.domain.Hashtag;
-import elixter.blog.domain.Post;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.post.Post;
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;

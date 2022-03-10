@@ -1,7 +1,6 @@
-package elixter.blog.domain;
+package elixter.blog.domain.post;
 
 import elixter.blog.Constants;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

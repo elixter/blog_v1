@@ -1,7 +1,7 @@
 package elixter.blog.controller;
 
-import elixter.blog.domain.Hashtag;
-import elixter.blog.domain.Post;
+import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 

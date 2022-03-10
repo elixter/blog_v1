@@ -1,6 +1,6 @@
 package elixter.blog.repository.postRepository;
 
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 import elixter.blog.repository.post.MemoryPostRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

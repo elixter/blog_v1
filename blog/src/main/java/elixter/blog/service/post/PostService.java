@@ -1,6 +1,6 @@
 package elixter.blog.service.post;
 
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 
 import java.util.List;
 import java.util.Optional;

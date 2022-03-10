@@ -1,7 +1,7 @@
 package elixter.blog.repository.post;
 
 import elixter.blog.Constants;
-import elixter.blog.domain.Post;
+import elixter.blog.domain.post.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;

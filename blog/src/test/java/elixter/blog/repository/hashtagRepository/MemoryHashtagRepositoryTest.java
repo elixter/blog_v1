@@ -1,6 +1,6 @@
 package elixter.blog.repository.hashtagRepository;
 
-import elixter.blog.domain.Hashtag;
+import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.repository.hashtag.MemoryHashtagRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
