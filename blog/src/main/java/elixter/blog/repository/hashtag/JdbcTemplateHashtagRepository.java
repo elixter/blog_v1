@@ -85,7 +85,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
     @Override
     public List<SearchHashtag> searchTag(String tag) {
-        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag", searchHashtagsRowMapper(), '%'+tag+'%');
+        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag", searchHashtagsRowMapper(), tag+'%');
     }
 
     @Override
