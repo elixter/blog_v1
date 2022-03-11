@@ -71,7 +71,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtag> searchTag(String tag) {
+    public List<SearchHashtag> searchTag(String tag, Long offset, Long limit) {
         return null;
     }
 

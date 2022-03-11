@@ -15,7 +15,7 @@ public interface HashtagRepository {
     List<Hashtag> findAll();
     List<Hashtag> findByPostId(Long postId);
 
-    List<SearchHashtag> searchTag(String tag);
+    List<SearchHashtag> searchTag(String tag, Long offset, Long limit);
 
     void deleteById(Long id);
     void deleteByTag(String tag);

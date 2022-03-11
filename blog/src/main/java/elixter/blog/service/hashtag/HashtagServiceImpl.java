@@ -49,8 +49,8 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public List<SearchHashtag> searchHashtagsByTag(String tag) {
-        return repository.searchTag(tag);
+    public List<SearchHashtag> searchHashtagsByTag(String tag, Long offset, Long limit) {
+        return repository.searchTag(tag, offset, limit);
     }
 
     @Override

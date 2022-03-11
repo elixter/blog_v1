@@ -26,7 +26,13 @@ public class HashtagController {
     }
 
     @GetMapping
-    List<SearchHashtag> GetSearchHashtags(@RequestParam String search) {
-        return hashtagService.searchHashtagsByTag(search);
+    List<SearchHashtag> GetSearchHashtags(
+            @RequestParam(value = "search") String search,
+            @RequestParam(value = "curPage", required = false) Long curPage,
+            @RequestParam(value = "pageSize", required = false) Long pageSize
+    ) {
+        log.debug("search : {}, curPage : {}, pageSize : {}", search, curPage, pageSize);
+
+        return hashtagService.searchHashtagsByTag(search, curPage, pageSize);
     }
 }
