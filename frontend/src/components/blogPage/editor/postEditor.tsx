@@ -28,7 +28,7 @@ const PostEditor = function ({ content, setContent }: Props) {
 	const imageBlobHook = (blob: any, callback: any) => {
 		(async () => {
 			const url = await uploadImage(blob);
-			callback(url, '');
+			callback(url.replaceAll(' ', '%20'), '');
 		})();
 	};
 
