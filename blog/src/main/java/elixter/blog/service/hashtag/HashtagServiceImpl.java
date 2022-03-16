@@ -1,7 +1,7 @@
 package elixter.blog.service.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.domain.hashtag.SearchHashtag;
+import elixter.blog.dto.hashtag.SearchHashtagDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public List<SearchHashtag> searchHashtagsByTag(String tag, Long offset, Long limit) {
+    public List<SearchHashtagDto> searchHashtagsByTag(String tag, Long offset, Long limit) {
         return repository.searchTag(tag, offset, limit);
     }
 

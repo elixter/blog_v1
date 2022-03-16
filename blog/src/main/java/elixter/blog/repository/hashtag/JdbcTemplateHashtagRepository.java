@@ -2,7 +2,7 @@ package elixter.blog.repository.hashtag;
 
 import elixter.blog.Constants;
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.domain.hashtag.SearchHashtag;
+import elixter.blog.dto.hashtag.SearchHashtagDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -84,7 +84,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtag> searchTag(String tag, Long offset, Long limit) {
+    public List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit) {
         return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag limit ?, ?", searchHashtagsRowMapper(), tag+'%', offset, limit);
     }
 
@@ -117,11 +117,11 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         };
     }
 
-    private RowMapper<SearchHashtag> searchHashtagsRowMapper() {
-        return new RowMapper<SearchHashtag>() {
+    private RowMapper<SearchHashtagDto> searchHashtagsRowMapper() {
+        return new RowMapper<SearchHashtagDto>() {
             @Override
-            public SearchHashtag mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new SearchHashtag(rs.getString("tag"), rs.getLong("tag_count"));
+            public SearchHashtagDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new SearchHashtagDto(rs.getString("tag"), rs.getLong("tag_count"));
             }
         };
     }
