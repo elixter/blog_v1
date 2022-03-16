@@ -1,7 +1,7 @@
 package elixter.blog.repository.image;
 
 import elixter.blog.Constants;
-import elixter.blog.domain.Image;
+import elixter.blog.domain.image.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

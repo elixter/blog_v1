@@ -1,4 +1,4 @@
-package elixter.blog.domain;
+package elixter.blog.domain.image;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

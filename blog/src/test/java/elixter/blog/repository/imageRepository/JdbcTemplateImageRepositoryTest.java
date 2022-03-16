@@ -1,6 +1,6 @@
 package elixter.blog.repository.imageRepository;
 
-import elixter.blog.domain.Image;
+import elixter.blog.domain.image.Image;
 import elixter.blog.repository.image.JdbcTemplateImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
