@@ -4,10 +4,17 @@ import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -23,26 +30,71 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        return null;
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("users").usingGeneratedKeyColumns("id");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", user.getName());
+        params.put("login_id", user.getLoginId());
+        params.put("login_pw", user.getLoginPw());
+        params.put("profile_image", user.getProfileImage());
+
+        Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
+        user.setId(key.longValue());
+
+        return user;
     }
 
     @Override
     public void update(User user) {
-
+        jdbcTemplate.update(
+                "update users set name = ?, login_pw = ?, profile_image = ?",
+                user.getName(),
+                user.getLoginPw(),
+                user.getProfileImage()
+        );
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return Optional.empty();
+        List<User> result = jdbcTemplate.query(
+                "select * from users where id = ?",
+                userRowMapper(),
+                id
+        );
+        return result.stream().findAny();
     }
 
     @Override
     public List<User> findAll(Long offset, Long limit) {
-        return null;
+        List<User> result = jdbcTemplate.query(
+                "select * from users limit ?, ?",
+                userRowMapper(),
+                offset,
+                limit
+        );
+        return result;
     }
 
     @Override
     public void delete(Long id) {
+        jdbcTemplate.update("delete from users where id = ?", id);
+    }
 
+    private RowMapper<User> userRowMapper() {
+        return new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                User user = new User();
+
+                user.setId(rs.getLong("id"));
+                user.setLoginId(rs.getString("login_id"));
+                user.setLoginPw(rs.getString("login_pw"));
+                user.setName(rs.getString("name"));
+                user.setProfileImage(rs.getString("profile_image"));
+
+                return user;
+            }
+        };
     }
 }
