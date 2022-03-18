@@ -62,7 +62,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and id = ?",
                 userRowMapper(),
-                Constants.recordStatusExist
+                Constants.recordStatusExist,
                 id
         );
         return result.stream().findAny();
