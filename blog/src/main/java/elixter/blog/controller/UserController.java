@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
+// TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
+
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
