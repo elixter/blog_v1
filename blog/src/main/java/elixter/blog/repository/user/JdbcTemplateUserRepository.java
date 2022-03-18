@@ -1,5 +1,6 @@
 package elixter.blog.repository.user;
 
+import elixter.blog.Constants;
 import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,20 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public void update(User user) {
         jdbcTemplate.update(
-                "update users set name = ?, login_pw = ?, profile_image = ?",
+                "update users set name = ?, login_pw = ?, profile_image = ? where id = ?",
                 user.getName(),
                 user.getLoginPw(),
-                user.getProfileImage()
+                user.getProfileImage(),
+                user.getId()
         );
     }
 
     @Override
     public Optional<User> findById(Long id) {
         List<User> result = jdbcTemplate.query(
-                "select * from users where id = ?",
+                "select * from users where status = ? and id = ?",
                 userRowMapper(),
+                Constants.recordStatusExist
                 id
         );
         return result.stream().findAny();
@@ -68,8 +71,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public List<User> findAll(Long offset, Long limit) {
         List<User> result = jdbcTemplate.query(
-                "select * from users limit ?, ?",
+                "select * from users where status = ? limit ?, ?",
                 userRowMapper(),
+                Constants.recordStatusExist,
                 offset,
                 limit
         );
@@ -78,7 +82,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("delete from users where id = ?", id);
+        jdbcTemplate.update(
+                "update users set status = ? where id = ?",
+                Constants.recordStatusDeleted,
+                id
+        );
     }
 
     private RowMapper<User> userRowMapper() {
