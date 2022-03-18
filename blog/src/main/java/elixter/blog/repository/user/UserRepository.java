@@ -11,6 +11,9 @@ public interface UserRepository {
     void update(User user);
 
     Optional<User> findById(Long id);
+    Optional<User> findByLoginId(String loginId);
+    List<User> findByName(String name);
+
     List<User> findAll(Long offset, Long limit);
 
     void delete(Long id);

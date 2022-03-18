@@ -65,7 +65,32 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 Constants.recordStatusExist,
                 id
         );
+
         return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByLoginId(String loginId) {
+        List<User> result = jdbcTemplate.query(
+          "select * from users where status = ? and login_id = ?",
+          userRowMapper(),
+          Constants.recordStatusExist,
+          loginId
+        );
+
+        return result.stream().findAny();
+    }
+
+    @Override
+    public List<User> findByName(String name) {
+        List<User> result = jdbcTemplate.query(
+                "select * from users where status = ? and name = ?",
+                userRowMapper(),
+                Constants.recordStatusExist,
+                name
+        );
+
+        return result;
     }
 
     @Override

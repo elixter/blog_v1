@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUserByLoginId(String loginId) {
-        return null;
+    public Optional<User> findUserByLoginId(String loginId) {
+        return Optional.empty();
     }
 
     @Override
