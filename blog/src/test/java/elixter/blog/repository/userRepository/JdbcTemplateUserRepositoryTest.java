@@ -31,6 +31,32 @@ public class JdbcTemplateUserRepositoryTest {
     }
 
     @Test
+    public void findByLoginId() {
+        User user = new User();
+        user.setLoginId("test");
+        user.setLoginPw("123");
+        user.setName("test");
+        user.setProfileImage("test");
+
+        User savedUser = repository.save(user);
+        User result = repository.findByLoginId(user.getLoginId()).get();
+        Assertions.assertThat(savedUser).isEqualTo(result);
+    }
+
+    @Test
+    public void findByName() {
+        User user = new User();
+        user.setLoginId("test");
+        user.setLoginPw("123");
+        user.setName("test");
+        user.setProfileImage("test");
+
+        User savedUser = repository.save(user);
+        List<User> result = repository.findByName(user.getName());
+        Assertions.assertThat(result).contains(savedUser);
+    }
+
+    @Test
     public void update() {
         User user = new User();
         user.setLoginId("test");
