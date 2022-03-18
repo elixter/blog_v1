@@ -38,6 +38,8 @@ public class UserController {
         GetUserResponseDto result = new GetUserResponseDto();
         HttpStatus statusCode = HttpStatus.OK;
 
+        log.debug(loginId);
+
         try {
             User foundUser = service.findUserByLoginId(loginId);
             result.Mapping(foundUser);
