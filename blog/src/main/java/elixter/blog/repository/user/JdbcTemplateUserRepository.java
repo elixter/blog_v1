@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("login_id", user.getLoginId());
         params.put("login_pw", user.getLoginPw());
         params.put("profile_image", user.getProfileImage());
+        params.put("create_at", user.getCreateAt());
         params.put("status", Constants.recordStatusExist);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
@@ -126,6 +128,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 user.setLoginPw(rs.getString("login_pw"));
                 user.setName(rs.getString("name"));
                 user.setProfileImage(rs.getString("profile_image"));
+                user.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
 
                 return user;
             }

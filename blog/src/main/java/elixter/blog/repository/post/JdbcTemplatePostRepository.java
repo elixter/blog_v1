@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,6 +116,8 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 post.setContent(rs.getString("content"));
                 post.setCategory(rs.getString("category"));
                 post.setThumbnail(rs.getString("thumbnail"));
+                post.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
+                post.setUpdateAt(rs.getTimestamp("update_at").toLocalDateTime());
 
                 return post;
             }

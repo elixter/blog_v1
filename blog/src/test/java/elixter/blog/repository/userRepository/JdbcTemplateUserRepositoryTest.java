@@ -20,6 +20,8 @@ public class JdbcTemplateUserRepositoryTest {
     @Test
     public void findById() {
         User user = new User();
+        System.out.println(user.getCreateAt());
+
         user.setLoginId("test");
         user.setLoginPw("123");
         user.setName("test");
@@ -65,7 +67,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setProfileImage("test");
 
         User savedUser = repository.save(user);
-        User updateUser = user;
+        User updateUser = new User(user);
         updateUser.setProfileImage("update");
 
         repository.update(updateUser);
