@@ -3,13 +3,14 @@ package elixter.blog.domain.user;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.tomcat.jni.Time;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@ToString
 public class User {
     private Long id;
     private String name;
@@ -31,6 +32,12 @@ public class User {
         this.createAt = createAt;
     }
 
+    public User(String name, String loginId, String loginPw) {
+        this.name = name;
+        this.loginId = loginId;
+        this.loginPw = loginPw;
+    }
+
     public User (User user) {
         this.id = user.id;
         this.name = user.name;
@@ -38,5 +45,27 @@ public class User {
         this.loginPw = user.loginPw;
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = true;
+        User _obj = (User)obj;
+
+        if (obj instanceof User) {
+            if (!this.id.equals(((User) obj).id) ||
+                    !this.name.equals(((User) obj).name) ||
+                    !this.loginId.equals(((User) obj).loginId) ||
+                    !this.loginPw.equals(((User) obj).loginPw) ||
+                    !this.profileImage.equals(((User) obj).profileImage)
+            ) {
+                result = false;
+            }
+        }
+        else {
+            result = false;
+        }
+
+        return result;
     }
 }

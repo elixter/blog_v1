@@ -1,9 +1,11 @@
 package elixter.blog.controller;
 
 import elixter.blog.domain.user.User;
+import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 // TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
@@ -44,16 +47,31 @@ public class UserController {
 
         log.debug(loginId);
 
-        try {
-            User foundUser = service.findUserByLoginId(loginId);
-            result.Mapping(foundUser);
-        } catch (NoSuchElementException e) {
+        List<User> foundUser = service.findUser("loginId", loginId);
+        if (foundUser.isEmpty()) {
             msg = "User " + loginId + " is not found.";
             statusCode = HttpStatus.NOT_FOUND;
             result = null;
+        } else {
+            result.Mapping(foundUser.get(0));
         }
 
         Message responseMsg = new Message(statusCode, msg, result);
+
+        return new ResponseEntity<>(responseMsg, statusCode);
+    }
+
+    @PostMapping
+    public ResponseEntity<Message> PostCreateUserHandler(
+            @RequestBody CreateUserRequestDto createUserRequestBody
+    ) {
+        String msg = "";
+        HttpStatus statusCode = HttpStatus.CREATED;
+
+        User createdUser = createUserRequestBody.mapping();
+        service.createUser(createdUser);
+
+        Message responseMsg = new Message(statusCode, msg, null);
 
         return new ResponseEntity<>(responseMsg, statusCode);
     }

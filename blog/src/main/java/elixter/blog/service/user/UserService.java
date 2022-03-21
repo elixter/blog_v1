@@ -10,8 +10,5 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    List<User> findUser();
-    Optional<User> findUserById(Long id);
-    User findUserByLoginId(String loginId);
-    List<User> findUserByName(String name);
+    List<User> findUser(String filterType, String filterKey);
 }
