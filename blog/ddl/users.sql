@@ -6,6 +6,7 @@ create table users
     login_id      varchar(50)   not null,
     login_pw      varbinary(72) not null,
     profile_image text          null,
+    create_at     timestamp     not null,
     status        varchar(10)   not null,
     constraint users_login_id_uindex
         unique (login_id)
