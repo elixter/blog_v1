@@ -2,6 +2,7 @@ package elixter.blog.controller;
 
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.GetUserResponseDto;
+import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,11 @@ public class UserController {
     }
 
     @GetMapping("/{loginId}")
-    public ResponseEntity<GetUserResponseDto> GetUserByLoginIdHandler(
+    public ResponseEntity<Message> GetUserByLoginIdHandler(
             @PathVariable String loginId
     ) {
         GetUserResponseDto result = new GetUserResponseDto();
+        String msg = "";
         HttpStatus statusCode = HttpStatus.OK;
 
         log.debug(loginId);
@@ -46,9 +48,13 @@ public class UserController {
             User foundUser = service.findUserByLoginId(loginId);
             result.Mapping(foundUser);
         } catch (NoSuchElementException e) {
-            throw new UserNotFoundException("User not found with login id : " + loginId);
+            msg = "User " + loginId + " is not found.";
+            statusCode = HttpStatus.NOT_FOUND;
+            result = null;
         }
 
-        return new ResponseEntity<>(result, statusCode);
+        Message responseMsg = new Message(statusCode, msg, result);
+
+        return new ResponseEntity<>(responseMsg, statusCode);
     }
 }
