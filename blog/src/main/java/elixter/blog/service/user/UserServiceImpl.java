@@ -87,11 +87,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long updateUser(User user) {
-        // TODO: 사용자 id 컬럼 가져오는 방법 생각해야 됨.
+        Long result;
+
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
-        repository.update(user);
 
-        return user.getId();
+        User updateResult = repository.update(user);
+        if (updateResult == null) {
+            result = Constants.recordNotExist;
+        } else {
+            result = updateResult.getId();
+        }
+
+        return result;
     }
 }

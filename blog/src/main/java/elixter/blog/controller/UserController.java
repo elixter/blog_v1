@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
@@ -67,7 +68,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Message> PostCreateUserHandler(
-            @RequestBody CreateUserRequestDto createUserRequestBody
+            @Valid @RequestBody CreateUserRequestDto createUserRequestBody
     ) {
         String msg = "";
         Long result;
@@ -93,9 +94,8 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Message> PutUpdateUserHandler(
-            @RequestBody UpdateUserRequestDto updateUserRequestBody,
-            HttpServletResponse response
-    ) throws IOException {
+            @Valid @RequestBody UpdateUserRequestDto updateUserRequestBody
+    ) {
         String msg = "";
         Long result;
         HttpStatus statusCode = HttpStatus.OK;
@@ -103,11 +103,14 @@ public class UserController {
         User updatedUser = updateUserRequestBody.mapping();
 
         result = service.updateUser(updatedUser);
+        if (result.equals(Constants.recordNotExist)) {
+            log.debug("user id {} not exist", updatedUser.getId());
+            msg = "user not exist";
+            statusCode = HttpStatus.NOT_FOUND;
+            result = null;
+        }
 
         Message responseMsg = new Message(statusCode, msg, result);
-
-        response.setStatus(statusCode.value());
-        response.sendRedirect("/api/users/" + updatedUser.getLoginId());
 
         return new ResponseEntity<>(responseMsg, statusCode);
     }

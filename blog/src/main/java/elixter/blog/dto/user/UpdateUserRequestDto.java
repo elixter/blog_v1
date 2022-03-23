@@ -3,17 +3,23 @@ package elixter.blog.dto.user;
 import elixter.blog.domain.user.User;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 public class UpdateUserRequestDto {
-    private String name;
-    private String loginPw;
-    private String email;
-    private String profileImage;
+    @NotNull private Long id;
+    @NotBlank private String name;
+    @NotBlank private String loginPw;
+    @Email private String email;
+    @NotBlank private String profileImage;
 
     public UpdateUserRequestDto() {
     }
 
-    public UpdateUserRequestDto(String name, String loginPw, String email, String profileImage) {
+    public UpdateUserRequestDto(Long id, String name, String loginPw, String email, String profileImage) {
+        this.id = id;
         this.name = name;
         this.loginPw = loginPw;
         this.email = email;
@@ -21,6 +27,6 @@ public class UpdateUserRequestDto {
     }
 
     public User mapping() {
-        return new User(name, loginPw, email, profileImage);
+        return new User(id, name, loginPw, email, profileImage);
     }
 }

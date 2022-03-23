@@ -64,8 +64,10 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User update(User user) {
+        User result;
+        int affectedCols = 0;
         try {
-            jdbcTemplate.update(
+            affectedCols = jdbcTemplate.update(
                     "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
                     user.getName(),
                     user.getLoginPw(),
@@ -77,7 +79,13 @@ public class JdbcTemplateUserRepository implements UserRepository {
             System.out.println(e.getMessage());
         }
 
-        return user;
+        if (affectedCols == 0) {
+            result = null;
+        } else {
+            result = user;
+        }
+
+        return result;
     }
 
     @Override

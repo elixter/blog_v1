@@ -3,12 +3,15 @@ package elixter.blog.dto.user;
 import elixter.blog.domain.user.User;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 @Data
 public class CreateUserRequestDto {
-    private String name;
-    private String loginId;
-    private String loginPw;
-    private String email;
+    @NotBlank private String name;
+    @NotBlank private String loginId;
+    @NotBlank private String loginPw;
+    @Email private String email;
 
     public CreateUserRequestDto() {
     }

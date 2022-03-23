@@ -24,6 +24,14 @@ public class User {
         createAt = LocalDateTime.now();
     }
 
+    public User(Long id, String name, String loginPw, String email, String profileImage) {
+        this.id = id;
+        this.name = name;
+        this.loginPw = loginPw;
+        this.email = email;
+        this.profileImage = profileImage;
+    }
+
     public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt) {
         this.id = id;
         this.name = name;
