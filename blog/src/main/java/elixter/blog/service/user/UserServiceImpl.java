@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         switch (filterType) {
             case "id":
                 try {
-                    result.add(repository.findById(Long.getLong(filterKey)).get());
+                    result.add(repository.findById(Long.parseLong(filterKey)).get());
                 } catch (NoSuchElementException e) {
                     log.debug("No such user id : {}", filterKey);
                 }

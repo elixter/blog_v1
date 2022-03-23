@@ -39,6 +39,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("name", user.getName());
         params.put("login_id", user.getLoginId());
         params.put("login_pw", user.getLoginPw());
+        params.put("email", user.getEmail());
         params.put("profile_image", user.getProfileImage());
         params.put("create_at", user.getCreateAt());
         params.put("status", Constants.recordStatusExist);
@@ -52,7 +53,8 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public User update(User user) {
         jdbcTemplate.update(
-                "update users set login_pw = ?, email = ?, profile_image = ? where id = ?",
+                "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
+                user.getName(),
                 user.getLoginPw(),
                 user.getEmail(),
                 user.getProfileImage(),
