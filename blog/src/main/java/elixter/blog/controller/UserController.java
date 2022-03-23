@@ -14,11 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 // TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
