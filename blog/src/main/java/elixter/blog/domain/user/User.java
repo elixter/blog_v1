@@ -16,6 +16,7 @@ public class User {
     private String name;
     private String loginId;
     private String loginPw;
+    private String email;
     private String profileImage;
     private LocalDateTime createAt;
 
@@ -23,19 +24,29 @@ public class User {
         createAt = LocalDateTime.now();
     }
 
-    public User(Long id, String name, String loginId, String loginPw, String profileImage, LocalDateTime createAt) {
+    public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt) {
         this.id = id;
         this.name = name;
         this.loginId = loginId;
         this.loginPw = loginPw;
+        this.email = email;
         this.profileImage = profileImage;
         this.createAt = createAt;
+        this.createAt = LocalDateTime.now();
     }
 
-    public User(String name, String loginId, String loginPw) {
+    public User(String name, String loginId, String loginPw, String email) {
         this.name = name;
         this.loginId = loginId;
         this.loginPw = loginPw;
+        this.email = email;
+        this.createAt = LocalDateTime.now();
+    }
+
+    public User(String loginPw, String email, String profileImage) {
+        this.loginPw = loginPw;
+        this.email = email;
+        this.profileImage = profileImage;
     }
 
     public User (User user) {
@@ -43,8 +54,10 @@ public class User {
         this.name = user.name;
         this.loginId = user.loginId;
         this.loginPw = user.loginPw;
+        this.email = user.email;
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
+        this.createAt = LocalDateTime.now();
     }
 
     @Override

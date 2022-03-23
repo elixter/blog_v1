@@ -1,11 +1,12 @@
 package elixter.blog.controller;
 
+import elixter.blog.Constants;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
+import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 // TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
 
@@ -66,12 +66,35 @@ public class UserController {
             @RequestBody CreateUserRequestDto createUserRequestBody
     ) {
         String msg = "";
+        Long result;
         HttpStatus statusCode = HttpStatus.CREATED;
 
         User createdUser = createUserRequestBody.mapping();
-        service.createUser(createdUser);
+        result = service.createUser(createdUser);
 
-        Message responseMsg = new Message(statusCode, msg, null);
+        if (result.equals(Constants.userAlreadyExist)) {
+            statusCode = HttpStatus.CONFLICT;
+            msg = "user id ( " + createdUser.getLoginId() + " ) is already existed";
+        }
+
+        Message responseMsg = new Message(statusCode, msg, result);
+
+        return new ResponseEntity<>(responseMsg, statusCode);
+    }
+
+    @PutMapping
+    public ResponseEntity<Message> PutUpdateUserHandler(
+            @RequestBody UpdateUserRequestDto updateUserRequestBody
+    ) {
+        String msg = "";
+        Long result;
+        HttpStatus statusCode = HttpStatus.OK;
+
+        User updatedUser = updateUserRequestBody.mapping();
+
+        result = service.updateUser(updatedUser);
+
+        Message responseMsg = new Message(statusCode, msg, result);
 
         return new ResponseEntity<>(responseMsg, statusCode);
     }

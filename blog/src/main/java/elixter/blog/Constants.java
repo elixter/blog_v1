@@ -7,4 +7,6 @@ public class Constants {
     public static final String recordStatusWait = "WAIT";
 
     public static final String defaultProfileImage = "default";
+
+    public static final Long userAlreadyExist = -1L;
 }

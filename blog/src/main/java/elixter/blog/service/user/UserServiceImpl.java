@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -28,6 +30,11 @@ public class UserServiceImpl implements UserService {
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
         user.setProfileImage(Constants.defaultProfileImage);
+
+        if (repository.findByLoginId(user.getLoginId()).isPresent()) {
+            return Constants.userAlreadyExist;
+        }
+
         repository.save(user);
 
         return user.getId();
@@ -65,5 +72,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return result;
+    }
+
+    @Override
+    public Long updateUser(User user) {
+        String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
+        user.setLoginPw(hashedPw);
+        repository.update(user);
+
+        return user.getId();
     }
 }

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface UserService {
     Long createUser(User user);
+    Long updateUser(User user);
 
     void deleteUser(Long id);
 

@@ -13,6 +13,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/users/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/hashtags/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/posts/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
