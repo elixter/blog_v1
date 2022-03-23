@@ -14,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 // TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
@@ -72,9 +76,14 @@ public class UserController {
         User createdUser = createUserRequestBody.mapping();
         result = service.createUser(createdUser);
 
-        if (result.equals(Constants.userAlreadyExist)) {
+        if (result.equals(Constants.userLoginIdAlreadyExist)) {
             statusCode = HttpStatus.CONFLICT;
             msg = "user id ( " + createdUser.getLoginId() + " ) is already existed";
+            result = null;
+        } else if (result.equals(Constants.userEmailAlreadyExist)) {
+            statusCode = HttpStatus.CONFLICT;
+            msg = "entry is duplicated";
+            result = null;
         }
 
         Message responseMsg = new Message(statusCode, msg, result);
@@ -84,8 +93,9 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Message> PutUpdateUserHandler(
-            @RequestBody UpdateUserRequestDto updateUserRequestBody
-    ) {
+            @RequestBody UpdateUserRequestDto updateUserRequestBody,
+            HttpServletResponse response
+    ) throws IOException {
         String msg = "";
         Long result;
         HttpStatus statusCode = HttpStatus.OK;
@@ -95,6 +105,9 @@ public class UserController {
         result = service.updateUser(updatedUser);
 
         Message responseMsg = new Message(statusCode, msg, result);
+
+        response.setStatus(statusCode.value());
+        response.sendRedirect("/api/users/" + updatedUser.getLoginId());
 
         return new ResponseEntity<>(responseMsg, statusCode);
     }

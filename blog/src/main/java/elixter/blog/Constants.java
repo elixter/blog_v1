@@ -8,5 +8,7 @@ public class Constants {
 
     public static final String defaultProfileImage = "default";
 
-    public static final Long userAlreadyExist = -1L;
+    public static final Long userLoginIdAlreadyExist = -1L;
+    public static final Long userEmailAlreadyExist = -2L;
+    public static final Long unknownError = -99L;
 }

@@ -5,6 +5,7 @@ import elixter.blog.domain.user.User;
 import elixter.blog.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -27,17 +28,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long createUser(User user) {
+        Long result;
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
         user.setProfileImage(Constants.defaultProfileImage);
 
-        if (repository.findByLoginId(user.getLoginId()).isPresent()) {
-            return Constants.userAlreadyExist;
+        try {
+            repository.save(user);
+            result = user.getId();
+        } catch(DataIntegrityViolationException e) {
+            String errCause = e.getCause().toString();
+            if (errCause.contains("login_id")) {
+                result = Constants.userLoginIdAlreadyExist;
+            }
+            else if (errCause.contains("email")) {
+                result = Constants.userEmailAlreadyExist;
+            } else {
+                result = Constants.unknownError;
+            }
         }
 
-        repository.save(user);
-
-        return user.getId();
+        return result;
     }
 
     @Override
@@ -76,6 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long updateUser(User user) {
+        // TODO: 사용자 id 컬럼 가져오는 방법 생각해야 됨.
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
         repository.update(user);

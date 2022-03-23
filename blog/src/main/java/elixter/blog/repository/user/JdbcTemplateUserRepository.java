@@ -4,7 +4,10 @@ import elixter.blog.Constants;
 import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +35,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
+    public User save(User user) throws DataIntegrityViolationException {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("users").usingGeneratedKeyColumns("id");
 
@@ -44,6 +48,14 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("create_at", user.getCreateAt());
         params.put("status", Constants.recordStatusExist);
 
+        try {
+            Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
+            user.setId(key.longValue());
+        } catch (DataIntegrityViolationException e) {
+//            log.debug(e.getMessage());
+            throw e;
+        }
+
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
         user.setId(key.longValue());
 
@@ -52,14 +64,18 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public User update(User user) {
-        jdbcTemplate.update(
-                "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
-                user.getName(),
-                user.getLoginPw(),
-                user.getEmail(),
-                user.getProfileImage(),
-                user.getId()
-        );
+        try {
+            jdbcTemplate.update(
+                    "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
+                    user.getName(),
+                    user.getLoginPw(),
+                    user.getEmail(),
+                    user.getProfileImage(),
+                    user.getId()
+            );
+        } catch (DataAccessException e) {
+            System.out.println(e.getMessage());
+        }
 
         return user;
     }
@@ -98,6 +114,17 @@ public class JdbcTemplateUserRepository implements UserRepository {
         );
 
         return result;
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        List<User> result = jdbcTemplate.query(
+                "select * from users where status = ? and email = ?",
+                userRowMapper(),
+                Constants.recordStatusExist,
+                email
+        );
+        return result.stream().findAny();
     }
 
     @Override
