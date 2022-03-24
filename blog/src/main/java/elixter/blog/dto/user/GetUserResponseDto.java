@@ -10,6 +10,7 @@ public class GetUserResponseDto {
     private Long id;
     private String name;
     private String loginId;
+    private String email;
     private String profileImage;
 
     public GetUserResponseDto() {
@@ -22,10 +23,11 @@ public class GetUserResponseDto {
         this.profileImage = profileImage;
     }
 
-    public void Mapping(User user) {
+    public void mapping(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.loginId = user.getLoginId();
+        this.email = user.getEmail();
         this.profileImage = user.getProfileImage();
     }
 }

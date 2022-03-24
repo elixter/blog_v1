@@ -1,6 +1,6 @@
 package elixter.blog.domain.post;
 
-import elixter.blog.Constants;
+import elixter.blog.constants.RecordStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +21,7 @@ public class Post {
     private LocalDateTime updateAt;
 
     public Post() {
-        status = Constants.recordStatusExist;
+        status = RecordStatus.recordStatusExist;
         createAt = LocalDateTime.now();
         updateAt = LocalDateTime.now();
     }

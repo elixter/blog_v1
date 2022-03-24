@@ -1,6 +1,7 @@
 package elixter.blog.controller;
 
-import elixter.blog.Constants;
+import elixter.blog.constants.RecordStatus;
+import elixter.blog.constants.RecordError;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
-// TODO: Message 구조체를 하나 선언해서 ResponseEntity<Message> 형식으로 응답 내려주기.
 
 @Slf4j
 @RestController
@@ -54,7 +53,7 @@ public class UserController {
             statusCode = HttpStatus.NOT_FOUND;
             result = null;
         } else {
-            result.Mapping(foundUser.get(0));
+            result.mapping(foundUser.get(0));
         }
 
         Message responseMsg = new Message(statusCode, msg, result);
@@ -73,11 +72,11 @@ public class UserController {
         User createdUser = createUserRequestBody.mapping();
         result = service.createUser(createdUser);
 
-        if (result.equals(Constants.userLoginIdAlreadyExist)) {
+        if (result.equals(RecordError.userLoginIdAlreadyExist)) {
             statusCode = HttpStatus.CONFLICT;
             msg = "user id ( " + createdUser.getLoginId() + " ) is already existed";
             result = null;
-        } else if (result.equals(Constants.userEmailAlreadyExist)) {
+        } else if (result.equals(RecordError.userEmailAlreadyExist)) {
             statusCode = HttpStatus.CONFLICT;
             msg = "entry is duplicated";
             result = null;
@@ -99,7 +98,7 @@ public class UserController {
         User updatedUser = updateUserRequestBody.mapping();
 
         result = service.updateUser(updatedUser);
-        if (result.equals(Constants.recordNotExist)) {
+        if (result.equals(RecordStatus.recordNotExist)) {
             log.debug("user id {} not exist", updatedUser.getId());
             msg = "user not exist";
             statusCode = HttpStatus.NOT_FOUND;

@@ -8,10 +8,13 @@ import org.apache.tomcat.jni.Time;
 
 import java.time.LocalDateTime;
 
+// TODO: Spring security에 맞춰서 UserService와 함께 구현해야됨.
+
 @Getter
 @Setter
 @ToString
 public class User {
+    public static final String defaultProfileImage = "default";
     private Long id;
     private String name;
     private String loginId;
