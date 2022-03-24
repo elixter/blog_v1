@@ -18,26 +18,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/users/*").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/users").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/hashtags/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/posts/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/posts").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
-                .anyRequest().authenticated()
-                .and().logout()
-                .logoutUrl("/api/auth/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .clearAuthentication(true)
-                .permitAll()
-                .and()
-                .sessionManagement()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(true);
+                .anyRequest().permitAll();
+//                .antMatchers("/").permitAll()
+//                .antMatchers(HttpMethod.GET, "/api/users/*").permitAll()
+//                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+//                .antMatchers(HttpMethod.PUT, "/api/users").permitAll()
+//                .antMatchers(HttpMethod.GET, "/api/hashtags/*").permitAll()
+//                .antMatchers(HttpMethod.GET, "/api/posts/*").permitAll()
+//                .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
+//                .antMatchers(HttpMethod.POST, "/api/posts").permitAll()
+//                .antMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
+//                .anyRequest().authenticated()
+//                .and().logout()
+//                .logoutUrl("/api/auth/logout")
+//                .invalidateHttpSession(true)
+//                .deleteCookies("JSESSIONID")
+//                .clearAuthentication(true)
+//                .permitAll()
+//                .and()
+//                .sessionManagement()
+//                .maximumSessions(1)
+//                .maxSessionsPreventsLogin(true);
     }
 
     @Bean
