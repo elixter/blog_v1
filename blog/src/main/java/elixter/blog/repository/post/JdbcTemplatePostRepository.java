@@ -1,6 +1,6 @@
 package elixter.blog.repository.post;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.post.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -64,13 +64,13 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatus.recordStatusExist);
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatusConstants.recordStatusExist);
         return result.stream().findAny();
     }
 
     @Override
     public List<Post> findAll(Long offset, Long limit) {
-        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatus.recordStatusExist, offset, limit);
+        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatusConstants.recordStatusExist, offset, limit);
         return result;
     }
 
@@ -80,7 +80,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 "select * from posts where category = ? and status = ? limit ?, ?",
                 postRowMapper(),
                 category,
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 offset,
                 limit
         );
@@ -89,7 +89,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatus.recordStatusDeleted, id);
+        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatusConstants.recordStatusDeleted, id);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? limit ?, ?",
                 postRowMapper(),
                 hashtag,
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 offset,
                 limit
         );

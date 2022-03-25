@@ -1,7 +1,7 @@
 package elixter.blog.service.user;
 
-import elixter.blog.constants.RecordStatus;
-import elixter.blog.constants.RecordError;
+import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,12 +37,12 @@ public class UserServiceImpl implements UserService {
         } catch(DataIntegrityViolationException e) {
             String errCause = e.getCause().toString();
             if (errCause.contains("login_id")) {
-                result = RecordError.userLoginIdAlreadyExist;
+                result = RecordErrorConstants.userLoginIdAlreadyExist;
             }
             else if (errCause.contains("email")) {
-                result = RecordError.userEmailAlreadyExist;
+                result = RecordErrorConstants.userEmailAlreadyExist;
             } else {
-                result = RecordError.unknownError;
+                result = RecordErrorConstants.unknownError;
             }
         }
 
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
         User updateResult = repository.update(user);
         if (updateResult == null) {
-            result = RecordStatus.recordNotExist;
+            result = RecordStatusConstants.recordNotExist;
         } else {
             result = updateResult.getId();
         }

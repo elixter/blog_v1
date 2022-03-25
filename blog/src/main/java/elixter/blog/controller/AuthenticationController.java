@@ -1,22 +1,22 @@
 package elixter.blog.controller;
 
+import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.domain.user.UserInfo;
 import elixter.blog.dto.auth.PostLoginRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.message.Message;
-import elixter.blog.service.user.AuthenticationService;
+import elixter.blog.service.auth.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 @RestController
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 @Transactional
 public class AuthenticationController {
     @Resource
-    private UserInfo userinfo;
+    private UserInfo userInfo;
 
     private final AuthenticationService service;
 
@@ -35,17 +35,28 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<Message> PostSigninHandler(
-            @RequestBody PostLoginRequestDto requestBody
+            @RequestBody PostLoginRequestDto requestBody,
+            HttpServletRequest request
     ) {
         User loginUser = service.login(requestBody);
 
-        userinfo.setUserId(loginUser.getId());
-        userinfo.setUserLoginId(loginUser.getLoginId());
+        userInfo.setUserId(loginUser.getId());
+        userInfo.setUserLoginId(loginUser.getLoginId());
+
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConstants.AUTHENTICATION, userInfo);
+
+        log.debug("UserInfo : {}", userInfo);
 
         GetUserResponseDto responseData = new GetUserResponseDto();
         responseData.mapping(loginUser);
         Message responseBody = new Message(HttpStatus.OK, "authenticated", responseData);
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/session")
+    public String get() {
+        return userInfo.toString();
     }
 }

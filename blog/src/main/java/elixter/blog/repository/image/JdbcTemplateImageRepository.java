@@ -1,6 +1,6 @@
 package elixter.blog.repository.image;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.image.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("origin_name", multipartFile.getOriginalFilename());
         params.put("url", resultUrl);
-        params.put("status", RecordStatus.recordStatusWait);
+        params.put("status", RecordStatusConstants.recordStatusWait);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
 

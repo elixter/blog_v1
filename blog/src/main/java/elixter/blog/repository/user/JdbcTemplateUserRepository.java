@@ -1,6 +1,6 @@
 package elixter.blog.repository.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("email", user.getEmail());
         params.put("profile_image", user.getProfileImage());
         params.put("create_at", user.getCreateAt());
-        params.put("status", RecordStatus.recordStatusExist);
+        params.put("status", RecordStatusConstants.recordStatusExist);
 
         try {
             Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
@@ -90,7 +90,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and id = ?",
                 userRowMapper(),
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 id
         );
 
@@ -102,7 +102,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
           "select * from users where status = ? and login_id = ?",
           userRowMapper(),
-          RecordStatus.recordStatusExist,
+          RecordStatusConstants.recordStatusExist,
           loginId
         );
 
@@ -114,7 +114,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and name = ?",
                 userRowMapper(),
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 name
         );
 
@@ -126,7 +126,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and email = ?",
                 userRowMapper(),
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 email
         );
         return result.stream().findAny();
@@ -137,7 +137,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? limit ?, ?",
                 userRowMapper(),
-                RecordStatus.recordStatusExist,
+                RecordStatusConstants.recordStatusExist,
                 offset,
                 limit
         );
@@ -148,7 +148,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public void delete(Long id) {
         jdbcTemplate.update(
                 "update users set status = ? where id = ?",
-                RecordStatus.recordStatusDeleted,
+                RecordStatusConstants.recordStatusDeleted,
                 id
         );
     }

@@ -1,7 +1,7 @@
 package elixter.blog.controller;
 
-import elixter.blog.constants.RecordStatus;
-import elixter.blog.constants.RecordError;
+import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
@@ -72,11 +72,11 @@ public class UserController {
         User createdUser = createUserRequestBody.mapping();
         result = service.createUser(createdUser);
 
-        if (result.equals(RecordError.userLoginIdAlreadyExist)) {
+        if (result.equals(RecordErrorConstants.userLoginIdAlreadyExist)) {
             statusCode = HttpStatus.CONFLICT;
             msg = "user id ( " + createdUser.getLoginId() + " ) is already existed";
             result = null;
-        } else if (result.equals(RecordError.userEmailAlreadyExist)) {
+        } else if (result.equals(RecordErrorConstants.userEmailAlreadyExist)) {
             statusCode = HttpStatus.CONFLICT;
             msg = "entry is duplicated";
             result = null;
@@ -98,7 +98,7 @@ public class UserController {
         User updatedUser = updateUserRequestBody.mapping();
 
         result = service.updateUser(updatedUser);
-        if (result.equals(RecordStatus.recordNotExist)) {
+        if (result.equals(RecordStatusConstants.recordNotExist)) {
             log.debug("user id {} not exist", updatedUser.getId());
             msg = "user not exist";
             statusCode = HttpStatus.NOT_FOUND;
