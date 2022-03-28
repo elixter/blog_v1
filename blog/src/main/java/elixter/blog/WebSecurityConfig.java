@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +22,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .anyRequest().permitAll();
+//                .and()
+//                .logout()
+//                .logoutUrl("/api/auth/signout")
+//                .logoutSuccessUrl("http://www.naver.com")
+//                .deleteCookies("JSESSIONID").clearAuthentication(true)
+//                .invalidateHttpSession(true).permitAll();
 //                .antMatchers("/").permitAll()
 //                .antMatchers(HttpMethod.GET, "/api/users/*").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/users").permitAll()

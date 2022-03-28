@@ -1,5 +1,7 @@
 package elixter.blog.service.auth;
 
+import elixter.blog.constants.SessionConstants;
+import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.auth.PostLoginRequestDto;
 import elixter.blog.exception.RestException;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -38,5 +41,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         return loginUser;
+    }
+
+    @Override
+    public SessionUser getSessionUser(HttpSession session) {
+        SessionUser result = null;
+        if (session != null) {
+            result = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+        }
+
+        return result;
     }
 }

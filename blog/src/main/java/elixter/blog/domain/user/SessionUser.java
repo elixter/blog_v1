@@ -14,14 +14,17 @@ import java.io.Serializable;
 @Slf4j
 @Getter
 @Setter
-@Component
-@SessionScope
 @ToString
-public class UserInfo implements Serializable {
+public class SessionUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long userId;
     private String userLoginId;
+
+    public SessionUser(Long userId, String userLoginId) {
+        this.userId = userId;
+        this.userLoginId = userLoginId;
+    }
 
     @PostConstruct
     public void test() {
