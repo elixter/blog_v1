@@ -44,10 +44,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public SessionUser getSessionUser(HttpSession session) {
-        SessionUser result = null;
-        if (session != null) {
-            result = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+    public void logout(HttpSession session) {
+        if (session == null) {
+            SessionUser signoutUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+
+            log.info("user id : {}, login id : {} signed out", signoutUser.getUserId(), signoutUser.getUserLoginId());
+            log.debug("{}", signoutUser);
+            session.invalidate();
+        }
+    }
+
+    @Override
+    public User getSessionUser(HttpSession session) {
+        SessionUser sessionUser = null;
+        if (session == null) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
+        sessionUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+        Long id = sessionUser.getUserId();
+
+        User result;
+        try {
+            result = repository.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new RestException(HttpStatus.NOT_FOUND, "No such user : " + sessionUser.getUserLoginId());
         }
 
         return result;

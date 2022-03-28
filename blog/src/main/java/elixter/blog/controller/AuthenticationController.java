@@ -42,7 +42,7 @@ public class AuthenticationController {
         session.setAttribute(SessionConstants.AUTHENTICATION, signinUser);
         session.setMaxInactiveInterval(SessionConstants.SESSION_TIMEOUT);
 
-        log.debug("UserInfo : {}", signinUser);
+        log.debug("UserInfo : {} try to signin", signinUser);
 
         GetUserResponseDto responseData = new GetUserResponseDto();
         responseData.mapping(loginUser);
@@ -51,34 +51,20 @@ public class AuthenticationController {
         return ResponseEntity.ok(responseBody);
     }
 
-    @GetMapping("/session")
-    public ResponseEntity<Message> get(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        SessionUser currentUser = null;
-        HttpStatus status = HttpStatus.OK;
-        String message = "Authenticated";
-
-        if (session == null) {
-            status = HttpStatus.UNAUTHORIZED;
-            message = "Unauthorized";
-        } else {
-           currentUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
-        }
-
-        return new ResponseEntity<>(new Message(status, message, currentUser), status);
-    }
-
     @GetMapping("/signout")
     public ResponseEntity<Message> GetSignoutHandler(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            SessionUser signoutUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
-
-            log.info("user id : {}, login id : {} signed out", signoutUser.getUserId(), signoutUser.getUserLoginId());
-            log.debug("{}", signoutUser);
-            session.invalidate();
-        }
+        service.logout(session);
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping
+    public ResponseEntity<Message> get(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        User currentUser = service.getSessionUser(session);
+
+        return new ResponseEntity<>(new Message(HttpStatus.OK, "Authenticated", currentUser), HttpStatus.OK);
+    }
+
 }
