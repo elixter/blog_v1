@@ -4,15 +4,17 @@ import (
 	"ImageRemover/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
+	"sync"
 )
 
 var log *zap.SugaredLogger = logger.GetLogger()
+var instance *viper.Viper
+var once sync.Once
 
-func GetConfig() *viper.Viper {
+func newConfig() *viper.Viper {
 	vp := viper.New()
-	vp.SetConfigFile("config")
+	vp.SetConfigFile("config.json")
 	vp.SetConfigType("json")
-	vp.AddConfigPath(".")
 
 	err := vp.ReadInConfig()
 	if err != nil {
@@ -20,14 +22,21 @@ func GetConfig() *viper.Viper {
 			log.Errorw(
 				"Config file not found",
 				"fileName", vp.ConfigFileUsed(),
-				)
+			)
 		} else {
 			log.Error(err)
 		}
-
 		return nil
 	}
 
 	return vp
+}
+
+func GetConfig() *viper.Viper {
+	once.Do(func() {
+		instance = newConfig()
+	})
+
+	return instance
 }
 
