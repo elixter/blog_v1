@@ -54,7 +54,13 @@ public class AuthenticationController {
     @GetMapping("/signout")
     public ResponseEntity<Message> GetSignoutHandler(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        service.logout(session);
+        SessionUser signoutUser = service.logout(session);
+
+        if (signoutUser != null) {
+            log.info("user id : {}, login id : {} signed out", signoutUser.getUserId(), signoutUser.getUserLoginId());
+            log.debug("{}", signoutUser);
+        }
+
 
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }

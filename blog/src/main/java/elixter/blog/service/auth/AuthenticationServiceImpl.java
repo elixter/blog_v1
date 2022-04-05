@@ -44,14 +44,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void logout(HttpSession session) {
-        if (session == null) {
-            SessionUser signoutUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
-
-            log.info("user id : {}, login id : {} signed out", signoutUser.getUserId(), signoutUser.getUserLoginId());
-            log.debug("{}", signoutUser);
+    public SessionUser logout(HttpSession session) {
+        SessionUser signoutUser = null;
+        if (session != null) {
+            signoutUser = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+            session.setMaxInactiveInterval(SessionConstants.SESSION_REMOVE);
+            session.removeAttribute(SessionConstants.AUTHENTICATION);
             session.invalidate();
         }
+
+        return signoutUser;
     }
 
     @Override
