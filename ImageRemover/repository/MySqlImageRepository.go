@@ -29,7 +29,26 @@ func (m MySqlImageRepository) Delete(expire int) (int64, error) {
 	return nDeleted, nil
 }
 
-func (m MySqlImageRepository) FindStatusPending() ([]model.Image, error) {
-	panic("implement me")
+func (m MySqlImageRepository) FindStatusPending(expire int) ([]model.Image, error) {
+	rows, err := m.db.Queryx(
+		"select * from images where DATEDIFF(now(), create_at) > ? and status = ?",
+		expire,
+		recordStatusPending,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []model.Image
+	for rows.Next() {
+		var image model.Image
+		err := rows.StructScan(&image)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, image)
+	}
+
+	return result, nil
 }
 

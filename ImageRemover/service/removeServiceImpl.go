@@ -30,7 +30,7 @@ func New(repository repository.ImageRepository, storage storage.ImageStorage) *R
 }
 
 func (rs *RemoveServiceImpl) Remove() (int64, error) {
-	images, err := rs.repository.FindStatusPending()
+	images, err := rs.repository.FindStatusPending(rs.expire)
 	if err != nil {
 		return 0, err
 	}
