@@ -20,69 +20,27 @@ import java.util.Map;
 @Repository
 @Qualifier("jdbcTemplateImageRepository")
 public class JdbcTemplateImageRepository implements ImageRepository {
-    private static final String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
-
     private final JdbcTemplate jdbcTemplate;
-    private final ImageStorage imageStorage;
 
     @Autowired
-    public JdbcTemplateImageRepository(DataSource dataSource, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+    public JdbcTemplateImageRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.imageStorage = imageStorage;
     }
 
     @Override
-    public Image save(MultipartFile multipartFile) throws IOException {
-        String resultUrl = imageStorage.save(multipartFile);
-        log.debug("resultUrl : {}", resultUrl);
-
+    public Image save(Image image) throws IOException {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("images").usingGeneratedKeyColumns("id");
 
         Map<String, Object> params = new HashMap<>();
-        params.put("origin_name", multipartFile.getOriginalFilename());
-        params.put("url", resultUrl);
-        params.put("status", RecordStatusConstants.recordStatusWait);
+        params.put("origin_name", image.getOriginName());
+        params.put("url", image.getUrl());
+        params.put("create_at", image.getCreateAt());
+        params.put("status", image.getStatus());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
+        image.setId(key.longValue());
 
-        return new Image(key.longValue(), multipartFile.getOriginalFilename(), resultUrl, "PENDING");
-    }
-
-    /***
-     *
-     * @param name - Origin image name
-     * @return Image data as byte array
-     *
-     * This method is Only used for get local saved image data.
-     */
-    @Override
-    public byte[] get(String name) {
-        FileInputStream fis = null;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        String fileDir = IMAGE_FILE_FOLDER + "/" + name;
-
-        try {
-            fis = new FileInputStream(fileDir);
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        int readCount = 0;
-        byte[] buf = new byte[1024];
-        byte[] fileArray = null;
-
-        try {
-            while((readCount = fis.read(buf)) != -1) {
-                outputStream.write(buf, 0, readCount);
-            }
-            fileArray = outputStream.toByteArray();
-            fis.close();
-        } catch (IOException e) {
-            throw new RuntimeException("File Error");
-        }
-
-        return fileArray;
+        return image;
     }
 }

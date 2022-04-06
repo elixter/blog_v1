@@ -13,4 +13,9 @@ public class S3ImageStorage implements ImageStorage {
     public String save(MultipartFile multipartFile) throws IOException {
         return null;
     }
+
+    @Override
+    public byte[] getByName(String name) {
+        return new byte[0];
+    }
 }

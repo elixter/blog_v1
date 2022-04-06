@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface ImageStorage {
     String save(MultipartFile multipartFile) throws IOException;
+    byte[] getByName(String name);
 }
