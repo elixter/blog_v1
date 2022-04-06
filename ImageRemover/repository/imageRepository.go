@@ -1,5 +1,5 @@
 package repository
 
 type ImageRepository interface {
-	Delete() int
+	DeleteById([]int64) int
 }

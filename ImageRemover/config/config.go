@@ -3,11 +3,10 @@ package config
 import (
 	"ImageRemover/logger"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"sync"
 )
 
-var log *zap.SugaredLogger = logger.GetLogger()
+var log = logger.GetLogger()
 var instance *viper.Viper
 var once sync.Once
 
