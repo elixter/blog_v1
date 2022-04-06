@@ -2,9 +2,10 @@ create table images
 (
     id          bigint auto_increment
         primary key,
-    origin_name text        not null,
-    url         text        not null,
-    status      varchar(20) not null
+    origin_name text                               not null,
+    url         text                               not null,
+    create_at   datetime default CURRENT_TIMESTAMP not null,
+    status      varchar(20)                        not null
 );
 
 create index images_id_index
