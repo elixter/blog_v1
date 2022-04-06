@@ -1,5 +1,5 @@
 package service
 
 type RemoveService interface {
-	Remove() int
+	Remove(expire int) (int64, error)
 }

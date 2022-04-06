@@ -1,19 +1,35 @@
 package repository
 
 import (
-	"ImageRemover/logger"
+	"ImageRemover/model"
 	"github.com/jmoiron/sqlx"
 )
 
-var log = logger.GetLogger()
+const (
+	recordStatusDeleted = "DELETED"
+	recordStatusPending = "PENDING"
+)
 
 type MySqlImageRepository struct {
 	db *sqlx.DB
 }
 
-func (m MySqlImageRepository) DeleteById(idList []int64) int {
-	result, err := m.db.Exec("delete from images where DATEDIFF(now(), ) > 2")
+func (m MySqlImageRepository) Delete(expire int) (int64, error) {
+	result, err := m.db.Exec(
+		"update images set status = ? where DATEDIFF(now(), create_at) > ? and status = ?",
+		recordStatusDeleted,
+		expire,
+		recordStatusPending,
+	)
 	if err != nil {
-		log.Error(err)
+		return 0, err
 	}
+	nDeleted, _ := result.RowsAffected()
+
+	return nDeleted, nil
 }
+
+func (m MySqlImageRepository) FindStatusPending() ([]model.Image, error) {
+	panic("implement me")
+}
+

@@ -38,4 +38,3 @@ func GetConfig() *viper.Viper {
 
 	return instance
 }
-
