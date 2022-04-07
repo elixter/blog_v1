@@ -50,21 +50,20 @@ func (m MySqlImageRepository) DeleteById(id int64) error {
 }
 
 func (m MySqlImageRepository) DeleteByIdBatch(idList []int64) (int64, error) {
-	idQueryString := fmt.Sprintf("%#v", idList)
-	tp := fmt.Sprintf("%T", idList)
-	idQueryString = fmt.Sprintf("(%s)", idQueryString[len(tp) + 1:len(idQueryString) - 1])
+	qry, args, err := sqlx.In("UPDATE images SET status = ? WHERE id IN (?)", recordStatusPending, idList)
+	if err != nil {
+		return 0, err
+	}
 
-	log.Println(idQueryString)
-
-	_, err := m.db.Query(
-		"UPDATE images SET status = ? WHERE id IN " + idQueryString,
-		recordStatusDeleted,
+	result, err := m.db.Exec(
+		qry,
+		args,
 	)
 	if err != nil {
 		return 0, err
 	}
 
-	return 0, nil
+	return result.RowsAffected()
 }
 
 func (m MySqlImageRepository) FindStatusPending(expire int) ([]model.Image, error) {
