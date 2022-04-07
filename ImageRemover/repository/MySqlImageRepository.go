@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"ImageRemover/config"
 	"ImageRemover/model"
 	"fmt"
 	"github.com/jmoiron/sqlx"
@@ -12,13 +13,29 @@ const (
 	recordStatusPending = "PENDING"
 )
 
+var conf = config.GetConfig()
+
 type MySqlImageRepository struct {
 	db *sqlx.DB
 }
 
-func New(db *sqlx.DB) MySqlImageRepository {
+func New() MySqlImageRepository {
+	dbConfig := conf.GetStringMapString("db")
+	dataSourceName := fmt.Sprintf(
+		"%s:%s@(%s:%s)/%s?parseTime=true",
+		dbConfig["account"],
+		dbConfig["password"],
+		dbConfig["host"],
+		dbConfig["port"],
+		dbConfig["scheme"],
+	)
+	dataSource, err := sqlx.Connect(dbConfig["driver"], dataSourceName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return MySqlImageRepository{
-		db: db,
+		db: dataSource,
 	}
 }
 

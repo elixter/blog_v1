@@ -6,8 +6,6 @@ import (
 	"ImageRemover/repository"
 	"ImageRemover/service"
 	"ImageRemover/storage"
-	"fmt"
-	"github.com/jmoiron/sqlx"
 	"time"
 )
 
@@ -19,22 +17,7 @@ type ImageRemove struct {
 }
 
 func New() ImageRemove {
-	dbConfig := conf.GetStringMapString("db")
-	dataSourceName := fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s?parseTime=true",
-		dbConfig["account"],
-		dbConfig["password"],
-		dbConfig["host"],
-		dbConfig["port"],
-		dbConfig["scheme"],
-	)
-
-	db, err := sqlx.Connect(dbConfig["driver"], dataSourceName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	imageRepository := repository.New(db)
+	imageRepository := repository.New()
 	imageStorage := storage.NewLocalImageStorageImpl(conf.GetString("imagePath"))
 	removeService := service.New(imageRepository, imageStorage)
 
