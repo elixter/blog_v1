@@ -35,7 +35,10 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 		return 0, err
 	}
 
+	var idSlice []int64
+
 	for _, img := range images {
+		idSlice = append(idSlice, img.Id)
 		rs.wg.Add(1)
 		go func(url string) {
 			defer rs.wg.Done()
@@ -44,7 +47,7 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 	}
 	rs.wg.Wait()
 
-	nDeleted, err := rs.repository.Delete(rs.expire)
+	nDeleted, err := rs.repository.DeleteByIdBatch(idSlice)
 	if err != nil {
 		return 0, err
 	}

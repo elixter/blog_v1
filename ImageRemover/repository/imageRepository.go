@@ -3,6 +3,8 @@ package repository
 import "ImageRemover/model"
 
 type ImageRepository interface {
-	Delete(expire int) (int64, error)
+	DeleteById(id int64) error
+	DeleteByIdBatch(idList []int64) (int64, error)
+
 	FindStatusPending(expire int) ([]model.Image, error)
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"ImageRemover/model"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,39 +15,48 @@ type MySqlImageRepository struct {
 	db *sqlx.DB
 }
 
-func (m MySqlImageRepository) Delete(expire int) (int64, error) {
-	result, err := m.db.Exec(
-		"update images set status = ? where DATEDIFF(now(), create_at) > ? and status = ?",
+func New(db *sqlx.DB) MySqlImageRepository {
+	return MySqlImageRepository{
+		db: db,
+	}
+}
+
+func (m MySqlImageRepository) DeleteById(id int64) error {
+	_, err := m.db.Exec(
+		"UPDATE images SET status = ? WHERE id = ?",
 		recordStatusDeleted,
-		expire,
-		recordStatusPending,
+		id,
+	)
+
+	return err
+}
+
+func (m MySqlImageRepository) DeleteByIdBatch(idList []int64) (int64, error) {
+	idQueryString := fmt.Sprintf("%#v", idList)
+	tp := fmt.Sprintf("%T", idList)
+	idQueryString = fmt.Sprintf("(%s)", idQueryString[len(tp) + 1:len(idQueryString) - 1])
+
+	_, err := m.db.Query(
+		"UPDATE images SET status = ? WHERE id IN " + idQueryString,
+		recordStatusDeleted,
 	)
 	if err != nil {
 		return 0, err
 	}
-	nDeleted, _ := result.RowsAffected()
 
-	return nDeleted, nil
+	return 0, nil
 }
 
 func (m MySqlImageRepository) FindStatusPending(expire int) ([]model.Image, error) {
-	rows, err := m.db.Queryx(
-		"select * from images where DATEDIFF(now(), create_at) > ? and status = ?",
+	var result []model.Image
+	err := m.db.Select(
+		&result,
+		"SELECT * FROM images WHERE DATEDIFF(now(), create_at) > ? AND status = ?",
 		expire,
 		recordStatusPending,
 	)
 	if err != nil {
 		return nil, err
-	}
-
-	var result []model.Image
-	for rows.Next() {
-		var image model.Image
-		err := rows.StructScan(&image)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, image)
 	}
 
 	return result, nil
