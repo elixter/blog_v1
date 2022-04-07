@@ -1,0 +1,13 @@
+{
+  "db": {
+    "driver": "",
+    "host": "",
+    "port": "",
+    "account": "",
+    "password": "",
+    "scheme": ""
+  },
+  "expire": 0,
+  "imagePath": "",
+  "duration": "24h"
+}
