@@ -1,12 +1,12 @@
 package config
 
 import (
-	"ImageRemover/logger"
+	"ImageRemover/logging"
 	"github.com/spf13/viper"
 	"sync"
 )
 
-var log = logger.GetLogger()
+var log = logging.GetLogger()
 var instance *viper.Viper
 var once sync.Once
 

@@ -1,4 +1,4 @@
-package logger
+package logging
 
 import (
 	"go.uber.org/zap"
@@ -8,8 +8,8 @@ import (
 var instance *zap.SugaredLogger
 var once sync.Once
 
-func newLogger() *zap.SugaredLogger {
-	logger, _ := zap.NewProduction()
+func newLogging() *zap.SugaredLogger {
+	logger, _ := zap.NewDevelopment()
 	defer logger.Sync()
 	sugar := logger.Sugar()
 
@@ -18,7 +18,7 @@ func newLogger() *zap.SugaredLogger {
 
 func GetLogger() *zap.SugaredLogger {
 	once.Do(func() {
-		instance = newLogger()
+		instance = newLogging()
 	})
 
 	return instance

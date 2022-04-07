@@ -1,10 +1,15 @@
 package storage
 
+import (
+	"ImageRemover/model"
+	"os"
+)
+
 type LocalImageStorageImpl struct {
 	imageDir string
 }
 
-func New(imageDir string) *LocalImageStorageImpl {
+func NewLocalImageStorageImpl(imageDir string) *LocalImageStorageImpl {
 	instance := &LocalImageStorageImpl{
 		imageDir: imageDir,
 	}
@@ -12,6 +17,6 @@ func New(imageDir string) *LocalImageStorageImpl {
 	return instance
 }
 
-func (l LocalImageStorageImpl) Remove(url string) error {
-	panic("implement me")
+func (l LocalImageStorageImpl) Remove(image model.Image) error {
+	return os.Remove(l.imageDir + "/" + image.OriginName)
 }

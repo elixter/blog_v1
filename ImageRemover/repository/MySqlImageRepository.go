@@ -4,6 +4,7 @@ import (
 	"ImageRemover/model"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"log"
 )
 
 const (
@@ -35,6 +36,8 @@ func (m MySqlImageRepository) DeleteByIdBatch(idList []int64) (int64, error) {
 	idQueryString := fmt.Sprintf("%#v", idList)
 	tp := fmt.Sprintf("%T", idList)
 	idQueryString = fmt.Sprintf("(%s)", idQueryString[len(tp) + 1:len(idQueryString) - 1])
+
+	log.Println(idQueryString)
 
 	_, err := m.db.Query(
 		"UPDATE images SET status = ? WHERE id IN " + idQueryString,

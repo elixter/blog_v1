@@ -2,12 +2,15 @@ package service
 
 import (
 	"ImageRemover/config"
+	"ImageRemover/logging"
+	"ImageRemover/model"
 	"ImageRemover/repository"
 	"ImageRemover/storage"
 	"sync"
 )
 
 var conf = config.GetConfig()
+var log = logging.GetLogger()
 
 type RemoveServiceImpl struct {
 	repository repository.ImageRepository
@@ -23,7 +26,7 @@ func New(repository repository.ImageRepository, storage storage.ImageStorage) *R
 		repository: repository,
 		storage:    storage,
 		expire:     expire,
-		wg: &sync.WaitGroup{},
+		wg:         &sync.WaitGroup{},
 	}
 
 	return instance
@@ -35,17 +38,30 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 		return 0, err
 	}
 
-	var idSlice []int64
+	log.Infof("%d peding images detected", len(images))
 
+	var idSlice []int64
 	for _, img := range images {
-		idSlice = append(idSlice, img.Id)
 		rs.wg.Add(1)
-		go func(url string) {
+		go func(image model.Image) {
 			defer rs.wg.Done()
-			rs.storage.Remove(url)
-		}(img.Url)
+			err := rs.storage.Remove(image)
+			if err != nil {
+				log.Errorw(
+					"failed to remove image",
+					"image", image,
+					"error msg", err,
+				)
+				return
+			}
+			idSlice = append(idSlice, img.Id)
+		}(img)
 	}
 	rs.wg.Wait()
+
+	if len(idSlice) == 0 {
+		return 0, nil
+	}
 
 	nDeleted, err := rs.repository.DeleteByIdBatch(idSlice)
 	if err != nil {

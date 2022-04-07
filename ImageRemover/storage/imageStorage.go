@@ -1,5 +1,7 @@
 package storage
 
+import "ImageRemover/model"
+
 type ImageStorage interface {
-	Remove(url string) error
+	Remove(image model.Image) error
 }
