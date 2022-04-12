@@ -33,4 +33,26 @@ public class Image {
         this.createAt = createAt;
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = true;
+        Image _obj = (Image)obj;
+
+        if (obj instanceof Image) {
+            if (
+                    !this.id.equals(((Image) obj).id) ||
+                    !this.url.equals(((Image) obj).url) ||
+                    !this.originName.equals(((Image) obj).originName) ||
+                    !this.status.equals(((Image) obj).status)
+            ) {
+                result = false;
+            }
+        }
+        else {
+            result = false;
+        }
+
+        return result;
+    }
 }
