@@ -32,6 +32,7 @@ func New(repository repository.ImageRepository, storage storage.ImageStorage) *R
 	return instance
 }
 
+// TODO: 테스트 코드 작성하면서 go 루틴 유무 벤치마크 측정
 func (rs *RemoveServiceImpl) Remove() (int64, error) {
 	images, err := rs.repository.FindStatusPending(rs.expire)
 	if err != nil {
@@ -41,6 +42,7 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 	log.Infof("%d peding images detected", len(images))
 
 	var idSlice []int64
+	var mutex sync.Mutex
 	for _, img := range images {
 		rs.wg.Add(1)
 		go func(image model.Image) {
@@ -54,7 +56,9 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 				)
 				return
 			}
+			mutex.Lock()
 			idSlice = append(idSlice, img.Id)
+			mutex.Unlock()
 		}(img)
 	}
 	rs.wg.Wait()
