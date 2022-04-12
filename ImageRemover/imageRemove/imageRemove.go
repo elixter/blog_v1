@@ -3,9 +3,7 @@ package imageRemove
 import (
 	"ImageRemover/config"
 	"ImageRemover/logging"
-	"ImageRemover/repository"
 	"ImageRemover/service"
-	"ImageRemover/storage"
 	"time"
 )
 
@@ -16,11 +14,7 @@ type ImageRemove struct {
 	removeService service.RemoveService
 }
 
-func New() ImageRemove {
-	imageRepository := repository.New()
-	imageStorage := storage.NewLocalImageStorageImpl(conf.GetString("imagePath"))
-	removeService := service.New(imageRepository, imageStorage)
-
+func New(removeService service.RemoveService) ImageRemove {
 	return ImageRemove{
 		removeService: removeService,
 	}

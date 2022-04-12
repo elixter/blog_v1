@@ -6,7 +6,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
-	"sync"
 	"testing"
 	"time"
 )
@@ -16,7 +15,6 @@ type mockDB struct {
 	mock sqlmock.Sqlmock
 }
 
-var once sync.Once
 var instance *mockDB
 
 func mockDb() *mockDB {
@@ -31,10 +29,10 @@ func mockDb() *mockDB {
 	return instance
 }
 
-func getRepo() *MySqlImageRepository {
+func getRepo() *SqlxImageRepository {
 	mockdb := mockDb()
 
-	return &MySqlImageRepository{
+	return &SqlxImageRepository{
 		sqlx.NewDb(mockdb.db, "sqlmock"),
 	}
 }
