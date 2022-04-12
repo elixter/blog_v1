@@ -70,7 +70,7 @@ func (m MySqlImageRepository) FindStatusPending(expire int) ([]model.Image, erro
 	var result []model.Image
 	err := m.db.Select(
 		&result,
-		"SELECT * FROM images WHERE DATEDIFF(now(), create_at) > ? AND status = ?",
+		"SELECT * FROM images WHERE TIMESTAMPDIFF(HOUR, create_at, now()) >= ? AND status = ?",
 		expire,
 		recordStatusPending,
 	)

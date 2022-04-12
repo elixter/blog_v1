@@ -31,76 +31,36 @@ func mockDb() *mockDB {
 	return instance
 }
 
-func TestMySqlImageRepository_DeleteById(t *testing.T) {
+func getRepo() *MySqlImageRepository {
+	mockdb := mockDb()
 
-}
-
-func TestMySqlImageRepository_DeleteByIdBatch(t *testing.T) {
-	type fields struct {
-		db *sqlx.DB
-	}
-	type args struct {
-		idList []int64
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    int64
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := MySqlImageRepository{
-				db: tt.fields.db,
-			}
-			got, err := m.DeleteByIdBatch(tt.args.idList)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("DeleteByIdBatch() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("DeleteByIdBatch() got = %v, want %v", got, tt.want)
-			}
-		})
+	return &MySqlImageRepository{
+		sqlx.NewDb(mockdb.db, "sqlmock"),
 	}
 }
 
 func TestMySqlImageRepository_FindStatusPending(t *testing.T) {
-	mockdb := mockDb()
-
-	repo := MySqlImageRepository{
-		sqlx.NewDb(mockdb.db, "sqlmock"),
-	}
-
+	repo := getRepo()
+	mock := mockDb().mock
 	img := model.Image{
-		21,
-		"test.jpg",
-		"imageURL",
-		time.Now(),
+		22,
+		"test2.jpg",
+		"imageURL2",
+		time.Date(2020, time.January, 1, 0, 0, 0, 0, time.UTC),
+		//time.Now(),
 		recordStatusPending,
 	}
 
 	rows := sqlmock.NewRows([]string{"id", "origin_name", "url", "create_at", "status"}).
 		AddRow(img.Id, img.OriginName, img.Url, img.CreateAt, img.Status)
 
-	mockdb.mock.ExpectQuery("SELECT * FROM images WHERE DATEDIFF(now(), create_at) > ? AND status = ?").
-		WithArgs(2, recordStatusPending).
+	mock.ExpectQuery("SELECT * FROM images WHERE TIMESTAMPDIFF(HOUR, create_at, now()) >= ? AND status = ?").
+		WithArgs(2 * 24, recordStatusPending).
 		WillReturnRows(rows)
 
-	images, err := repo.FindStatusPending(2)
-	if err != nil {
-		t.Fatal(err)
-	}
+	_, err := repo.FindStatusPending(2 * 24)
 	assert.Nil(t, err)
 
-	err = mockdb.mock.ExpectationsWereMet()
-	if err != nil {
-		t.Fatal(err)
-	}
+	err = mock.ExpectationsWereMet()
 	assert.Nil(t, err)
-
-	assert.Contains(t, images, img)
 }
