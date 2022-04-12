@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"ImageRemover/dataSource"
 	"ImageRemover/model"
+	"ImageRemover/repository/dataSource"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -12,17 +12,18 @@ type SqlxImageRepository struct {
 	db *sqlx.DB
 }
 
-func newSqlxImageRepository(dataSource dataSource.DataSource) *SqlxImageRepository {
-	db := dataSource.Get()
+func newSqlxImageRepository() *SqlxImageRepository {
+	ds := dataSource.GetDataSource()
+	db := ds.Get()
 
 	return &SqlxImageRepository{
-		db: sqlx.NewDb(db, dataSource.GetDriverName()),
+		db: sqlx.NewDb(db, ds.GetDriverName()),
 	}
 }
 
-func GetSqlxImageRepository(dataSource dataSource.DataSource) *SqlxImageRepository {
+func GetSqlxImageRepository() *SqlxImageRepository {
 	once.Do(func() {
-		sqlxInstance = newSqlxImageRepository(dataSource)
+		sqlxInstance = newSqlxImageRepository()
 	})
 
 	return sqlxInstance

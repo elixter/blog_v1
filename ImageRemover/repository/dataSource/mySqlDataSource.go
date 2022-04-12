@@ -3,6 +3,7 @@ package dataSource
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var mySqlDataSource *MySqlDataSource
@@ -38,7 +39,7 @@ func createMySqlDataSource() (*MySqlDataSource, error) {
 
 	return &MySqlDataSource{
 		driver: driverMySql,
-		db: dataSource,
+		db:     dataSource,
 	}, nil
 }
 
