@@ -57,7 +57,7 @@ func (rs *RemoveServiceImpl) Remove() (int64, error) {
 				return
 			}
 			mutex.Lock()
-			idSlice = append(idSlice, img.Id)
+			idSlice = append(idSlice, image.Id)
 			mutex.Unlock()
 		}(img)
 	}
