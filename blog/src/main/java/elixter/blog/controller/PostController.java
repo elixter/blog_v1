@@ -59,8 +59,8 @@ public class PostController {
 
     @GetMapping
     public GetAllPostsResponseDto GetAllPostsHandler(
-            @RequestParam(value = "curPage", required = false) Number curPage,
-            @RequestParam(value = "pageSize", required = false) Number pageSize,
+            @RequestParam(value = "curPage", required = false, defaultValue = "0") Number curPage,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "50") Number pageSize,
             @RequestParam(value = "filterType", required = false) String filterType,
             @RequestParam(value = "filterString", required = false) String filterString
     ) {

@@ -17,6 +17,7 @@ public class CreatePostRequestDto {
     private String category;
     private String thumbnail;
     private List<String> hashtags;
+    private List<Long> imageIdList;
 
     public Post PostMapping() {
         Post post = new Post();
