@@ -1,7 +1,7 @@
 package elixter.blog.repository.image;
 
-import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.image.Image;
+import elixter.blog.domain.imagePostRelation.ImagePostRelation;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +10,16 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
-import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +69,23 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     @Override
     public void updateStatusByIdBatch(List<Long> idList, String status) {
         jdbcTemplate.batchUpdate("UPDATE images set status = ? WHERE id = ?", getStatementSetter(idList, status));
+    }
+
+    @Override
+    public void relateWithPost(List<Long> idList, Long postId) {
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("images_posts")
+                .usingColumns("image_id", "post_id");
+
+        List<Map<String, Object>> records = new LinkedList<>();
+        for (Long imageId : idList) {
+            Map<String, Object> record = new HashMap<>();
+            record.put("image_id", imageId);
+            record.put("post_id", postId);
+            records.add(record);
+        }
+
+        jdbcInsert.executeBatch(SqlParameterSourceUtils.createBatch(records));
     }
 
     @NotNull

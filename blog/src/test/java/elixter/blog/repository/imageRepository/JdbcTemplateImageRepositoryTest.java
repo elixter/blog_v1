@@ -8,9 +8,6 @@ import elixter.blog.repository.image.JdbcTemplateImageRepository;
 import elixter.blog.repository.image.LocalImageStorage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +24,8 @@ public class JdbcTemplateImageRepositoryTest {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUsername("root");
-        dataSource.setPassword("971216");
+        dataSource.setUsername("elixter");
+        dataSource.setPassword("1q2w3e4r");
         dataSource.setUrl("jdbc:mysql://localhost:3306/blog2?serverTimezone=UTC&characterEncoding=UTF-8");
 
         return dataSource;
