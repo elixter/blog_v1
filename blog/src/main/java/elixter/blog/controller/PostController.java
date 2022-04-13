@@ -7,6 +7,7 @@ import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.hashtag.HashtagService;
+import elixter.blog.service.image.ImageService;
 import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +33,14 @@ public class PostController {
 
     private final PostService postService;
     private final HashtagService hashtagService;
+    private final ImageService imageService;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostController(PostService postService, HashtagService hashtagService) {
+    public PostController(PostService postService, HashtagService hashtagService, ImageService imageService) {
         this.postService = postService;
         this.hashtagService = hashtagService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/{id}")
@@ -69,18 +72,18 @@ public class PostController {
 
         LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
 
-        Long offset = curPage.longValue() * pageSize.longValue();
-        Long limit = offset + pageSize.longValue();
+        Long page = curPage.longValue() * pageSize.longValue();
+        Long pageSz = page + pageSize.longValue();
 
         switch(filterType) {
             case "category":
-                postList = postService.findPostByCategory(filterString, offset, limit);
+                postList = postService.findPostByCategory(filterString, page, pageSz);
                 break;
             case "hashtag":
-                postList = postService.findPostByHashtag(filterString, offset, limit);
+                postList = postService.findPostByHashtag(filterString, page, pageSz);
                 break;
             default:
-                postList = postService.findPost(offset, limit);
+                postList = postService.findPost(page, pageSz);
                 break;
         }
 

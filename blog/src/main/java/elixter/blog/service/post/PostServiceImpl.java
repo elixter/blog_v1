@@ -36,18 +36,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findPost(Long offset, Long limit) {
-        return postRepository.findAll(offset, limit);
+    public List<Post> findPost(Long page, Long pageSize) {
+        return postRepository.findAll(page, pageSize);
     }
 
     @Override
-    public List<Post> findPostByCategory(String category, Long offset, Long limit) {
-        return postRepository.findByCategory(category, offset, limit);
+    public List<Post> findPostByCategory(String category, Long page, Long pageSize) {
+        return postRepository.findByCategory(category, page, pageSize);
     }
 
     @Override
-    public List<Post> findPostByHashtag(String hashtag, Long offset, Long limit) {
-        return postRepository.findByHashtag(hashtag, offset, limit);
+    public List<Post> findPostByHashtag(String hashtag, Long page, Long pageSize) {
+        return postRepository.findByHashtag(hashtag, page, pageSize);
     }
 
     @Override
