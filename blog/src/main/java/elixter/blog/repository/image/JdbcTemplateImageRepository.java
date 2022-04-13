@@ -62,6 +62,11 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     }
 
     @Override
+    public List<Image> findByPostId(Long postId) {
+        return jdbcTemplate.query("SELECT * FROM images join images_posts ip on images.id = ip.image_id WHERE ip.post_id = ?", imageRowMapper(), postId);
+    }
+
+    @Override
     public void updateStatusById(Long id, String status) {
         jdbcTemplate.update("UPDATE images SET status = ? WHERE id = ?", status, id);
     }

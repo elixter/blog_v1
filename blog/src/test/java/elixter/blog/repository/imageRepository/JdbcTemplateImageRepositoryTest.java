@@ -2,10 +2,13 @@ package elixter.blog.repository.imageRepository;
 
 import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.image.Image;
+import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.image.ImageStorage;
 import elixter.blog.repository.image.JdbcTemplateImageRepository;
 import elixter.blog.repository.image.LocalImageStorage;
+import elixter.blog.repository.post.JdbcTemplatePostRepository;
+import elixter.blog.repository.post.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -33,6 +36,7 @@ public class JdbcTemplateImageRepositoryTest {
 
 
     ImageRepository imageRepository = new JdbcTemplateImageRepository(dataSource());
+    PostRepository postRepository = new JdbcTemplatePostRepository(dataSource());
 
     ImageStorage imageStorage = new LocalImageStorage();
 
@@ -89,5 +93,42 @@ public class JdbcTemplateImageRepositoryTest {
 
         List<Image> existImages = imageRepository.findByStatus(RecordStatusConstants.recordStatusExist);
         Assertions.assertThat(existImages).contains(img1, img2);
+    }
+
+    @Test
+    @Transactional
+    public void findByPostId() {
+        Image img1 = new Image();
+        img1.setUrl("http://localhost");
+        img1.setOriginName("test");
+        img1.setCreateAt(LocalDateTime.now());
+        img1.setStatus(RecordStatusConstants.recordStatusPending);
+
+        Image img2 = new Image();
+        img2.setUrl("http://localhost2");
+        img2.setOriginName("test2");
+        img2.setCreateAt(LocalDateTime.now());
+        img2.setStatus(RecordStatusConstants.recordStatusPending);
+
+        Post post = new Post();
+        post.setTitle("Test title");
+        post.setContent("This is test content");
+        post.setCategory("test category");
+        post.setThumbnail("http://www.testimage.com");
+
+        postRepository.save(post);
+        Post savedPost = postRepository.findById(post.getId()).get();
+
+        imageRepository.save(img1);
+        imageRepository.save(img2);
+
+        List<Long> idList = new ArrayList<>();
+        idList.add(img1.getId());
+        idList.add(img2.getId());
+
+        imageRepository.relateWithPost(idList, savedPost.getId());
+        List<Image> result = imageRepository.findByPostId(savedPost.getId());
+
+        Assertions.assertThat(result).contains(img1, img2);
     }
 }

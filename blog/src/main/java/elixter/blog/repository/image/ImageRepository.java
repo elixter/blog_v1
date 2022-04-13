@@ -9,6 +9,7 @@ public interface ImageRepository {
 
     List<Image> findAll();
     List<Image> findByStatus(String status);
+    List<Image> findByPostId(Long postId);
 
     void updateStatusById(Long id, String status);
     void updateStatusByIdBatch(List<Long> idList, String status);
