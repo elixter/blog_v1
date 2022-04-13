@@ -3,6 +3,7 @@ package dataSource
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var mySqlDataSource *MySqlDataSource
@@ -19,12 +20,13 @@ const (
 func createMySqlDataSource() (*MySqlDataSource, error) {
 	dbConfig := conf.GetStringMapString("db")
 	dataSourceName := fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s?parseTime=true&timeout=5s",
+		"%s:%s@(%s:%s)/%s?parseTime=true&timeout=%s",
 		dbConfig["account"],
 		dbConfig["password"],
 		dbConfig["host"],
 		dbConfig["port"],
 		dbConfig["scheme"],
+		dbConfig["timeout"],
 	)
 	dataSource, err := sql.Open(driverMySql, dataSourceName)
 	if err != nil {
@@ -38,7 +40,7 @@ func createMySqlDataSource() (*MySqlDataSource, error) {
 
 	return &MySqlDataSource{
 		driver: driverMySql,
-		db: dataSource,
+		db:     dataSource,
 	}, nil
 }
 

@@ -2,13 +2,12 @@ package main
 
 import (
 	"ImageRemover/config"
-	"ImageRemover/dataSource"
 	"ImageRemover/imageRemove"
 	"ImageRemover/logging"
 	"ImageRemover/repository"
+	"ImageRemover/repository/dataSource"
 	"ImageRemover/service"
 	"ImageRemover/storage"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/pkg/errors"
 )
 
@@ -28,12 +27,8 @@ func main() {
 
 func init() {
 	log.Info("Start initialize")
-	ds, err := initDataSource()
-	if err != nil {
-		panic(err)
-	}
 
-	imageRepository = repository.GetSqlxImageRepository(ds)
+	imageRepository = repository.GetSqlxImageRepository()
 	imageStorage = storage.NewLocalImageStorageImpl(conf.GetString("imagePath"))
 	removeService = service.New(imageRepository, imageStorage)
 }
