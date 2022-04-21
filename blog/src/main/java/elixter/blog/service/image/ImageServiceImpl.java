@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -43,6 +44,11 @@ public class ImageServiceImpl implements ImageService{
         uploadImage.setStatus(RecordStatusConstants.recordStatusPending);
 
         return imageRepository.save(uploadImage).getUrl();
+    }
+
+    @Override
+    public void relateWithPost(List<Long> imageIdList, Long postId) {
+        imageRepository.relateWithPost(imageIdList, postId);
     }
 
     /***
