@@ -1,4 +1,4 @@
-package elixter.blog;
+package elixter.blog.config;
 
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;

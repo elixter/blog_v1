@@ -1,6 +1,7 @@
 package elixter.blog.domain.post;
 
 import elixter.blog.constants.RecordStatusConstants;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,6 +33,18 @@ public class Post {
         this.content = content;
         this.category = category;
         this.thumbnail = thumbnail;
+    }
+
+    @Builder
+    public Post(Long id, String title, String content, String category, String thumbnail, String status, LocalDateTime createAt, LocalDateTime updateAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.thumbnail = thumbnail;
+        this.status = status;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
     }
 
     @Override

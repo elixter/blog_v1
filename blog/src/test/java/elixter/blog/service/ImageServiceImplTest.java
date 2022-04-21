@@ -42,7 +42,7 @@ public class ImageServiceImplTest {
 
         String resultUrl = imageService.save(mockMultipartFile);
 
-        Assertions.assertThat(resultUrl).isEqualTo("http://localhost:8080/static/img/힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(resultUrl).isEqualTo("http://localhost:8080/api/image/힘들때 웃는자가 일류다.png");
     }
 
     @Test
@@ -56,7 +56,16 @@ public class ImageServiceImplTest {
 
         imageRepository.save(image);
 
-        Post post = new Post();
+        Post post = Post.builder()
+                .title("test")
+                .category("test")
+                .content("test")
+                .thumbnail("test")
+                .status(RecordStatusConstants.recordStatusExist)
+                .createAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .build();
+
         postRepository.save(post);
 
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> imageRepository.relateWithPost(Arrays.asList(image.getId()), post.getId()));
