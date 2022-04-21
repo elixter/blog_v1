@@ -1,9 +1,6 @@
 package elixter.blog.domain.image;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +23,7 @@ public class Image {
         this.status = status;
     }
 
+    @Builder
     public Image(Long id, String originName, String url, LocalDateTime createAt, String status) {
         this.id = id;
         this.originName = originName;
