@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class ImageServiceImplTest {
     }
 
     @Test
+    @Transactional
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
 
@@ -69,5 +71,7 @@ public class ImageServiceImplTest {
         postRepository.save(post);
 
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> imageRepository.relateWithPost(Arrays.asList(image.getId()), post.getId()));
+
+        org.junit.jupiter.api.Assertions.assertThrows(DataIntegrityViolationException.class, () -> imageRepository.relateWithPost(Arrays.asList(99999999L), 999999999L));
     }
 }
