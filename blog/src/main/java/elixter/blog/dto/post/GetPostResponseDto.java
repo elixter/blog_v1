@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @ToString
 public class GetPostResponseDto {
     private Long id;
@@ -25,6 +24,21 @@ public class GetPostResponseDto {
 
     public GetPostResponseDto() {
         hashtags = new ArrayList<>();
+    }
+
+    public GetPostResponseDto(Post post, List<Hashtag> hashtagList) {
+        id = post.getId();
+        title = post.getTitle();
+        content = post.getContent();
+        category = post.getCategory();
+        thumbnail = post.getThumbnail();
+        createAt = post.getCreateAt();
+        updateAt = post.getUpdateAt();
+
+        hashtags = new ArrayList<>();
+        for (Hashtag hashtag : hashtagList) {
+            hashtags.add(hashtag.getTag());
+        }
     }
 
     public void postMapping(Post post) {

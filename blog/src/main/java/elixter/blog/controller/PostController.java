@@ -12,7 +12,10 @@ import elixter.blog.service.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +52,7 @@ public class PostController {
         try {
             Post post = postService.findPostById(id).get();
             result.postMapping(post);
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             throw new DataNotFoundException();
         }
 
@@ -61,40 +63,16 @@ public class PostController {
     }
 
     @GetMapping
-    public GetAllPostsResponseDto GetAllPostsHandler(
-            @RequestParam(value = "curPage", required = false, defaultValue = "0") Number curPage,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "50") Number pageSize,
+    public ResponseEntity<Object> GetAllPostsHandler(
             @RequestParam(value = "filterType", required = false) String filterType,
-            @RequestParam(value = "filterString", required = false) String filterString
+            @RequestParam(value = "filterString", required = false) String filterString,
+            @PageableDefault Pageable pageable
     ) {
-        GetAllPostsResponseDto result = new GetAllPostsResponseDto();
-        List<Post> postList;
+        LOGGER.debug("Page : {}, filterType : {}, filterString : {}", pageable, filterType, filterString);
 
-        LOGGER.debug("curPage : {}, pageSize: {}, filterType : {}, filterString : {}", curPage, pageSize, filterType, filterString);
+        GetAllPostsResponseDto result = postService.findAllPost(filterType, filterString, pageable);
 
-        Long page = curPage.longValue() * pageSize.longValue();
-        Long pageSz = page + pageSize.longValue();
-
-        switch(filterType) {
-            case "category":
-                postList = postService.findPostByCategory(filterString, page, pageSz);
-                break;
-            case "hashtag":
-                postList = postService.findPostByHashtag(filterString, page, pageSz);
-                break;
-            default:
-                postList = postService.findPost(page, pageSz);
-                break;
-        }
-
-        for (Post post : postList) {
-            GetPostResponseDto postResponse = new GetPostResponseDto();
-            postResponse.postMapping(post);
-            postResponse.hashtagMapping(hashtagService.findHashtagByPostId(post.getId()));
-            result.getPosts().add(postResponse);
-        }
-
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping
