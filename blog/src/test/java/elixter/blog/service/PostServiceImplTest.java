@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,6 +90,9 @@ public class PostServiceImplTest {
         GetPostResponseDto responseDto4 = new GetPostResponseDto(post4);
 
         GetAllPostsResponseDto test_category = postService.findAllPost(PostService.FILTER_CATEGORY, "test_category",getDefaultPage());
+        System.out.println("test_category = " + test_category.getPosts());
+        System.out.println("Arrays.asList(responseDto2, responseDto4) = " + Arrays.asList(responseDto2, responseDto4));
+
         Assertions.assertThat(test_category.getPosts()).contains(responseDto2, responseDto4);
         Assertions.assertThat(test_category.getPosts()).doesNotContain(responseDto1, responseDto3);
     }

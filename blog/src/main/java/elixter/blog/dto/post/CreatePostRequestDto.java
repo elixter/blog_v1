@@ -6,6 +6,9 @@ import elixter.blog.domain.post.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +35,16 @@ public class CreatePostRequestDto {
     }
 
     public Post postMapping() {
+        LocalDateTime now = LocalDateTime.now().withNano(0);
+
         return Post.builder()
                 .title(title)
                 .category(category)
                 .thumbnail(thumbnail)
                 .content(content)
                 .status(RecordStatusConstants.recordStatusExist)
-                .createAt(LocalDateTime.now().withNano(0))
-                .updateAt(LocalDateTime.now().withNano(0))
+                .createAt(now)
+                .updateAt(now)
                 .build();
     }
 
