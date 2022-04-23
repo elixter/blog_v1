@@ -1,6 +1,7 @@
 package elixter.blog.service.post;
 
 import elixter.blog.domain.post.Post;
+import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public interface PostService {
             FILTER_TITLE
     );
 
-    Long createPost(Post post);
+    Post createPost(CreatePostRequestDto post);
 
     void updatePost(Post post);
 

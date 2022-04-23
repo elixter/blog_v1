@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
+@NoArgsConstructor
 public class CreatePostRequestDto {
     private String title;
     private String content;
@@ -21,7 +21,17 @@ public class CreatePostRequestDto {
     private List<String> hashtags;
     private List<Long> imageIdList;
 
-    public Post PostMapping() {
+    @Builder
+    public CreatePostRequestDto(String title, String content, String category, String thumbnail, List<String> hashtags, List<Long> imageIdList) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.thumbnail = thumbnail;
+        this.hashtags = hashtags;
+        this.imageIdList = imageIdList;
+    }
+
+    public Post postMapping() {
         return Post.builder()
                 .title(title)
                 .category(category)
@@ -33,7 +43,7 @@ public class CreatePostRequestDto {
                 .build();
     }
 
-    public List<Hashtag> HashtagListMapping(Long postId) {
+    public List<Hashtag> hashtagListMapping(Long postId) {
         List<Hashtag> result = new ArrayList<>();
 
         for (String tag : hashtags) {

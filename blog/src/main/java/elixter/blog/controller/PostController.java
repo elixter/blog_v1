@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -76,17 +77,15 @@ public class PostController {
     }
 
     @PostMapping
-    public Long PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
+    public ResponseEntity<Object> PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
         LOGGER.debug("Request body : {}", createPostBody);
 
-        Post post = createPostBody.PostMapping();
-        Long postId = postService.createPost(post);
-        post.setId(postId);
+        Post createdPost = postService.createPost(createPostBody);
 
-        List<Hashtag> hashtags = createPostBody.HashtagListMapping(post.getId());
+        List<Hashtag> hashtags = createPostBody.hashtagListMapping(createdPost.getId());
         hashtagService.createHashtags(hashtags);
 
-        return postId;
+        return ResponseEntity.created(URI.create("/api/posts/" + createdPost.getId())).build();
     }
 
     @PutMapping

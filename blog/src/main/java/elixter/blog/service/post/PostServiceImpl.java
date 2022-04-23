@@ -2,6 +2,7 @@ package elixter.blog.service.post;
 
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
+import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
@@ -25,12 +26,11 @@ public class PostServiceImpl implements PostService {
     private final HashtagRepository hashtagRepository;
 
     @Override
-    public Long createPost(Post post) {
-        post.setCreateAt(LocalDateTime.now().withNano(0));
-        post.setUpdateAt(LocalDateTime.now().withNano(0));
-        postRepository.save(post);
+    public Post createPost(CreatePostRequestDto post) {
+        Post newPost = post.postMapping();
+        postRepository.save(newPost);
 
-        return post.getId();
+        return newPost;
     }
 
     @Override
