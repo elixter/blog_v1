@@ -2,6 +2,7 @@ package elixter.blog.dto.post;
 
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@EqualsAndHashCode
 @ToString
 public class GetPostResponseDto {
     private Long id;
@@ -23,6 +25,17 @@ public class GetPostResponseDto {
     private List<String> hashtags;
 
     public GetPostResponseDto() {
+        hashtags = new ArrayList<>();
+    }
+
+    public GetPostResponseDto(Post post) {
+        id = post.getId();
+        title = post.getTitle();
+        content = post.getContent();
+        category = post.getCategory();
+        thumbnail = post.getThumbnail();
+        createAt = post.getCreateAt();
+        updateAt = post.getUpdateAt();
         hashtags = new ArrayList<>();
     }
 

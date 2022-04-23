@@ -26,6 +26,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Long createPost(Post post) {
+        post.setCreateAt(LocalDateTime.now().withNano(0));
+        post.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.save(post);
 
         return post.getId();

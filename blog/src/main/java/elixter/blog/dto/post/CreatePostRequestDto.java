@@ -1,9 +1,11 @@
 package elixter.blog.dto.post;
 
+import elixter.blog.constants.RecordStatusConstants;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,15 @@ public class CreatePostRequestDto {
     private List<Long> imageIdList;
 
     public Post PostMapping() {
-        Post post = new Post();
-
-        post.setTitle(title);
-        post.setCategory(category);
-        post.setContent(content);
-        post.setThumbnail(thumbnail);
-
-        return post;
+        return Post.builder()
+                .title(title)
+                .category(category)
+                .thumbnail(thumbnail)
+                .content(content)
+                .status(RecordStatusConstants.recordStatusExist)
+                .createAt(LocalDateTime.now().withNano(0))
+                .updateAt(LocalDateTime.now().withNano(0))
+                .build();
     }
 
     public List<Hashtag> HashtagListMapping(Long postId) {
