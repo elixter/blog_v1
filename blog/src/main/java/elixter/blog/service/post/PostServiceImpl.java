@@ -1,15 +1,19 @@
 package elixter.blog.service.post;
 
 import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.exception.RestException;
+import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -37,10 +41,18 @@ public class PostServiceImpl implements PostService {
         postRepository.save(newPost);
         // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기. 비동기로 뺴자?
 
-
         ExecutorService executorService = Executors.newCachedThreadPool();
         executorService.submit(() -> {
             List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+            List<Image> images = imageRepository.findByUrlBatch(urlList);
+            List<Long> imageIdList = new Vector<>();
+
+            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
+            try {
+                imageRepository.relateWithPost(imageIdList, newPost.getId());
+            } catch (DataIntegrityViolationException e) {
+                log.error("relation with post {} failed", newPost.getId(), e);
+            }
         });
         executorService.shutdown();
 
