@@ -4,6 +4,9 @@ import elixter.blog.domain.image.Image;
 
 import java.util.List;
 
+
+// TODO: Url로 찾는 메소드 필요
+
 public interface ImageRepository {
     Image save(Image image);
 
