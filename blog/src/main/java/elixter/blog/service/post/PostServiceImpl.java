@@ -6,6 +6,7 @@ import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
+import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 @Slf4j
 @Component
@@ -23,14 +25,17 @@ import java.util.Optional;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final ImageRepository imageRepository;
     private final HashtagRepository hashtagRepository;
 
     @Override
     public Post createPost(CreatePostRequestDto post) {
         Post newPost = post.postMapping();
-        postRepository.save(newPost);
 
-        // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기.
+        postRepository.save(newPost);
+        // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기. 비동기로 빼도 될거같은데?
+        List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+
 
         return newPost;
     }
@@ -102,5 +107,17 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long id) {
         postRepository.delete(id);
+    }
+
+    private static List<String> getActiveImageUrls(String content, List<String> imageUrlList) {
+        List<String> urlList = new Vector<>();
+
+        imageUrlList.parallelStream().forEach(url -> {
+            if (content.contains(url)) {
+                urlList.add(url);
+            }
+        });
+
+        return urlList;
     }
 }

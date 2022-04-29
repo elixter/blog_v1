@@ -22,16 +22,16 @@ public class CreatePostRequestDto {
     private String category;
     private String thumbnail;
     private List<String> hashtags;
-    private List<Long> imageIdList;
+    private List<String> imageUrlList;
 
     @Builder
-    public CreatePostRequestDto(String title, String content, String category, String thumbnail, List<String> hashtags, List<Long> imageIdList) {
+    public CreatePostRequestDto(String title, String content, String category, String thumbnail, List<String> hashtags, List<String> imageUrlList) {
         this.title = title;
         this.content = content;
         this.category = category;
         this.thumbnail = thumbnail;
         this.hashtags = hashtags;
-        this.imageIdList = imageIdList;
+        this.imageUrlList = imageUrlList;
     }
 
     public Post postMapping() {
