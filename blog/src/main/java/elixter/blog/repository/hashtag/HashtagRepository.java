@@ -6,6 +6,8 @@ import elixter.blog.dto.hashtag.SearchHashtagDto;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Url로 찾는 메소드 필요
+
 public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
     List<Hashtag> batchSave(List<Hashtag> hashtags);
