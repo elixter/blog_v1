@@ -11,6 +11,9 @@ import elixter.blog.repository.post.JdbcTemplatePostRepository;
 import elixter.blog.repository.post.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,24 +24,22 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@SpringBootTest
 public class JdbcTemplateImageRepositoryTest {
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUsername("elixter");
-        dataSource.setPassword("1q2w3e4r");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/blog2?serverTimezone=UTC&characterEncoding=UTF-8");
 
-        return dataSource;
+    private final ImageRepository imageRepository;
+    private final PostRepository postRepository;
+    private final ImageStorage imageStorage;
+
+    @Autowired
+    public JdbcTemplateImageRepositoryTest(ImageRepository imageRepository, PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+        this.imageRepository = imageRepository;
+        this.postRepository = postRepository;
+        this.imageStorage = imageStorage;
     }
-
-
-    ImageRepository imageRepository = new JdbcTemplateImageRepository(dataSource());
-    PostRepository postRepository = new JdbcTemplatePostRepository(dataSource());
-
-    ImageStorage imageStorage = new LocalImageStorage();
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(path));
@@ -130,5 +131,45 @@ public class JdbcTemplateImageRepositoryTest {
         List<Image> result = imageRepository.findByPostId(savedPost.getId());
 
         Assertions.assertThat(result).contains(img1, img2);
+    }
+
+    @Test
+    @Transactional
+    public void findByUrl() {
+        Image img = new Image();
+        img.setUrl("findByUrlTestUrl123123");
+        img.setOriginName("test");
+        img.setCreateAt(LocalDateTime.now().withNano(0));
+        img.setStatus(RecordStatusConstants.recordStatusPending);
+        imageRepository.save(img);
+
+        Image result = imageRepository.findByUrl(img.getUrl()).get();
+
+        Assertions.assertThat(result).isEqualTo(img);
+    }
+
+    @Test
+    @Transactional
+    public void findByUrlBatch() {
+        Image img1 = new Image();
+        img1.setUrl("findByUrlTestUrl1");
+        img1.setOriginName("test");
+        img1.setCreateAt(LocalDateTime.now());
+        img1.setStatus(RecordStatusConstants.recordStatusPending);
+
+        Image img2 = new Image();
+        img2.setUrl("findByUrlTestUrl2");
+        img2.setOriginName("test2");
+        img2.setCreateAt(LocalDateTime.now());
+        img2.setStatus(RecordStatusConstants.recordStatusPending);
+
+        imageRepository.save(img1);
+        imageRepository.save(img2);
+
+        List<String> urlList = Arrays.asList(img1.getUrl(), img2.getUrl());
+
+        List<Image> results = imageRepository.findByUrlBatch(urlList);
+
+        Assertions.assertThat(results).contains(img1, img2);
     }
 }

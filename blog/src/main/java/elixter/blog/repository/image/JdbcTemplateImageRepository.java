@@ -18,10 +18,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -64,6 +61,19 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     @Override
     public List<Image> findByPostId(Long postId) {
         return jdbcTemplate.query("SELECT * FROM images join images_posts ip on images.id = ip.image_id WHERE ip.post_id = ?", imageRowMapper(), postId);
+    }
+
+    @Override
+    public Optional<Image> findByUrl(String url) {
+        return jdbcTemplate.query("SELECT * FROM images WHERE url = ?", imageRowMapper(), url).stream().findAny();
+    }
+
+    @Override
+    public List<Image> findByUrlBatch(List<String> urlList) {
+        String in = String.join(",", Collections.nCopies(urlList.size(), "?"));
+        String query = String.format("SELECT * FROM images WHERE url in (%s)", in);
+
+        return jdbcTemplate.query(query, imageRowMapper(), urlList.toArray());
     }
 
     @Override
