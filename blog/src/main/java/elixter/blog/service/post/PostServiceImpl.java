@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
@@ -33,9 +35,14 @@ public class PostServiceImpl implements PostService {
         Post newPost = post.postMapping();
 
         postRepository.save(newPost);
-        // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기. 비동기로 빼도 될거같은데?
-        List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+        // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기. 비동기로 뺴자?
 
+
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        executorService.submit(() -> {
+            List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+        });
+        executorService.shutdown();
 
         return newPost;
     }
