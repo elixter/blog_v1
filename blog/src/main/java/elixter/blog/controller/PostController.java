@@ -24,7 +24,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-// TODO: 이미지 처리, hashtag 검색
 @RestController
 @Transactional
 @RequestMapping(value = "/api/posts")
