@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(newPost);
         // TODO: 게시글에 있는 이미지 찾아서 이미지랑 게시글 relation 맺기. 비동기로 뺴자?
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
             List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
             List<Image> images = imageRepository.findByUrlBatch(urlList);
