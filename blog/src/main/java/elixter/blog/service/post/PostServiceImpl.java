@@ -35,14 +35,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(Post post) {
-        post.setUpdateAt(LocalDateTime.now());
+        post.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.update(post);
     }
 
     @Override
-    public Optional<Post> findPostById(Long id) {
-        Optional<Post> result = postRepository.findById(id);
-        System.out.println("reuslt = " + result);
+    public GetPostResponseDto findPostById(Long id) {
+        Post foundPost = postRepository.findById(id).orElse(Post.emptyPost());
+        List<Hashtag> hashtagList = hashtagRepository.findByPostId(foundPost.getId());
+
+        GetPostResponseDto result = new GetPostResponseDto(foundPost, hashtagList);
 
         return result;
     }

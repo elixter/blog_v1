@@ -24,6 +24,8 @@ public class GetPostResponseDto {
     private LocalDateTime updateAt;
     private List<String> hashtags;
 
+    private static final Long emptyId = -1L;
+
     public GetPostResponseDto() {
         hashtags = new ArrayList<>();
     }
@@ -68,5 +70,29 @@ public class GetPostResponseDto {
         for (Hashtag hashtag : hashtagList) {
             hashtags.add(hashtag.getTag());
         }
+    }
+
+    public boolean isEmpty() {
+        return id.equals(emptyId) &&
+                title.isEmpty() &&
+                category.isEmpty() &&
+                content.isEmpty() &&
+                thumbnail.isEmpty() &&
+                createAt.isEqual(LocalDateTime.MIN) &&
+                updateAt.isEqual(LocalDateTime.MIN) &&
+                hashtags.isEmpty();
+    }
+
+    public static GetPostResponseDto empty() {
+        GetPostResponseDto emptyInstance = new GetPostResponseDto();
+        emptyInstance.id = emptyId;
+        emptyInstance.title = "";
+        emptyInstance.category = "";
+        emptyInstance.content = "";
+        emptyInstance.thumbnail = "";
+        emptyInstance.createAt = LocalDateTime.MIN;
+        emptyInstance.updateAt = LocalDateTime.MIN;
+
+        return emptyInstance;
     }
 }

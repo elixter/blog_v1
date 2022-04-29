@@ -41,14 +41,14 @@ public class PostServiceImplTest {
         post.setContent("update test");
         postService.updatePost(post);
 
-        Post result = postService.findPostById(post.getId()).get();
+        GetPostResponseDto result = postService.findPostById(post.getId());
 
-        post.setCreateAt(result.getCreateAt());
-        post.setUpdateAt(result.getUpdateAt());
+        GetPostResponseDto expect = new GetPostResponseDto();
+        expect.postMapping(post);
 
         System.out.println("result = " + result);
 
-        assertThat(result).isEqualTo(post);
+        assertThat(expect).isEqualTo(result);
     }
 
     @Test

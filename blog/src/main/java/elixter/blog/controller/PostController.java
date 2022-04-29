@@ -6,6 +6,7 @@ import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
+import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.service.hashtag.HashtagService;
 import elixter.blog.service.image.ImageService;
 import elixter.blog.service.post.PostService;
@@ -26,15 +27,8 @@ import java.util.NoSuchElementException;
 // TODO: 이미지 처리, hashtag 검색
 @RestController
 @Transactional
-//@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @RequestMapping(value = "/api/posts")
 public class PostController {
-
-    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Data not found")
-    public class DataNotFoundException extends RuntimeException {
-
-    }
-
     private final PostService postService;
     private final HashtagService hashtagService;
     private final ImageService imageService;
@@ -48,19 +42,13 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public GetPostResponseDto GetPostHandler(@PathVariable Long id) {
-        GetPostResponseDto result = new GetPostResponseDto();
-        try {
-            Post post = postService.findPostById(id).get();
-            result.postMapping(post);
-        } catch (NoSuchElementException e) {
-            throw new DataNotFoundException();
+    public ResponseEntity<GetPostResponseDto> GetPostHandler(@PathVariable Long id) {
+        GetPostResponseDto result = postService.findPostById(id);
+        if (result.isEmpty()) {
+            throw new PostNotFoundException(id);
         }
 
-        List<Hashtag> hashtags = hashtagService.findHashtagByPostId(id);
-        result.hashtagMapping(hashtags);
-
-        return result;
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping

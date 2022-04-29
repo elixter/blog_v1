@@ -26,7 +26,7 @@ public interface PostService {
 
     void updatePost(Post post);
 
-    Optional<Post> findPostById(Long id);
+    GetPostResponseDto findPostById(Long id);
 
     GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable);
 
