@@ -7,6 +7,12 @@
 - Database : MySQL, H2(Test)
 
 ## TODO List
+### Backend
 - POST CRUD [x]
-- User auth []
-- Image server[]
+- User auth [x]
+- Image upload[x]
+- Repository를 JPA 형식에 맞추기 []
+- 토큰 인증방식으로 바꾸기 []
+
+### Frontend
+- 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장 []
