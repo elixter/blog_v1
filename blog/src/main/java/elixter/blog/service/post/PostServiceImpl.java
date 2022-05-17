@@ -42,8 +42,8 @@ public class PostServiceImpl implements PostService {
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
-            List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
-            List<Image> images = imageRepository.findByUrlBatch(urlList);
+            List<String> storedNameList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+            List<Image> images = imageRepository.findByStoredName(storedNameList);
             List<Long> imageIdList = new Vector<>();
 
             images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
