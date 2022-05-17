@@ -1,62 +1,56 @@
 package elixter.blog.repository.image;
 
+import elixter.blog.domain.image.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.UUID;
 
 @Slf4j
 @Repository
 @Qualifier("localImageStorage")
 public class LocalImageStorage implements ImageStorage {
-    private static final String SERVER_PREFIX = "http://localhost:8080";
-    private static final String IMAGE_FILE_FOLDER = "D:/blog_v1/blog/src/main/resources/static/img";
+
+    @Value("${file.image}")
+    private String imageDir;
 
     @Override
-    public String save(MultipartFile multipartFile) throws IOException {
+    public Image save(MultipartFile multipartFile) {
         log.debug("contentType : {}", multipartFile.getContentType());
 
-        File folder = new File(IMAGE_FILE_FOLDER);
+        File folder = new File(imageDir);
         if (!folder.exists()) folder.mkdirs();
 
-        File destination = new File(IMAGE_FILE_FOLDER + File.separator + multipartFile.getOriginalFilename());
-        multipartFile.transferTo(destination);
+        String storedName = createStoreFileName(multipartFile.getOriginalFilename());
+        try {
+            multipartFile.transferTo(new File(getFullPath(storedName)));
+        } catch (IOException e) {
+            return Image.getEmpty();
+        }
 
-        String resultUrl = SERVER_PREFIX + "/api/image/" + destination.getName();
-        log.debug("resultUrl : {}", resultUrl);
-
-        return resultUrl;
+        return Image.builder()
+                .originName(multipartFile.getOriginalFilename())
+                .storedName(storedName)
+                .build();
     }
 
-    @Override
-    public byte[] getByName(String name) {
-        FileInputStream fis = null;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private String getFullPath(String filePath) {
+        return imageDir + filePath;
+    }
 
-        String fileDir = IMAGE_FILE_FOLDER + "/" + name;
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
 
-        try {
-            fis = new FileInputStream(fileDir);
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    private String extractExt(String originFilename) {
+        int pos = originFilename.lastIndexOf(".");
 
-        int readCount = 0;
-        byte[] buf = new byte[1024];
-        byte[] fileArray = null;
-
-        try {
-            while((readCount = fis.read(buf)) != -1) {
-                outputStream.write(buf, 0, readCount);
-            }
-            fileArray = outputStream.toByteArray();
-            fis.close();
-        } catch (IOException e) {
-            throw new RuntimeException("File Error");
-        }
-
-        return fileArray;
+        return originFilename.substring(pos + 1);
     }
 }

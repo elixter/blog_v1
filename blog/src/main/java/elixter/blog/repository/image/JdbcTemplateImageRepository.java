@@ -1,7 +1,6 @@
 package elixter.blog.repository.image;
 
 import elixter.blog.domain.image.Image;
-import elixter.blog.domain.imagePostRelation.ImagePostRelation;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("origin_name", image.getOriginName());
-        params.put("url", image.getUrl());
+        params.put("stored_name", image.getStoredName());
         params.put("create_at", image.getCreateAt());
         params.put("status", image.getStatus());
 
@@ -64,26 +63,16 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     }
 
     @Override
-    public Optional<Image> findByUrl(String url) {
-        return jdbcTemplate.query("SELECT * FROM images WHERE url = ?", imageRowMapper(), url).stream().findAny();
-    }
-
-    @Override
-    public List<Image> findByUrlBatch(List<String> urlList) {
+    public List<Image> findByStoredName(List<String> urlList) {
         String in = String.join(",", Collections.nCopies(urlList.size(), "?"));
-        String query = String.format("SELECT * FROM images WHERE url in (%s)", in);
+        String query = String.format("SELECT * FROM images WHERE stored_name in (%s)", in);
 
         return jdbcTemplate.query(query, imageRowMapper(), urlList.toArray());
     }
 
     @Override
-    public void updateStatusById(Long id, String status) {
-        jdbcTemplate.update("UPDATE images SET status = ? WHERE id = ?", status, id);
-    }
-
-    @Override
-    public void updateStatusByIdBatch(List<Long> idList, String status) {
-        jdbcTemplate.batchUpdate("UPDATE images set status = ? WHERE id = ?", getStatementSetter(idList, status));
+    public Optional<Image> findByStoredName(String storedName) {
+        return jdbcTemplate.query("SELECT * FROM images WHERE stored_name = ?", imageRowMapper(), storedName).stream().findFirst();
     }
 
     @Override
@@ -123,8 +112,8 @@ public class JdbcTemplateImageRepository implements ImageRepository {
             public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Image image = new Image();
                 image.setId(rs.getLong("id"));
-                image.setUrl(rs.getString("url"));
                 image.setOriginName(rs.getString("origin_name"));
+                image.setStoredName(rs.getString("stored_name"));
                 image.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
                 image.setStatus(rs.getString("status"));
 
