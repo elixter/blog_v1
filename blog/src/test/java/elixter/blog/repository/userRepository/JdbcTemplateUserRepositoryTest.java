@@ -25,6 +25,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setLoginId("test");
         user.setLoginPw("123");
         user.setName("test");
+        user.setEmail("test@test.com");
         user.setProfileImage("test");
 
         User savedUser = repository.save(user);
@@ -38,6 +39,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setLoginId("test");
         user.setLoginPw("123");
         user.setName("test");
+        user.setEmail("test@test.com");
         user.setProfileImage("test");
 
         User savedUser = repository.save(user);
@@ -51,6 +53,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setLoginId("test");
         user.setLoginPw("123");
         user.setName("test");
+        user.setEmail("test@test.com");
         user.setProfileImage("test");
 
         User savedUser = repository.save(user);
@@ -64,6 +67,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setLoginId("test");
         user.setLoginPw("123");
         user.setName("test");
+        user.setEmail("test@test.com");
         user.setProfileImage("test");
 
         User savedUser = repository.save(user);
@@ -82,6 +86,7 @@ public class JdbcTemplateUserRepositoryTest {
         user1.setLoginId("test");
         user1.setLoginPw("123");
         user1.setName("test");
+        user1.setEmail("test@test.com");
         user1.setProfileImage("test");
         repository.save(user1);
 
@@ -89,6 +94,7 @@ public class JdbcTemplateUserRepositoryTest {
         user2.setLoginId("test2");
         user2.setLoginPw("123");
         user2.setName("test");
+        user2.setEmail("test123123@test.com");
         user2.setProfileImage("test");
         repository.save(user2);
 
@@ -102,6 +108,7 @@ public class JdbcTemplateUserRepositoryTest {
         User user = new User();
         user.setLoginId("test");
         user.setLoginPw("123");
+        user.setEmail("test@test.com");
         user.setName("test");
         user.setProfileImage("test");
         repository.save(user);

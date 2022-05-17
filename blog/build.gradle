@@ -31,7 +31,6 @@ dependencies {
 	implementation 'org.jetbrains:annotations:20.1.0'
 	compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
-	implementation 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'

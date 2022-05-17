@@ -45,14 +45,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("create_at", user.getCreateAt());
         params.put("status", RecordStatusConstants.recordStatusExist);
 
-        try {
-            Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
-            user.setId(key.longValue());
-        } catch (DataIntegrityViolationException e) {
-//            log.debug(e.getMessage());
-            throw e;
-        }
-
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
         user.setId(key.longValue());
 
