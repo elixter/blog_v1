@@ -5,20 +5,15 @@ import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.image.ImageStorage;
-import elixter.blog.repository.image.JdbcTemplateImageRepository;
-import elixter.blog.repository.image.LocalImageStorage;
-import elixter.blog.repository.post.JdbcTemplatePostRepository;
 import elixter.blog.repository.post.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,65 +45,29 @@ public class JdbcTemplateImageRepositoryTest {
     @Transactional
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
+        Image saved = imageStorage.save(mockMultipartFile);
+        saved.setStatus(RecordStatusConstants.recordStatusExist);
+        saved.setCreateAt(LocalDateTime.now().withNano(0));
 
-        String resultUrl = imageStorage.save(mockMultipartFile);
+        saved = imageRepository.save(saved);
+        System.out.println("savedImage = " + saved);
 
-        Image uploadImage = new Image();
-        uploadImage.setUrl(resultUrl);
-        uploadImage.setOriginName(mockMultipartFile.getOriginalFilename());
-        uploadImage.setCreateAt(LocalDateTime.now());
-        uploadImage.setStatus(RecordStatusConstants.recordStatusPending);
-
-        Image savedImage = imageRepository.save(uploadImage);
-        System.out.println("savedImage = " + savedImage);
-
-        Assertions.assertThat(savedImage.getUrl()).isEqualTo("http://localhost:8080/api/image/힘들때 웃는자가 일류다.png");
-    }
-
-    @Test
-    @Transactional
-    public void updateStatusByIdBatch() {
-        Image img1 = new Image();
-        img1.setUrl("http://localhost");
-        img1.setOriginName("test");
-        img1.setCreateAt(LocalDateTime.now());
-        img1.setStatus(RecordStatusConstants.recordStatusPending);
-
-        Image img2 = new Image();
-        img2.setUrl("http://localhost2");
-        img2.setOriginName("test2");
-        img2.setCreateAt(LocalDateTime.now());
-        img2.setStatus(RecordStatusConstants.recordStatusPending);
-
-        imageRepository.save(img1);
-        imageRepository.save(img2);
-
-        List<Long> idList = new ArrayList<>();
-        idList.add(img1.getId());
-        idList.add(img2.getId());
-
-        imageRepository.updateStatusByIdBatch(idList, RecordStatusConstants.recordStatusExist);
-        img1.setStatus(RecordStatusConstants.recordStatusExist);
-        img2.setStatus(RecordStatusConstants.recordStatusExist);
-
-
-        List<Image> existImages = imageRepository.findByStatus(RecordStatusConstants.recordStatusExist);
-        Assertions.assertThat(existImages).contains(img1, img2);
+        Assertions.assertThat(saved).isNotEqualTo(Image.getEmpty());
     }
 
     @Test
     @Transactional
     public void findByPostId() {
         Image img1 = new Image();
-        img1.setUrl("http://localhost");
+        img1.setStoredName("http://localhost");
         img1.setOriginName("test");
-        img1.setCreateAt(LocalDateTime.now());
+        img1.setCreateAt(LocalDateTime.now().withNano(0));
         img1.setStatus(RecordStatusConstants.recordStatusPending);
 
         Image img2 = new Image();
-        img2.setUrl("http://localhost2");
+        img2.setStoredName("http://localhost2");
         img2.setOriginName("test2");
-        img2.setCreateAt(LocalDateTime.now());
+        img2.setCreateAt(LocalDateTime.now().withNano(0));
         img2.setStatus(RecordStatusConstants.recordStatusPending);
 
         Post post = new Post();
@@ -137,38 +96,39 @@ public class JdbcTemplateImageRepositoryTest {
     @Transactional
     public void findByUrl() {
         Image img = new Image();
-        img.setUrl("findByUrlTestUrl123123");
+        img.setStoredName("findByUrlTestUrl123123");
         img.setOriginName("test");
         img.setCreateAt(LocalDateTime.now().withNano(0));
         img.setStatus(RecordStatusConstants.recordStatusPending);
         imageRepository.save(img);
 
-        Image result = imageRepository.findByUrl(img.getUrl()).get();
+        Image result = imageRepository.findByStoredName(img.getStoredName()).orElse(Image.getEmpty());
+        Assertions.assertThat(result).isNotEqualTo(Image.getEmpty());
 
         Assertions.assertThat(result).isEqualTo(img);
     }
 
     @Test
     @Transactional
-    public void findByUrlBatch() {
+    public void findByStoredNameList() {
         Image img1 = new Image();
-        img1.setUrl("findByUrlTestUrl1");
+        img1.setStoredName("findByUrlTestUrl1");
         img1.setOriginName("test");
-        img1.setCreateAt(LocalDateTime.now());
+        img1.setCreateAt(LocalDateTime.now().withNano(0));
         img1.setStatus(RecordStatusConstants.recordStatusPending);
 
         Image img2 = new Image();
-        img2.setUrl("findByUrlTestUrl2");
+        img2.setStoredName("findByUrlTestUrl2");
         img2.setOriginName("test2");
-        img2.setCreateAt(LocalDateTime.now());
+        img2.setCreateAt(LocalDateTime.now().withNano(0));
         img2.setStatus(RecordStatusConstants.recordStatusPending);
 
         imageRepository.save(img1);
         imageRepository.save(img2);
 
-        List<String> urlList = Arrays.asList(img1.getUrl(), img2.getUrl());
+        List<String> storedName = Arrays.asList(img1.getStoredName(), img2.getStoredName());
 
-        List<Image> results = imageRepository.findByUrlBatch(urlList);
+        List<Image> results = imageRepository.findByStoredName(storedName);
 
         Assertions.assertThat(results).contains(img1, img2);
     }

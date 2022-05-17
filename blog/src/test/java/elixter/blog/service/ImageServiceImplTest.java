@@ -42,9 +42,9 @@ public class ImageServiceImplTest {
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
 
-        String resultUrl = imageService.save(mockMultipartFile);
+        Image image = imageService.save(mockMultipartFile);
 
-        Assertions.assertThat(resultUrl).isEqualTo("http://localhost:8080/api/image/힘들때 웃는자가 일류다.png");
+        Assertions.assertThat(image).isNotEqualTo(Image.getEmpty());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ImageServiceImplTest {
     public void relateWithPost() {
         Image image = Image.builder()
                 .originName("test")
-                .url("http://test.com")
+                .storedName("http://test.com")
                 .createAt(LocalDateTime.now())
                 .status(RecordStatusConstants.recordStatusExist).build();
 

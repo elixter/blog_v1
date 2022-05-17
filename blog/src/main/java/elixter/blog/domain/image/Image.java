@@ -1,5 +1,6 @@
 package elixter.blog.domain.image;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -7,50 +8,43 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Data
 public class Image {
+
     private Long id;
     private String originName;
-    private String url;
+    private String storedName;
     private LocalDateTime createAt;
     private String status;
 
     public Image() {
+        createAt = LocalDateTime.now().withNano(0);
     }
 
     public Image(String originName, String url, String status) {
         this.originName = originName;
-        this.url = url;
+        this.storedName = url;
         this.status = status;
     }
 
     @Builder
-    public Image(Long id, String originName, String url, LocalDateTime createAt, String status) {
+    public Image(Long id, String originName, String storedName, LocalDateTime createAt, String status) {
         this.id = id;
         this.originName = originName;
-        this.url = url;
+        this.storedName = storedName;
         this.createAt = createAt;
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        boolean result = true;
-        Image _obj = (Image)obj;
+    @JsonIgnore
+    public boolean isEmpty() {
+        return storedName.isEmpty() && originName.isEmpty();
+    }
 
-        if (obj instanceof Image) {
-            if (
-                    !this.id.equals(((Image) obj).id) ||
-                    !this.url.equals(((Image) obj).url) ||
-                    !this.originName.equals(((Image) obj).originName) ||
-                    !this.status.equals(((Image) obj).status)
-            ) {
-                result = false;
-            }
-        }
-        else {
-            result = false;
-        }
-
-        return result;
+    public static Image getEmpty() {
+        return Image.builder()
+                .storedName("")
+                .originName("")
+                .build();
     }
 }
