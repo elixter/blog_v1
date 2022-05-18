@@ -39,6 +39,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("origin_name", image.getOriginName());
         params.put("stored_name", image.getStoredName());
+        params.put("url", image.getUrl());
         params.put("create_at", image.getCreateAt());
         params.put("status", image.getStatus().ordinal());
 
@@ -111,14 +112,14 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         return new RowMapper<Image>() {
             @Override
             public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Image image = new Image();
-                image.setId(rs.getLong("id"));
-                image.setOriginName(rs.getString("origin_name"));
-                image.setStoredName(rs.getString("stored_name"));
-                image.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
-                image.setStatus(RecordStatus.values()[rs.getInt("status")]);
-
-                return image;
+                return Image.builder()
+                        .id(rs.getLong("id"))
+                        .originName(rs.getString("origin_name"))
+                        .storedName(rs.getString("stored_name"))
+                        .url(rs.getString("url"))
+                        .createAt(rs.getTimestamp("create_at").toLocalDateTime())
+                        .status(RecordStatus.values()[rs.getInt("status")])
+                        .build();
             }
         };
     }
