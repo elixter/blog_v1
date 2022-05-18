@@ -30,11 +30,5 @@ public interface PostService {
 
     GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable);
 
-    List<Post> findPost(Long offset, Long limit);
-
-    List<Post> findPostByCategory(String category, Long offset, Long limit);
-
-    List<Post> findPostByHashtag(String hashtag, Long offset, Long limit);
-
     void deletePost(Long id);
 }

@@ -1,6 +1,9 @@
 package elixter.blog.repository.post;
 
 import elixter.blog.domain.post.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -35,18 +38,18 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findAll(Long offset, Long limit) {
+    public Page<Post> findAll(Pageable pageable) {
         List<Post> result = new ArrayList<>();
 
         for (Map.Entry<Long, Post>post : store.entrySet()) {
             result.add(post.getValue());
         }
 
-        return result;
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     @Override
-    public List<Post> findByCategory(String category, Long offset, Long limit) {
+    public Page<Post> findByCategory(String category, Pageable pageable) {
         List<Post> result = new ArrayList<>();
 
         for (Map.Entry<Long, Post>post : store.entrySet()) {
@@ -57,11 +60,11 @@ public class MemoryPostRepository implements PostRepository {
             }
         }
 
-        return result;
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     @Override
-    public List<Post> findByHashtag(String hashtag, Long offset, Long limit) {
+    public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
         return null;
     }
 

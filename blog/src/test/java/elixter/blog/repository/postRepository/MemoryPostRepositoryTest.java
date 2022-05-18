@@ -5,6 +5,9 @@ import elixter.blog.repository.post.MemoryPostRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -49,10 +52,10 @@ public class MemoryPostRepositoryTest {
         post2.setThumbnail("http://www.testimage.com");
         repository.save(post2);
 
-        List<Post> result = repository.findByCategory("test category1", 0L, 1000L);
+        Page<Post> result = repository.findByCategory("test category1", PageRequest.of(0, 20));
 
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0)).isEqualTo(post1);
+        assertThat(result.getContent().size()).isEqualTo(1);
+        assertThat(result.getContent().get(0)).isEqualTo(post1);
     }
 
     @Test
@@ -71,10 +74,10 @@ public class MemoryPostRepositoryTest {
         post2.setThumbnail("http://www.testimage.com");
         repository.save(post2);
 
-        List<Post> result = repository.findAll(0L, 1000L);
+        Page<Post> result = repository.findAll(PageRequest.of(0, 20));
 
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).contains(post1);
-        assertThat(result).contains(post2);
+        assertThat(result.getContent().size()).isEqualTo(2);
+        assertThat(result.getContent()).contains(post1);
+        assertThat(result.getContent()).contains(post2);
     }
 }
