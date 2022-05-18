@@ -1,50 +1,44 @@
 package elixter.blog.dto.post;
 
-import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @ToString
-public class UpdatePostRequestDto {
-    private Long postId;
+@EqualsAndHashCode(callSuper = false)
+public class UpdatePostRequestDto extends AbstractPostDto {
+
     private String title;
     private String content;
     private String category;
     private String thumbnail;
     private LocalDateTime createAt;
-    private List<String> hashtags;
 
-    public Post PostMapping() {
-        Post post = new Post();
-        post.setId(postId);
-        post.setTitle(title);
-        post.setCategory(category);
-        post.setContent(content);
-        post.setThumbnail(thumbnail);
-        post.setCreateAt(createAt);
-        post.setUpdateAt(LocalDateTime.now());
-
-        return post;
+    @Builder
+    public UpdatePostRequestDto(Long id, String title, String content, String category, String thumbnail, LocalDateTime createAt, List<String> hashtags) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.thumbnail = thumbnail;
+        this.createAt = createAt;
+        this.hashtags = hashtags;
     }
 
-    public List<Hashtag> HashtagListMapping() {
-        List<Hashtag> result = new ArrayList<>();
-
-        for (String tag : hashtags) {
-            Hashtag hashtag = new Hashtag();
-            hashtag.setTag(tag);
-            hashtag.setPostId(postId);
-            result.add(hashtag);
-        }
-
-        return result;
+    public Post PostMapping() {
+        return Post.builder()
+                .id(id)
+                .title(title)
+                .category(category)
+                .content(content)
+                .thumbnail(thumbnail)
+                .createAt(createAt)
+                .updateAt(LocalDateTime.now())
+                .hashtags(getHashtagAsInstance())
+                .build();
     }
 }

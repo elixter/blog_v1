@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class CreatePostRequestDto {
+public class CreatePostRequestDto extends AbstractPostDto {
+
     private String title;
     private String content;
     private String category;
     private String thumbnail;
-    private List<String> hashtags;
     private List<String> imageUrlList;
 
     @Builder
@@ -42,6 +42,7 @@ public class CreatePostRequestDto {
                 .status(RecordStatus.exist)
                 .createAt(now)
                 .updateAt(now)
+                .hashtags(getHashtagAsInstance())
                 .build();
     }
 

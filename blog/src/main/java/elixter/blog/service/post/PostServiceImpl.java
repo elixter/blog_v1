@@ -60,6 +60,9 @@ public class PostServiceImpl implements PostService {
     public void updatePost(Post post) {
         post.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.update(post);
+
+        hashtagRepository.deleteByPostId(post.getId());
+        hashtagRepository.batchSave(post.getHashtags());
     }
 
     @Override

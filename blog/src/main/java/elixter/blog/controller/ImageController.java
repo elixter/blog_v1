@@ -58,7 +58,7 @@ public class ImageController {
             throw new RestException(HttpStatus.NOT_FOUND, "image not found");
         }
 
-        return new UrlResource("file:" + image.getStoredName());
+        return new UrlResource("file:" + image.getUrl());
     }
 
     private String getImageUrl(Image savedImage) {

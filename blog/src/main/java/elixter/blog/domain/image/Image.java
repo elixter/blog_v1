@@ -15,6 +15,7 @@ public class Image {
     private Long id;
     private String originName;
     private String storedName;
+    private String url;
     private LocalDateTime createAt;
     private RecordStatus status;
 
@@ -22,17 +23,12 @@ public class Image {
         createAt = LocalDateTime.now().withNano(0);
     }
 
-    public Image(String originName, String url, RecordStatus status) {
-        this.originName = originName;
-        this.storedName = url;
-        this.status = status;
-    }
-
     @Builder
-    public Image(Long id, String originName, String storedName, LocalDateTime createAt, RecordStatus status) {
+    public Image(Long id, String originName, String storedName, String url, LocalDateTime createAt, RecordStatus status) {
         this.id = id;
         this.originName = originName;
         this.storedName = storedName;
+        this.url = url;
         this.createAt = createAt;
         this.status = status;
     }

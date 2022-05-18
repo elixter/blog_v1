@@ -35,10 +35,11 @@ public class LocalImageStorage implements ImageStorage {
         return Image.builder()
                 .originName(multipartFile.getOriginalFilename())
                 .storedName(storedName)
+                .url(getFullPath(storedName))
                 .build();
     }
 
-    private String getFullPath(String filePath) {
+    public String getFullPath(String filePath) {
         return imageDir + filePath;
     }
 

@@ -40,8 +40,8 @@ const EditorMain = function ({ post }: Props) {
 		};
 
 		createPost(createPostRequestBody).then((res) => {
-			if (res.status === 200) {
-				history.push(`/blog/posts/${res.data}`);
+			if (res.status === 201) {
+				history.push(res.headers.location);
 			}
 		});
 	}, [category, content, hashtags, history, thumbnail, title]);
