@@ -73,7 +73,7 @@ public class PostController {
         List<Hashtag> hashtags = createPostBody.hashtagListMapping(createdPost.getId());
         hashtagService.createHashtags(hashtags);
 
-        return ResponseEntity.created(URI.create("/api/posts/" + createdPost.getId())).build();
+        return ResponseEntity.created(URI.create("/blog/posts/" + createdPost.getId())).build();
     }
 
     @PutMapping
