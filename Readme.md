@@ -4,7 +4,11 @@
 ## 기술스택
 - Backend : Java11 Spring boot
 - Frontend : Typescript, React
-- Database : MySQL, H2(Test)
+- Database : MySQL
+
+## 기능
+- 블로그 []
+- SNS 통합 피드 []
 
 ## TODO List
 ### Backend
@@ -16,3 +20,5 @@
 
 ### Frontend
 - 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장 []
+- 카테고리별 게시글 페이지 []
+- 해쉬태그별 게시글 페이지 []
