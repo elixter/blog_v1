@@ -1,23 +1,28 @@
 package elixter.blog.controller;
 
+import elixter.blog.domain.image.Image;
 import elixter.blog.dto.image.ImageUploadResponseDto;
 import elixter.blog.exception.RestException;
 import elixter.blog.service.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/image")
 public class ImageController {
+
+    @Value("${server.uri}")
+    private String serverUri;
+
     private final ImageService imageService;
 
     @Autowired
@@ -34,21 +39,29 @@ public class ImageController {
             );
         }
 
-        String url;
-        try {
-            url = imageService.save(image);
-        } catch (IOException e){
+        Image savedImage = imageService.save(image);
+        if (savedImage.isEmpty()) {
             throw new RestException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Image upload failed : " + e.getMessage()
+                    "Image upload failed."
             );
         }
+        String resultUrl = getImageUrl(savedImage);
 
-        return new ImageUploadResponseDto(url);
+        return new ImageUploadResponseDto(resultUrl);
     }
 
     @GetMapping(value = "/{imageName}", produces = "image/*")
-    public byte[] GetImageHandler(@PathVariable String imageName) {
-        return imageService.getImageByName(imageName);
+    public Resource GetImageHandler(@PathVariable String imageName) throws MalformedURLException {
+        Image image = imageService.getImageByStoredName(imageName);
+        if (image.isEmpty()) {
+            throw new RestException(HttpStatus.NOT_FOUND, "image not found");
+        }
+
+        return new UrlResource("file:" + image.getStoredName());
+    }
+
+    private String getImageUrl(Image savedImage) {
+        return serverUri + "/api/image/" + savedImage.getStoredName();
     }
 }

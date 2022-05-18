@@ -1,11 +1,12 @@
 package elixter.blog.controller;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
+import elixter.blog.exception.user.UserNotFoundException;
 import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,19 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
-@Transactional
 public class UserController {
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public static class UserNotFoundException extends RuntimeException {
-        public UserNotFoundException(String message) {
-            super(message);
-        }
-    }
 
     private final UserService service;
 
@@ -38,75 +34,44 @@ public class UserController {
     }
 
     @GetMapping("/{loginId}")
-    public ResponseEntity<Message> GetUserByLoginIdHandler(
+    public ResponseEntity<Object> GetUserByLoginIdHandler(
             @PathVariable String loginId
     ) {
-        GetUserResponseDto result = new GetUserResponseDto();
-        String msg = "";
-        HttpStatus statusCode = HttpStatus.OK;
+        log.info("finding user with login id = [{}]", loginId);
 
-        log.debug(loginId);
-
-        List<User> foundUser = service.findUser("loginId", loginId);
+        User foundUser = service.findUser("loginId", loginId).get(0);
         if (foundUser.isEmpty()) {
-            msg = "User " + loginId + " is not found.";
-            statusCode = HttpStatus.NOT_FOUND;
-            result = null;
-        } else {
-            result.mapping(foundUser.get(0));
+            log.info("login id [{}] user is not found", loginId);
+            Map<String, String> cause = new HashMap<>();
+            cause.put("login_id", loginId);
+            throw new UserNotFoundException(cause);
         }
 
-        Message responseMsg = new Message(statusCode, msg, result);
-
-        return new ResponseEntity<>(responseMsg, statusCode);
+        return ResponseEntity.ok(new GetUserResponseDto(foundUser));
     }
 
     @PostMapping
-    public ResponseEntity<Message> PostCreateUserHandler(
+    public ResponseEntity<Object> PostCreateUserHandler(
             @Valid @RequestBody CreateUserRequestDto createUserRequestBody
     ) {
-        String msg = "";
-        Long result;
-        HttpStatus statusCode = HttpStatus.CREATED;
+        service.createUser(createUserRequestBody.mapping());
 
-        User createdUser = createUserRequestBody.mapping();
-        result = service.createUser(createdUser);
-
-        if (result.equals(RecordErrorConstants.userLoginIdAlreadyExist)) {
-            statusCode = HttpStatus.CONFLICT;
-            msg = "user id ( " + createdUser.getLoginId() + " ) is already existed";
-            result = null;
-        } else if (result.equals(RecordErrorConstants.userEmailAlreadyExist)) {
-            statusCode = HttpStatus.CONFLICT;
-            msg = "entry is duplicated";
-            result = null;
-        }
-
-        Message responseMsg = new Message(statusCode, msg, result);
-
-        return new ResponseEntity<>(responseMsg, statusCode);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping
-    public ResponseEntity<Message> PutUpdateUserHandler(
+    public ResponseEntity<Object> PutUpdateUserHandler(
             @Valid @RequestBody UpdateUserRequestDto updateUserRequestBody
     ) {
-        String msg = "";
-        Long result;
-        HttpStatus statusCode = HttpStatus.OK;
 
-        User updatedUser = updateUserRequestBody.mapping();
-
-        result = service.updateUser(updatedUser);
-        if (result.equals(RecordStatusConstants.recordNotExist)) {
-            log.debug("user id {} not exist", updatedUser.getId());
-            msg = "user not exist";
-            statusCode = HttpStatus.NOT_FOUND;
-            result = null;
+        User updateUser = service.updateUser(updateUserRequestBody.mapping());
+        if (updateUser.isEmpty()) {
+            log.debug("User update failed : user id {} not exist", updateUserRequestBody.getId());
+            Map<String, String> cause = new HashMap<>();
+            cause.put("email", updateUserRequestBody.getEmail());
+            throw new UserNotFoundException(cause);
         }
 
-        Message responseMsg = new Message(statusCode, msg, result);
-
-        return new ResponseEntity<>(responseMsg, statusCode);
+        return ResponseEntity.noContent().build();
     }
 }

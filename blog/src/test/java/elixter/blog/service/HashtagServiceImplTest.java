@@ -1,13 +1,18 @@
 package elixter.blog.service;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.post.Post;
+import elixter.blog.repository.post.PostRepository;
 import elixter.blog.service.hashtag.HashtagService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,14 +20,35 @@ import java.util.NoSuchElementException;
 @SpringBootTest
 @Transactional
 class HashtagServiceImplTest {
+
     @Autowired
     HashtagService hashtagService;
+
+    @Autowired
+    PostRepository postRepository;
+
+    Post post;
+
+    @BeforeEach
+    void beforeEach() {
+        post = Post.builder()
+                .category("test")
+                .content("asdf")
+                .thumbnail("asdfa")
+                .title("tetst")
+                .createAt(LocalDateTime.now().withNano(0))
+                .updateAt(LocalDateTime.now().withNano(0))
+                .status(RecordStatus.exist)
+                .build();
+
+        post = postRepository.save(post);
+    }
 
     @Test
     void createHashtag() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.setPostId(post.getId());
 
         Number id = hashtagService.createHashtag(hashtag);
 
@@ -37,7 +63,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
-            hashtag.setPostId(193L);
+            hashtag.setPostId(post.getId());
 
             hashtagList.add(hashtag);
         }
@@ -50,7 +76,7 @@ class HashtagServiceImplTest {
     void findHashtagById() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.setPostId(post.getId());
 
         Number id = hashtagService.createHashtag(hashtag);
 
@@ -67,7 +93,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
-            hashtag.setPostId((long) i);
+            hashtag.setPostId(post.getId());
 
             hashtagList.add(hashtag);
         }
@@ -85,7 +111,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요" + i);
-            hashtag.setPostId((long) i);
+            hashtag.setPostId(post.getId());
 
             hashtagList.add(hashtag);
         }
@@ -102,11 +128,11 @@ class HashtagServiceImplTest {
     void findHashtagByPostId() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(9999L);
+        hashtag.setPostId(post.getId());
 
         Number id = hashtagService.createHashtag(hashtag);
 
-        List<Hashtag> result = hashtagService.findHashtagByPostId(9999L);
+        List<Hashtag> result = hashtagService.findHashtagByPostId(post.getId());
         Assertions.assertThat(result.size()).isEqualTo(1);
 
         List<Hashtag> result2 = hashtagService.findHashtagByPostId(300L);
@@ -117,7 +143,7 @@ class HashtagServiceImplTest {
     void deleteHashtagById() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.setPostId(post.getId());
 
         Number id = hashtagService.createHashtag(hashtag);
         hashtagService.deleteHashtagById(id.longValue());
@@ -129,7 +155,7 @@ class HashtagServiceImplTest {
     void deleteHashtagByTag() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.setPostId(post.getId());
 
         Number id = hashtagService.createHashtag(hashtag);
         hashtagService.deleteHashtagByTag("소통해요");

@@ -1,12 +1,15 @@
 package elixter.blog.service.user;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
+import elixter.blog.exception.RestException;
+import elixter.blog.exception.user.UserAlreadyExistException;
 import elixter.blog.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -25,28 +28,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long createUser(User user) {
-        Long result;
+    public User createUser(User user) {
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
         user.setProfileImage(User.defaultProfileImage);
 
         try {
-            repository.save(user);
-            result = user.getId();
-        } catch(DataIntegrityViolationException e) {
-            String errCause = e.getCause().toString();
-            if (errCause.contains("login_id")) {
-                result = RecordErrorConstants.userLoginIdAlreadyExist;
-            }
-            else if (errCause.contains("email")) {
-                result = RecordErrorConstants.userEmailAlreadyExist;
-            } else {
-                result = RecordErrorConstants.unknownError;
-            }
+            user = repository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new UserAlreadyExistException();
         }
 
-        return result;
+        return user;
     }
 
     @Override
@@ -60,16 +53,14 @@ public class UserServiceImpl implements UserService {
 
         switch (filterType) {
             case "id":
-                try {
-                    result.add(repository.findById(Long.parseLong(filterKey)).get());
-                } catch (NoSuchElementException e) {
+                result.add(repository.findById(Long.parseLong(filterKey)).orElse(User.getEmpty()));
+                if (result.get(0).isEmpty()) {
                     log.debug("No such user id : {}", filterKey);
                 }
                 break;
             case "loginId":
-                try {
-                    result.add(repository.findByLoginId(filterKey).get());
-                } catch (NoSuchElementException e) {
+                result.add(repository.findByLoginId(filterKey).orElse(User.getEmpty()));
+                if (result.get(0).isEmpty()) {
                     log.debug("No such user login id : {}", filterKey);
                 }
                 break;
@@ -84,19 +75,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long updateUser(User user) {
-        Long result;
-
+    public User updateUser(User user) {
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
 
-        User updateResult = repository.update(user);
-        if (updateResult == null) {
-            result = RecordStatusConstants.recordNotExist;
-        } else {
-            result = updateResult.getId();
-        }
-
-        return result;
+        return repository.update(user).orElse(User.getEmpty());
     }
 }

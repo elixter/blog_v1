@@ -1,6 +1,6 @@
 package elixter.blog.domain.post;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,14 +15,14 @@ public class Post {
     private String content;
     private String category;
     private String thumbnail;
-    private String status;
+    private RecordStatus status;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     private static final Long emptyId = -1L;
 
     public Post() {
-        status = RecordStatusConstants.recordStatusExist;
+        status = RecordStatus.exist;
         createAt = LocalDateTime.now().withNano(0);
         updateAt = LocalDateTime.now().withNano(0);
     }
@@ -36,7 +36,7 @@ public class Post {
     }
 
     @Builder
-    public Post(Long id, String title, String content, String category, String thumbnail, String status, LocalDateTime createAt, LocalDateTime updateAt) {
+    public Post(Long id, String title, String content, String category, String thumbnail, RecordStatus status, LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -53,7 +53,6 @@ public class Post {
                 content.isEmpty() &&
                 category.isEmpty() &&
                 thumbnail.isEmpty() &&
-                status.isEmpty() &&
                 createAt.isEqual(LocalDateTime.MIN) &&
                 updateAt.isEqual(LocalDateTime.MIN);
 
@@ -66,7 +65,6 @@ public class Post {
         result.content = "";
         result.category = "";
         result.thumbnail = "";
-        result.status = "";
         result.createAt = LocalDateTime.MIN;
         result.updateAt = LocalDateTime.MIN;
 

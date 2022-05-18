@@ -1,9 +1,7 @@
 package elixter.blog.domain.user;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.apache.tomcat.jni.Time;
 
 import java.time.LocalDateTime;
@@ -11,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class User {
     public static final String defaultProfileImage = "default";
     private Long id;
@@ -22,7 +21,7 @@ public class User {
     private LocalDateTime createAt;
 
     public User() {
-        createAt = LocalDateTime.now();
+        createAt = LocalDateTime.now().withNano(0);
     }
 
     public User(Long id, String name, String loginPw, String email, String profileImage) {
@@ -33,6 +32,7 @@ public class User {
         this.profileImage = profileImage;
     }
 
+    @Builder
     public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt) {
         this.id = id;
         this.name = name;
@@ -41,7 +41,7 @@ public class User {
         this.email = email;
         this.profileImage = profileImage;
         this.createAt = createAt;
-        this.createAt = LocalDateTime.now();
+        this.createAt = LocalDateTime.now().withNano(0);
     }
 
     public User(String name, String loginId, String loginPw, String email) {
@@ -49,7 +49,7 @@ public class User {
         this.loginId = loginId;
         this.loginPw = loginPw;
         this.email = email;
-        this.createAt = LocalDateTime.now();
+        this.createAt = LocalDateTime.now().withNano(0);
     }
 
     public User(String loginPw, String email, String profileImage) {
@@ -66,28 +66,19 @@ public class User {
         this.email = user.email;
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
-        this.createAt = LocalDateTime.now();
+        this.createAt = LocalDateTime.now().withNano(0);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        boolean result = true;
-        User _obj = (User)obj;
+    @JsonIgnore
+    public boolean isEmpty() {
+        return name.isEmpty() && loginId.isEmpty() && loginPw.isEmpty();
+    }
 
-        if (obj instanceof User) {
-            if (!this.id.equals(((User) obj).id) ||
-                    !this.name.equals(((User) obj).name) ||
-                    !this.loginId.equals(((User) obj).loginId) ||
-                    !this.loginPw.equals(((User) obj).loginPw) ||
-                    !this.profileImage.equals(((User) obj).profileImage)
-            ) {
-                result = false;
-            }
-        }
-        else {
-            result = false;
-        }
-
-        return result;
+    public static User getEmpty() {
+        return User.builder()
+                .name("")
+                .loginId("")
+                .loginPw("")
+                .build();
     }
 }

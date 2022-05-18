@@ -6,21 +6,19 @@ import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
-import elixter.blog.exception.RestException;
-import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,8 +40,8 @@ public class PostServiceImpl implements PostService {
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
-            List<String> urlList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
-            List<Image> images = imageRepository.findByUrlBatch(urlList);
+            List<String> storedNameList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+            List<Image> images = imageRepository.findByStoredName(storedNameList);
             List<Long> imageIdList = new Vector<>();
 
             images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
@@ -76,6 +74,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
+        Page<Post> queryResult;
         List<Post> postList;
         switch(filter) {
             case FILTER_TITLE:
@@ -83,14 +82,16 @@ public class PostServiceImpl implements PostService {
                 postList = new ArrayList<>();
                 break;
             case FILTER_CATEGORY:
-                postList = postRepository.findByCategory(filterVal, pageable.getOffset(), (long) pageable.getPageSize());
+                queryResult = postRepository.findByCategory(filterVal, pageable);
+                postList = queryResult.getContent();
                 break;
             case FILTER_CONTENT:
                 log.info("not implemented : case FILTER_CONTENT");
                 postList = new ArrayList<>();
                 break;
             case FILTER_HASHTAG:
-                postList = postRepository.findByHashtag(filterVal, pageable.getOffset(), (long) pageable.getPageSize());
+                queryResult = postRepository.findByHashtag(filterVal, pageable);
+                postList = queryResult.getContent();
                 break;
             default:
                 postList = new ArrayList<>();
@@ -105,21 +106,6 @@ public class PostServiceImpl implements PostService {
         }
 
         return result;
-    }
-
-    @Override
-    public List<Post> findPost(Long page, Long pageSize) {
-        return postRepository.findAll(page, pageSize);
-    }
-
-    @Override
-    public List<Post> findPostByCategory(String category, Long page, Long pageSize) {
-        return postRepository.findByCategory(category, page, pageSize);
-    }
-
-    @Override
-    public List<Post> findPostByHashtag(String hashtag, Long page, Long pageSize) {
-        return postRepository.findByHashtag(hashtag, page, pageSize);
     }
 
     @Override

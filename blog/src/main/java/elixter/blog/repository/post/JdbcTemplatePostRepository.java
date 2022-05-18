@@ -1,14 +1,19 @@
 package elixter.blog.repository.post;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -39,7 +44,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         parameters.put("content", post.getContent());
         parameters.put("category", post.getCategory());
         parameters.put("thumbnail", post.getThumbnail());
-        parameters.put("status", post.getStatus());
+        parameters.put("status", post.getStatus().ordinal());
         parameters.put("create_at", post.getCreateAt());
         parameters.put("update_at", post.getUpdateAt());
 
@@ -64,44 +69,77 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatusConstants.recordStatusExist);
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatus.exist.ordinal());
         return result.stream().findAny();
     }
 
     @Override
-    public List<Post> findAll(Long offset, Long limit) {
-        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatusConstants.recordStatusExist, offset, limit);
-        return result;
+    @Transactional(readOnly = true)
+    public Page<Post> findAll(Pageable pageable) {
+        Long count = jdbcTemplate.queryForObject(
+                String.format("SELECT * FROM posts WHERE status = %d", RecordStatus.exist.ordinal()),
+                Long.class
+        );
+
+        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatus.exist.ordinal(), pageable.getOffset(), pageable.getPageSize());
+
+        return new PageImpl<>(result, pageable, count);
     }
 
     @Override
-    public List<Post> findByCategory(String category, Long offset, Long limit) {
+    @Transactional(readOnly = true)
+    public Page<Post> findByCategory(String category, Pageable pageable) {
+
+
         List<Post> result = jdbcTemplate.query(
                 "select * from posts where category = ? and status = ? limit ?, ?",
                 postRowMapper(),
                 category,
-                RecordStatusConstants.recordStatusExist,
-                offset,
-                limit
+                RecordStatus.exist.ordinal(),
+                pageable.getOffset(),
+                pageable.getPageSize()
         );
-        return result;
+
+        Long count = jdbcTemplate.queryForObject(
+                String.format(
+                        "SELECT COUNT(*) FROM posts WHERE category = '%s' AND status = %d",
+                        category,
+                        RecordStatus.exist.ordinal()
+                ),
+                Long.class
+        );
+
+
+        return new PageImpl<Post>(result, pageable, count);
     }
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatusConstants.recordStatusDeleted, id);
+        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatus.deleted.ordinal(), id);
     }
 
     @Override
-    public List<Post> findByHashtag(String hashtag, Long offset, Long limit) {
-        return jdbcTemplate.query(
+    @Transactional(readOnly = true)
+    public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
+        Long count = jdbcTemplate.queryForObject(
+                String.format(
+                        "SELECT COUNT(*) FROM posts p JOIN hashtags h ON p.id = h.post_id WHERE h.tag = '%s' AND p.status = %d",
+                        hashtag,
+                        RecordStatus.exist.ordinal()
+                ),
+                Long.class
+        );
+
+        List<Post> result = jdbcTemplate.query(
                 "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? limit ?, ?",
                 postRowMapper(),
                 hashtag,
-                RecordStatusConstants.recordStatusExist,
-                offset,
-                limit
+                RecordStatus.exist.ordinal(),
+                pageable.getOffset(),
+                pageable.getPageSize()
         );
+
+        return new PageImpl<>(result, pageable, count);
     }
 
     private RowMapper<Post> postRowMapper() {
@@ -116,6 +154,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 post.setThumbnail(rs.getString("thumbnail"));
                 post.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
                 post.setUpdateAt(rs.getTimestamp("update_at").toLocalDateTime());
+                post.setStatus(RecordStatus.values()[rs.getInt("status")]);
 
                 return post;
             }

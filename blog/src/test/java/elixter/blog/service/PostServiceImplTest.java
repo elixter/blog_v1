@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,62 +90,11 @@ public class PostServiceImplTest {
         Post post4 = postService.createPost(dto4);
         GetPostResponseDto responseDto4 = new GetPostResponseDto(post4);
 
-        GetAllPostsResponseDto test_category = postService.findAllPost(PostService.FILTER_CATEGORY, "test_category",getDefaultPage());
+        GetAllPostsResponseDto test_category = postService.findAllPost(PostService.FILTER_CATEGORY, "test_category", PageRequest.of(0, 20));
         System.out.println("test_category = " + test_category.getPosts());
         System.out.println("Arrays.asList(responseDto2, responseDto4) = " + Arrays.asList(responseDto2, responseDto4));
 
         Assertions.assertThat(test_category.getPosts()).contains(responseDto2, responseDto4);
         Assertions.assertThat(test_category.getPosts()).doesNotContain(responseDto1, responseDto3);
-    }
-
-    Pageable getDefaultPage() {
-        Pageable pageable = new Pageable() {
-            @Override
-            public int getPageNumber() {
-                return 0;
-            }
-
-            @Override
-            public int getPageSize() {
-                return 20;
-            }
-
-            @Override
-            public long getOffset() {
-                return 0;
-            }
-
-            @Override
-            public Sort getSort() {
-                return null;
-            }
-
-            @Override
-            public Pageable next() {
-                return null;
-            }
-
-            @Override
-            public Pageable previousOrFirst() {
-                return null;
-            }
-
-            @Override
-            public Pageable first() {
-                return null;
-            }
-
-            @Override
-            public Pageable withPage(int pageNumber) {
-                return null;
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-        };
-
-        return pageable;
     }
 }

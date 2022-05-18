@@ -1,12 +1,13 @@
 package elixter.blog.service.image;
 
+import elixter.blog.domain.image.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface ImageService {
-    String save(MultipartFile image) throws IOException;
+    Image save(MultipartFile image);
     void relateWithPost(List<Long> imageIdList, Long postId);
-    byte[] getImageByName(String name);
+    Image getImageByStoredName(String name);
 }

@@ -1,14 +1,11 @@
 package elixter.blog.dto.post;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class CreatePostRequestDto {
                 .category(category)
                 .thumbnail(thumbnail)
                 .content(content)
-                .status(RecordStatusConstants.recordStatusExist)
+                .status(RecordStatus.exist)
                 .createAt(now)
                 .updateAt(now)
                 .build();
