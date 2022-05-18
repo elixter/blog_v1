@@ -10,6 +10,7 @@ import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.service.hashtag.HashtagService;
 import elixter.blog.service.image.ImageService;
 import elixter.blog.service.post.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +25,19 @@ import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @Transactional
 @RequestMapping(value = "/api/posts")
 public class PostController {
+
     private final PostService postService;
     private final HashtagService hashtagService;
-    private final ImageService imageService;
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostController(PostService postService, HashtagService hashtagService, ImageService imageService) {
+    public PostController(PostService postService, HashtagService hashtagService) {
         this.postService = postService;
         this.hashtagService = hashtagService;
-        this.imageService = imageService;
     }
 
     @GetMapping("/{id}")
@@ -56,7 +56,7 @@ public class PostController {
             @RequestParam(value = "filterString", required = false) String filterString,
             @PageableDefault Pageable pageable
     ) {
-        LOGGER.debug("Page : {}, filterType : {}, filterString : {}", pageable, filterType, filterString);
+        log.info("filterType : {}, filterString : {}", filterType, filterString);
 
         GetAllPostsResponseDto result = postService.findAllPost(filterType, filterString, pageable);
 
@@ -65,7 +65,8 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Object> PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
-        LOGGER.debug("Request body : {}", createPostBody);
+
+        log.info("Request body : {}", createPostBody);
 
         Post createdPost = postService.createPost(createPostBody);
 
@@ -77,19 +78,16 @@ public class PostController {
 
     @PutMapping
     public void PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
-        LOGGER.debug("Request body : {}", updatePostBody);
 
-        Post post = updatePostBody.PostMapping();
-        postService.updatePost(post);
+        log.info("Request body : {}", updatePostBody);
 
-        List<Hashtag> hashtags = updatePostBody.HashtagListMapping();
-        hashtagService.deleteHashtagById(post.getId());
-        hashtagService.createHashtags(hashtags);
+        postService.updatePost(updatePostBody.PostMapping());
     }
 
     @DeleteMapping("/{id}")
     public void DeletePostHandler(@PathVariable Long id) {
-        LOGGER.debug("Target post id : {}", id);
+
+        log.info("Target post id : {}", id);
 
         postService.deletePost(id);
         hashtagService.deleteHashtagByPostId(id);

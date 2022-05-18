@@ -12,17 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @ToString
-public class GetPostResponseDto {
-    private Long id;
+public class GetPostResponseDto extends AbstractPostDto {
+
     private String title;
     private String content;
     private String category;
     private String thumbnail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<String> hashtags;
 
     private static final Long emptyId = -1L;
 
@@ -83,7 +82,7 @@ public class GetPostResponseDto {
                 hashtags.isEmpty();
     }
 
-    public static GetPostResponseDto empty() {
+    public static GetPostResponseDto getEmpty() {
         GetPostResponseDto emptyInstance = new GetPostResponseDto();
         emptyInstance.id = emptyId;
         emptyInstance.title = "";
