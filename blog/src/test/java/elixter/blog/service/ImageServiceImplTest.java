@@ -1,6 +1,6 @@
 package elixter.blog.service;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
@@ -54,7 +54,7 @@ public class ImageServiceImplTest {
                 .originName("test")
                 .storedName("http://test.com")
                 .createAt(LocalDateTime.now())
-                .status(RecordStatusConstants.recordStatusExist).build();
+                .status(RecordStatus.exist).build();
 
         imageRepository.save(image);
 
@@ -63,7 +63,7 @@ public class ImageServiceImplTest {
                 .category("test")
                 .content("test")
                 .thumbnail("test")
-                .status(RecordStatusConstants.recordStatusExist)
+                .status(RecordStatus.exist)
                 .createAt(LocalDateTime.now())
                 .updateAt(LocalDateTime.now())
                 .build();

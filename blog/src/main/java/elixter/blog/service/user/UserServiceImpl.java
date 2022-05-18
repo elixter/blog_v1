@@ -1,6 +1,6 @@
 package elixter.blog.service.user;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.repository.user.UserRepository;
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
         User updateResult = repository.update(user);
         if (updateResult == null) {
-            result = RecordStatusConstants.recordNotExist;
+            result = RecordStatus.recordNotExist;
         } else {
             result = updateResult.getId();
         }

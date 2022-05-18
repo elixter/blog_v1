@@ -1,6 +1,7 @@
 package elixter.blog.domain.image;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import elixter.blog.constants.RecordStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,20 +16,20 @@ public class Image {
     private String originName;
     private String storedName;
     private LocalDateTime createAt;
-    private String status;
+    private RecordStatus status;
 
     public Image() {
         createAt = LocalDateTime.now().withNano(0);
     }
 
-    public Image(String originName, String url, String status) {
+    public Image(String originName, String url, RecordStatus status) {
         this.originName = originName;
         this.storedName = url;
         this.status = status;
     }
 
     @Builder
-    public Image(Long id, String originName, String storedName, LocalDateTime createAt, String status) {
+    public Image(Long id, String originName, String storedName, LocalDateTime createAt, RecordStatus status) {
         this.id = id;
         this.originName = originName;
         this.storedName = storedName;

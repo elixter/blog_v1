@@ -1,6 +1,6 @@
 package elixter.blog.repository.imageRepository;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
@@ -46,7 +46,7 @@ public class JdbcTemplateImageRepositoryTest {
     public void save() throws IOException {
         MockMultipartFile mockMultipartFile = getMockMultipartFile("힘들때 웃는자가 일류다", "png", "src/test/resources/img/힘들때 웃는자가 일류다.png");
         Image saved = imageStorage.save(mockMultipartFile);
-        saved.setStatus(RecordStatusConstants.recordStatusExist);
+        saved.setStatus(RecordStatus.exist);
         saved.setCreateAt(LocalDateTime.now().withNano(0));
 
         saved = imageRepository.save(saved);
@@ -62,13 +62,13 @@ public class JdbcTemplateImageRepositoryTest {
         img1.setStoredName("http://localhost");
         img1.setOriginName("test");
         img1.setCreateAt(LocalDateTime.now().withNano(0));
-        img1.setStatus(RecordStatusConstants.recordStatusPending);
+        img1.setStatus(RecordStatus.pending);
 
         Image img2 = new Image();
         img2.setStoredName("http://localhost2");
         img2.setOriginName("test2");
         img2.setCreateAt(LocalDateTime.now().withNano(0));
-        img2.setStatus(RecordStatusConstants.recordStatusPending);
+        img2.setStatus(RecordStatus.pending);
 
         Post post = new Post();
         post.setTitle("Test title");
@@ -99,7 +99,7 @@ public class JdbcTemplateImageRepositoryTest {
         img.setStoredName("findByUrlTestUrl123123");
         img.setOriginName("test");
         img.setCreateAt(LocalDateTime.now().withNano(0));
-        img.setStatus(RecordStatusConstants.recordStatusPending);
+        img.setStatus(RecordStatus.pending);
         imageRepository.save(img);
 
         Image result = imageRepository.findByStoredName(img.getStoredName()).orElse(Image.getEmpty());
@@ -115,13 +115,13 @@ public class JdbcTemplateImageRepositoryTest {
         img1.setStoredName("findByUrlTestUrl1");
         img1.setOriginName("test");
         img1.setCreateAt(LocalDateTime.now().withNano(0));
-        img1.setStatus(RecordStatusConstants.recordStatusPending);
+        img1.setStatus(RecordStatus.pending);
 
         Image img2 = new Image();
         img2.setStoredName("findByUrlTestUrl2");
         img2.setOriginName("test2");
         img2.setCreateAt(LocalDateTime.now().withNano(0));
-        img2.setStatus(RecordStatusConstants.recordStatusPending);
+        img2.setStatus(RecordStatus.pending);
 
         imageRepository.save(img1);
         imageRepository.save(img2);

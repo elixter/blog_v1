@@ -1,6 +1,6 @@
 package elixter.blog.service;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.post.PostRepository;
@@ -38,7 +38,7 @@ class HashtagServiceImplTest {
                 .title("tetst")
                 .createAt(LocalDateTime.now().withNano(0))
                 .updateAt(LocalDateTime.now().withNano(0))
-                .status(RecordStatusConstants.recordStatusExist)
+                .status(RecordStatus.exist)
                 .build();
 
         post = postRepository.save(post);

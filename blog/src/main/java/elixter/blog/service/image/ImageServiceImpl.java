@@ -1,6 +1,6 @@
 package elixter.blog.service.image;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.image.ImageStorage;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class ImageServiceImpl implements ImageService{
         }
 
         result.setCreateAt(LocalDateTime.now());
-        result.setStatus(RecordStatusConstants.recordStatusPending);
+        result.setStatus(RecordStatus.pending);
 
         return imageRepository.save(result);
     }

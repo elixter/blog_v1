@@ -1,6 +1,6 @@
 package elixter.blog.controller;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
@@ -98,7 +98,7 @@ public class UserController {
         User updatedUser = updateUserRequestBody.mapping();
 
         result = service.updateUser(updatedUser);
-        if (result.equals(RecordStatusConstants.recordNotExist)) {
+        if (result.equals(RecordStatus.recordNotExist)) {
             log.debug("user id {} not exist", updatedUser.getId());
             msg = "user not exist";
             statusCode = HttpStatus.NOT_FOUND;

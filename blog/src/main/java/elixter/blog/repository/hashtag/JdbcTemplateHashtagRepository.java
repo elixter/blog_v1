@@ -1,6 +1,6 @@
 package elixter.blog.repository.hashtag;
 
-import elixter.blog.constants.RecordStatusConstants;
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.dto.hashtag.SearchHashtagDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tag", hashtag.getTag());
         parameters.put("post_id", hashtag.getPostId());
-        parameters.put("status", RecordStatusConstants.recordStatusExist);
+        parameters.put("status", RecordStatus.exist);
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         hashtag.setId(key.longValue());
@@ -53,7 +53,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("tag", hashtag.getTag());
             parameters.put("post_id", hashtag.getPostId());
-            parameters.put("status", RecordStatusConstants.recordStatusExist);
+            parameters.put("status", RecordStatus.exist);
             batchParams.add(new MapSqlParameterSource(parameters));
         }
 
@@ -70,23 +70,23 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
     @Override
     public Optional<Hashtag> findById(Long id) {
-        List<Hashtag> result = jdbcTemplate.query("select * from hashtags where id = ? and status = ?", hashtagRowMapper(), id, RecordStatusConstants.recordStatusExist);
+        List<Hashtag> result = jdbcTemplate.query("select * from hashtags where id = ? and status = ?", hashtagRowMapper(), id, RecordStatus.exist);
         return result.stream().findAny();
     }
 
     @Override
     public List<Hashtag> findByTag(String tag) {
-        return jdbcTemplate.query("select * from hashtags where tag = ? and status = ?", hashtagRowMapper(), tag, RecordStatusConstants.recordStatusExist);
+        return jdbcTemplate.query("select * from hashtags where tag = ? and status = ?", hashtagRowMapper(), tag, RecordStatus.exist);
     }
 
     @Override
     public List<Hashtag> findAll() {
-        return jdbcTemplate.query("select * from hashtags where status = ?", hashtagRowMapper(), RecordStatusConstants.recordStatusExist);
+        return jdbcTemplate.query("select * from hashtags where status = ?", hashtagRowMapper(), RecordStatus.exist);
     }
 
     @Override
     public List<Hashtag> findByPostId(Long postId) {
-        return jdbcTemplate.query("select * from hashtags where post_id = ? and status = ?", hashtagRowMapper(), postId, RecordStatusConstants.recordStatusExist);
+        return jdbcTemplate.query("select * from hashtags where post_id = ? and status = ?", hashtagRowMapper(), postId, RecordStatus.exist);
     }
 
     @Override
@@ -96,12 +96,12 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
     @Override
     public void deleteById(Long id) {
-        jdbcTemplate.update("update hashtags set status = ? where id = ?", RecordStatusConstants.recordStatusDeleted, id);
+        jdbcTemplate.update("update hashtags set status = ? where id = ?", RecordStatus.deleted, id);
     }
 
     @Override
     public void deleteByTag(String tag) {
-        jdbcTemplate.update("update hashtags set status = ? where tag = ?", RecordStatusConstants.recordStatusDeleted, tag);
+        jdbcTemplate.update("update hashtags set status = ? where tag = ?", RecordStatus.deleted, tag);
     }
 
     @Override
