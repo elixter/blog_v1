@@ -38,7 +38,7 @@ public class UserServiceImplTest {
         service.deleteUser(user.getId());
 
         List<User> result = service.findUser("id", user.getId().toString());
-        Assertions.assertThat(result).isEmpty();
+        Assertions.assertThat(result.get(0)).isEqualTo(User.getEmpty());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class UserServiceImplTest {
         service.createUser(user);
 
         user.setName("updated");
-        Long id = service.updateUser(user);
+        user = service.updateUser(user);
 
         List<User> result = service.findUser("id", user.getId().toString());
         Assertions.assertThat(result).contains(user);

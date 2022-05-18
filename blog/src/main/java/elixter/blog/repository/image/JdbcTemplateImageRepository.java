@@ -1,5 +1,6 @@
 package elixter.blog.repository.image;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         params.put("origin_name", image.getOriginName());
         params.put("stored_name", image.getStoredName());
         params.put("create_at", image.getCreateAt());
-        params.put("status", image.getStatus());
+        params.put("status", image.getStatus().ordinal());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
         image.setId(key.longValue());
@@ -115,7 +116,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                 image.setOriginName(rs.getString("origin_name"));
                 image.setStoredName(rs.getString("stored_name"));
                 image.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
-                image.setStatus(rs.getString("status"));
+                image.setStatus(RecordStatus.values()[rs.getInt("status")]);
 
                 return image;
             }

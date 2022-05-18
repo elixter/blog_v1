@@ -39,7 +39,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         parameters.put("content", post.getContent());
         parameters.put("category", post.getCategory());
         parameters.put("thumbnail", post.getThumbnail());
-        parameters.put("status", post.getStatus());
+        parameters.put("status", post.getStatus().ordinal());
         parameters.put("create_at", post.getCreateAt());
         parameters.put("update_at", post.getUpdateAt());
 
@@ -64,13 +64,13 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(Long id) {
-        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatus.exist);
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, RecordStatus.exist.ordinal());
         return result.stream().findAny();
     }
 
     @Override
     public List<Post> findAll(Long offset, Long limit) {
-        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatus.exist, offset, limit);
+        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), RecordStatus.exist.ordinal(), offset, limit);
         return result;
     }
 
@@ -80,7 +80,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 "select * from posts where category = ? and status = ? limit ?, ?",
                 postRowMapper(),
                 category,
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 offset,
                 limit
         );
@@ -89,7 +89,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatus.deleted, id);
+        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatus.deleted.ordinal(), id);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? limit ?, ?",
                 postRowMapper(),
                 hashtag,
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 offset,
                 limit
         );
@@ -116,6 +116,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 post.setThumbnail(rs.getString("thumbnail"));
                 post.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
                 post.setUpdateAt(rs.getTimestamp("update_at").toLocalDateTime());
+                post.setStatus(RecordStatus.values()[rs.getInt("status")]);
 
                 return post;
             }

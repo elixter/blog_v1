@@ -43,7 +43,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         params.put("email", user.getEmail());
         params.put("profile_image", user.getProfileImage());
         params.put("create_at", user.getCreateAt());
-        params.put("status", RecordStatus.exist);
+        params.put("status", RecordStatus.exist.ordinal());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(params));
         user.setId(key.longValue());
@@ -52,7 +52,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public User update(User user) {
+    public Optional<User> update(User user) {
         User result;
         int affectedCols = 0;
         try {
@@ -74,7 +74,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
             result = user;
         }
 
-        return result;
+        return Optional.of(result);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and id = ?",
                 userRowMapper(),
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 id
         );
 
@@ -94,7 +94,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
           "select * from users where status = ? and login_id = ?",
           userRowMapper(),
-          RecordStatus.exist,
+          RecordStatus.exist.ordinal(),
           loginId
         );
 
@@ -106,7 +106,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and name = ?",
                 userRowMapper(),
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 name
         );
 
@@ -118,7 +118,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and email = ?",
                 userRowMapper(),
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 email
         );
         return result.stream().findAny();
@@ -129,7 +129,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? limit ?, ?",
                 userRowMapper(),
-                RecordStatus.exist,
+                RecordStatus.exist.ordinal(),
                 offset,
                 limit
         );
@@ -140,7 +140,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public void delete(Long id) {
         jdbcTemplate.update(
                 "update users set status = ? where id = ?",
-                RecordStatus.deleted,
+                RecordStatus.deleted.ordinal(),
                 id
         );
     }
@@ -155,6 +155,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 user.setLoginId(rs.getString("login_id"));
                 user.setLoginPw(rs.getString("login_pw"));
                 user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
                 user.setProfileImage(rs.getString("profile_image"));
                 user.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
 

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    Long createUser(User user);
-    Long updateUser(User user);
+    User createUser(User user);
+    User updateUser(User user);
 
     void deleteUser(Long id);
 
