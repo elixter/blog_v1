@@ -8,7 +8,7 @@
 
 ## 기능
 - [ ] 로그
-- [ ] NS 통합 피드
+- [ ] SNS 통합 피드
 
 ## TODO List
 ### Backend
