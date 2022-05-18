@@ -58,8 +58,14 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         }
 
         jdbcInsert.executeBatch(batchParams.toArray(new MapSqlParameterSource[0]));
+        Long lastId = jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
 
-        return null;
+        int lastIdx = hashtags.size() - 1;
+        for (int i = lastIdx; i >= 0; i--) {
+            hashtags.get(i).setId(lastId - lastIdx + i);
+        }
+
+        return hashtags;
     }
 
     @Override
@@ -90,12 +96,12 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
     @Override
     public void deleteById(Long id) {
-        jdbcTemplate.update("update hashtags set status = ? where id = ?", hashtagRowMapper(), RecordStatusConstants.recordStatusDeleted, id);
+        jdbcTemplate.update("update hashtags set status = ? where id = ?", RecordStatusConstants.recordStatusDeleted, id);
     }
 
     @Override
     public void deleteByTag(String tag) {
-        jdbcTemplate.update("update hashtags set status = ? where tag = ?", hashtagRowMapper(), RecordStatusConstants.recordStatusDeleted, tag);
+        jdbcTemplate.update("update hashtags set status = ? where tag = ?", RecordStatusConstants.recordStatusDeleted, tag);
     }
 
     @Override
