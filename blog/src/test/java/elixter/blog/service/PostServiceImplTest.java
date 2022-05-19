@@ -98,4 +98,20 @@ public class PostServiceImplTest {
         Assertions.assertThat(test_category.getPosts()).contains(responseDto2, responseDto4);
         Assertions.assertThat(test_category.getPosts()).doesNotContain(responseDto1, responseDto3);
     }
+
+    @Test
+    void delete() {
+        CreatePostRequestDto dto = CreatePostRequestDto.builder()
+                .title("test")
+                .category("test")
+                .content("test")
+                .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag"))
+                .build();
+        Post post = postService.createPost(dto);
+        postService.deletePost(post.getId());
+
+        GetPostResponseDto postById = postService.findPostById(post.getId());
+        Assertions.assertThat(postById.isEmpty()).isTrue();
+    }
 }

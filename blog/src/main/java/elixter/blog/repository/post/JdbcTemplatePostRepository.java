@@ -115,7 +115,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("update posts set status = ? where id = ?", postRowMapper(), RecordStatus.deleted.ordinal(), id);
+        jdbcTemplate.update("update posts set status = ? where id = ?", RecordStatus.deleted.ordinal(), id);
     }
 
     @Override

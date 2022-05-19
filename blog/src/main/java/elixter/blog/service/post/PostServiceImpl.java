@@ -70,11 +70,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public GetPostResponseDto findPostById(Long id) {
         Post foundPost = postRepository.findById(id).orElse(Post.emptyPost());
+        if (foundPost.isEmpty()) {
+            log.info("No such post with id [{}]", id);
+            return GetPostResponseDto.getEmpty();
+        }
         List<Hashtag> hashtagList = hashtagRepository.findByPostId(foundPost.getId());
 
-        GetPostResponseDto result = new GetPostResponseDto(foundPost, hashtagList);
-
-        return result;
+        return new GetPostResponseDto(foundPost, hashtagList);
     }
 
     @Override
@@ -116,6 +118,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long id) {
         postRepository.delete(id);
+        hashtagRepository.deleteByPostId(id);
     }
 
     private static List<String> getActiveImageUrls(String content, List<String> imageUrlList) {
