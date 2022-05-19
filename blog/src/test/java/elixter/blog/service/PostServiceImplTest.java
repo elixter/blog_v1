@@ -59,6 +59,7 @@ public class PostServiceImplTest {
                 .category("test")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag"))
                 .build();
         Post post = postService.createPost(dto);
         GetPostResponseDto responseDto1 = new GetPostResponseDto(post);

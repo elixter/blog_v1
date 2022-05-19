@@ -37,6 +37,8 @@ public class PostServiceImpl implements PostService {
         Post newPost = post.postMapping();
 
         postRepository.save(newPost);
+        setPostIdToHashtagList(newPost);
+        hashtagRepository.batchSave(newPost.getHashtags());
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
@@ -126,5 +128,9 @@ public class PostServiceImpl implements PostService {
         });
 
         return urlList;
+    }
+
+    private void setPostIdToHashtagList(Post newPost) {
+        newPost.getHashtags().forEach(hashtag->hashtag.setPostId(newPost.getId()));
     }
 }

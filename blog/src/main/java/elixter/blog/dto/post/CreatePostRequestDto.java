@@ -45,17 +45,4 @@ public class CreatePostRequestDto extends AbstractPostDto {
                 .hashtags(getHashtagAsInstance())
                 .build();
     }
-
-    public List<Hashtag> hashtagListMapping(Long postId) {
-        List<Hashtag> result = new ArrayList<>();
-
-        for (String tag : hashtags) {
-            Hashtag hashtag = new Hashtag();
-            hashtag.setTag(tag);
-            hashtag.setPostId(postId);
-            result.add(hashtag);
-        }
-
-        return result;
-    }
 }

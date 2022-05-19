@@ -70,9 +70,6 @@ public class PostController {
 
         Post createdPost = postService.createPost(createPostBody);
 
-        List<Hashtag> hashtags = createPostBody.hashtagListMapping(createdPost.getId());
-        hashtagService.createHashtags(hashtags);
-
         return ResponseEntity.created(URI.create("/blog/posts/" + createdPost.getId())).build();
     }
 
