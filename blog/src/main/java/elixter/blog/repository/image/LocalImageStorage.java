@@ -35,7 +35,6 @@ public class LocalImageStorage implements ImageStorage {
         return Image.builder()
                 .originName(multipartFile.getOriginalFilename())
                 .storedName(storedName)
-                .url(getFullPath(storedName))
                 .build();
     }
 

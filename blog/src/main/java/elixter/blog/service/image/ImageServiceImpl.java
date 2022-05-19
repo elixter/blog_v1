@@ -37,7 +37,7 @@ public class ImageServiceImpl implements ImageService{
         }
 
         result.setCreateAt(LocalDateTime.now());
-        result.setStatus(RecordStatus.pending);
+        result.setStatus(RecordStatus.exist);
 
         return imageRepository.save(result);
     }
