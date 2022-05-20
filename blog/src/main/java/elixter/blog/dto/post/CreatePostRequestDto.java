@@ -4,7 +4,9 @@ import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,10 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 public class CreatePostRequestDto extends AbstractPostDto {
 
+    @Length(max = 50)
     private String title;
+
     private String content;
 
-    @NotNull
+    @NotBlank
     private String category;
 
     private String thumbnail;

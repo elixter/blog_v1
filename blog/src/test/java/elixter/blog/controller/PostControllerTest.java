@@ -60,7 +60,24 @@ public class PostControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestBody))
         ).andExpect(MockMvcResultMatchers.status().isCreated());
+
+        CreatePostRequestDto invalidFieldRequestBody = CreatePostRequestDto.builder()
+                .title("abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijasadasdasdasdasdasdasdasdbcdefghijabcdefghij") // title length must be equal or less than 50
+                .content("teeeeeeeeesting")
+                .thumbnail("http://testingImage")
+                .category("") // category must not blank
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요", "허허허"))
+                .build();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidFieldRequestBody))
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 }

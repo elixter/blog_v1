@@ -21,7 +21,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(InvalidBodyFieldException.class)
     public ResponseEntity<Map<String, Object>> invalidBodyFieldExceptionHandler(InvalidBodyFieldException e) {
-        Map<String, Object> response = e.getFieldErrorsMap();
+        Map<String, Object> response = e.getRestExceptionResponseMap();
         response.put("fieldInfo", e.getFieldErrorsMap());
 
         return new ResponseEntity<>(response, e.getStatus());
