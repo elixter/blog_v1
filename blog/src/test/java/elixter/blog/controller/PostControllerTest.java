@@ -2,7 +2,14 @@ package elixter.blog.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
+import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.service.post.PostService;
 import elixter.blog.service.post.PostServiceImpl;
 import org.apache.commons.logging.LogFactory;
@@ -23,6 +30,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -43,7 +51,10 @@ public class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    PostService postService;
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Test
     @Transactional
@@ -79,5 +90,27 @@ public class PostControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidFieldRequestBody))
         ).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    void getPostWithId() throws Exception {
+        CreatePostRequestDto requestBody = CreatePostRequestDto.builder()
+                .title("for testing")
+                .content("teeeeeeeeesting")
+                .thumbnail("http://testingImage")
+                .category("category")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요", "허허허"))
+                .build();
+
+        Post post = postService.createPost(requestBody);
+
+        GetPostResponseDto expect = new GetPostResponseDto(post, post.getHashtags());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/posts/" + post.getId())
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expect)));
     }
 }
