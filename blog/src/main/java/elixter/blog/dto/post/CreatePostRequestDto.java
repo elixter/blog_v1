@@ -5,6 +5,7 @@ import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,10 @@ public class CreatePostRequestDto extends AbstractPostDto {
 
     private String title;
     private String content;
+
+    @NotNull
     private String category;
+
     private String thumbnail;
     private List<String> imageUrlList;
 

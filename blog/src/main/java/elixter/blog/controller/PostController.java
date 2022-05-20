@@ -6,6 +6,8 @@ import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
+import elixter.blog.exception.InvalidBodyFieldException;
+import elixter.blog.exception.RestException;
 import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.service.hashtag.HashtagService;
 import elixter.blog.service.image.ImageService;
@@ -20,6 +22,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -63,9 +68,14 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> PostCreatePostHandler(@RequestBody CreatePostRequestDto createPostBody) {
+    public ResponseEntity<Object> PostCreatePostHandler(@Validated @RequestBody CreatePostRequestDto createPostBody, BindingResult bindingResult) {
 
         log.info("Request body : {}", createPostBody);
+
+        if (bindingResult.hasFieldErrors()) {
+            log.info("field error : {}", bindingResult.getFieldErrors());
+            throw new InvalidBodyFieldException(bindingResult.getFieldErrors());
+        }
 
         Post createdPost = postService.createPost(createPostBody);
 
