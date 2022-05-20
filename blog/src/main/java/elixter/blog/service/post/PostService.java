@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface PostService {
     public static final String FILTER_CATEGORY = "category";
-    public static final String FILTER_HASHTAG = "HASHTAG";
+    public static final String FILTER_HASHTAG = "hashtag";
     public static final String FILTER_CONTENT = "content";
     public static final String FILTER_TITLE = "title";
     public static final List<String> filterList = Arrays.asList(

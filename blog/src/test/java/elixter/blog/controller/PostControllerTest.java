@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
+import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.service.post.PostService;
 import elixter.blog.service.post.PostServiceImpl;
@@ -59,6 +60,7 @@ public class PostControllerTest {
     @Test
     @Transactional
     void createPost() throws Exception {
+
         CreatePostRequestDto requestBody = CreatePostRequestDto.builder()
                 .title("for testing")
                 .content("teeeeeeeeesting")
@@ -95,6 +97,7 @@ public class PostControllerTest {
     @Test
     @Transactional
     void getPostWithId() throws Exception {
+
         CreatePostRequestDto requestBody = CreatePostRequestDto.builder()
                 .title("for testing")
                 .content("teeeeeeeeesting")
@@ -103,14 +106,122 @@ public class PostControllerTest {
                 .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
                 .hashtags(Arrays.asList("소통해요", "허허허"))
                 .build();
-
         Post post = postService.createPost(requestBody);
-
         GetPostResponseDto expect = new GetPostResponseDto(post, post.getHashtags());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts/" + post.getId())
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expect)));
+    }
+
+    @Test
+    @Transactional
+    void findPostsByCategory() throws Exception {
+
+        CreatePostRequestDto requestBody1 = CreatePostRequestDto.builder()
+                .title("for testing")
+                .content("teeeeeeeeesting")
+                .thumbnail("http://testingImage")
+                .category("TestCategory1")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요", "허허허"))
+                .build();
+        Post post1 = postService.createPost(requestBody1);
+        GetPostResponseDto expectData1 = new GetPostResponseDto(post1, post1.getHashtags());
+
+        CreatePostRequestDto requestBody2 = CreatePostRequestDto.builder()
+                .title("for testing232323")
+                .content("테ㅔㅔㅔㅔㅔ스팅")
+                .thumbnail("http://testingImage")
+                .category("TestCategory1")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요", "테스트2"))
+                .build();
+        Post post2 = postService.createPost(requestBody2);
+        GetPostResponseDto expectData2 = new GetPostResponseDto(post2, post2.getHashtags());
+
+        CreatePostRequestDto requestBody3 = CreatePostRequestDto.builder()
+                .title("for testing232323")
+                .content("teeeeeeeeesting232323232323")
+                .thumbnail("http://testingImage")
+                .category("TestCategory2")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요", "테스트3"))
+                .build();
+        Post post3 = postService.createPost(requestBody3);
+        GetPostResponseDto expectData3 = new GetPostResponseDto(post3, post3.getHashtags());
+
+        GetAllPostsResponseDto expectResponse = new GetAllPostsResponseDto();
+        expectResponse.setPosts(Arrays.asList(expectData1, expectData2));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/posts?filterType=category&filterString=TestCategory1")
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expectResponse)));
+
+        GetAllPostsResponseDto expectResponse2 = new GetAllPostsResponseDto();
+        expectResponse2.setPosts(Arrays.asList(expectData3));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/posts?filterType=category&filterString=TestCategory2")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expectResponse2)));
+
+    }
+
+    @Test
+    @Transactional
+    void findPostsByHashtag() throws Exception {
+
+        CreatePostRequestDto requestBody1 = CreatePostRequestDto.builder()
+                .title("for testing")
+                .content("teeeeeeeeesting")
+                .thumbnail("http://testingImage")
+                .category("TestCategory1")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요테스트", "소통해요테스트허허허"))
+                .build();
+        Post post1 = postService.createPost(requestBody1);
+        GetPostResponseDto expectData1 = new GetPostResponseDto(post1, post1.getHashtags());
+
+        CreatePostRequestDto requestBody2 = CreatePostRequestDto.builder()
+                .title("for testing232323")
+                .content("테ㅔㅔㅔㅔㅔ스팅")
+                .thumbnail("http://testingImage")
+                .category("TestCategory1")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요테스트", "소통해요테스트헤헤"))
+                .build();
+        Post post2 = postService.createPost(requestBody2);
+        GetPostResponseDto expectData2 = new GetPostResponseDto(post2, post2.getHashtags());
+
+        CreatePostRequestDto requestBody3 = CreatePostRequestDto.builder()
+                .title("for testing232323")
+                .content("teeeeeeeeesting232323232323")
+                .thumbnail("http://testingImage")
+                .category("TestCategory2")
+                .imageUrlList(Arrays.asList("http://testingImage", "http://testingImage2"))
+                .hashtags(Arrays.asList("소통해요테스트"))
+                .build();
+        Post post3 = postService.createPost(requestBody3);
+        GetPostResponseDto expectData3 = new GetPostResponseDto(post3, post3.getHashtags());
+
+        GetAllPostsResponseDto expectResponse = new GetAllPostsResponseDto();
+        expectResponse.setPosts(Arrays.asList(expectData1, expectData2, expectData3));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/posts?filterType=hashtag&filterString=소통해요테스트")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expectResponse)));
+
+        GetAllPostsResponseDto expectResponse2 = new GetAllPostsResponseDto();
+        expectResponse2.setPosts(Arrays.asList(expectData2));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/posts?filterType=hashtag&filterString=소통해요테스트헤헤")
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(expectResponse2)));
+
     }
 }
