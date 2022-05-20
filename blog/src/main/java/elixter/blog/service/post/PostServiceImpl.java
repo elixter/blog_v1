@@ -11,6 +11,8 @@ import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +34,10 @@ public class PostServiceImpl implements PostService {
     private final ImageRepository imageRepository;
     private final HashtagRepository hashtagRepository;
 
+    private final String cacheName = "posts";
+
     @Override
+    @CacheEvict(value = cacheName, allEntries = true)
     public Post createPost(CreatePostRequestDto post) {
         Post newPost = post.postMapping();
 
@@ -59,6 +64,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = cacheName, allEntries = true)
     public void updatePost(Post post) {
         post.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.update(post);
@@ -68,6 +74,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = cacheName, key = "#id")
     public GetPostResponseDto findPostById(Long id) {
         Post foundPost = postRepository.findById(id).orElse(Post.emptyPost());
         if (foundPost.isEmpty()) {
@@ -80,6 +87,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = cacheName, key = "{#filter, #filterVal, #pageable.offset}")
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
         Page<Post> queryResult;
         List<Post> postList;
@@ -116,6 +124,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = cacheName, allEntries = true)
     public void deletePost(Long id) {
         postRepository.delete(id);
         hashtagRepository.deleteByPostId(id);

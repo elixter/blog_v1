@@ -2,6 +2,7 @@ package elixter.blog.repository.post;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Primary
 @Repository
 public class JdbcTemplatePostRepository implements PostRepository {
@@ -76,6 +78,8 @@ public class JdbcTemplatePostRepository implements PostRepository {
     @Override
     @Transactional(readOnly = true)
     public Page<Post> findAll(Pageable pageable) {
+
+        log.debug("get non-cached posts data with pageable [{}]", pageable);
         Long count = jdbcTemplate.queryForObject(
                 String.format("SELECT * FROM posts WHERE status = %d", RecordStatus.exist.ordinal()),
                 Long.class
@@ -90,7 +94,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
     @Transactional(readOnly = true)
     public Page<Post> findByCategory(String category, Pageable pageable) {
 
-
+        log.debug("get non-cached posts data with category [{}] and pageable [{}]", category, pageable);
         List<Post> result = jdbcTemplate.query(
                 "select * from posts where category = ? and status = ? limit ?, ?",
                 postRowMapper(),
@@ -121,6 +125,8 @@ public class JdbcTemplatePostRepository implements PostRepository {
     @Override
     @Transactional(readOnly = true)
     public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
+
+        log.debug("get non-cached posts data with hashtag [{}] and pageable [{}]", hashtag, pageable);
         Long count = jdbcTemplate.queryForObject(
                 String.format(
                         "SELECT COUNT(*) FROM posts p JOIN hashtags h ON p.id = h.post_id WHERE h.tag = '%s' AND p.status = %d",

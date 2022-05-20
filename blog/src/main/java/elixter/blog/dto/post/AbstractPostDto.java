@@ -3,11 +3,12 @@ package elixter.blog.dto.post;
 import elixter.blog.domain.hashtag.Hashtag;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class AbstractPostDto {
+public abstract class AbstractPostDto implements Serializable {
 
     protected Long id;
 
