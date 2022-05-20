@@ -5,6 +5,7 @@ import elixter.blog.dto.image.ImageUploadResponseDto;
 import elixter.blog.exception.RestException;
 import elixter.blog.service.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -22,6 +23,9 @@ public class ImageController {
 
     @Value("${server.uri}")
     private String serverUri;
+
+    @Value("${file.image}")
+    private String imageDir;
 
     private final ImageService imageService;
 
@@ -58,7 +62,12 @@ public class ImageController {
             throw new RestException(HttpStatus.NOT_FOUND, "image not found");
         }
 
-        return new UrlResource("file:" + image.getUrl());
+        return new UrlResource("file:" + getFullPath(image));
+    }
+
+    @NotNull
+    private String getFullPath(Image image) {
+        return imageDir + image.getStoredName();
     }
 
     private String getImageUrl(Image savedImage) {
