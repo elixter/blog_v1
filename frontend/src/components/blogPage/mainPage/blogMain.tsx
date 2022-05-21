@@ -1,4 +1,4 @@
-import PostList from './postList';
+import PostList from './blogMainPostList';
 
 const BlogMain = function () {
 	return (

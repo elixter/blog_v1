@@ -12,6 +12,8 @@ export const getPostList = async (params?: IGetPostListParams) => {
 		...new GetPostListParams(params),
 	})}`;
 
+	console.log(uri);
+
 	const response = await axios.get<Posts>(uri, axiosConfig);
 	return response.data;
 };

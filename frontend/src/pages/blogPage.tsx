@@ -1,5 +1,5 @@
 import TopNavigationBar from '../components/navigation/topNavigationBar';
-import BlogMain from '../components/blogPage/blogMain';
+import BlogMain from '../components/blogPage/mainPage/blogMain';
 
 const BlogPage = function () {
 	return (
