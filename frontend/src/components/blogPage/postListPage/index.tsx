@@ -23,11 +23,26 @@ const PostListMain = function () {
 	console.log(data);
 
 	return (
-		<div className="post-list-items-flex flex-v">
-			{(data &&
-				data.posts.map((post, i) => {
-					return <PostItem key={post.id} post={post} />;
-				})) || <CircleLoading />}
+		<div className="main">
+			<div className="blog-top">
+				{/* <img */}
+				{/*	alt="bg" */}
+				{/*	className="bg-img" */}
+				{/*	src="https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf" */}
+				{/* /> */}
+				<div className="top-content">
+					<h1>{filterString}</h1>
+				</div>
+			</div>
+
+			<div className="blog-content">
+				<div className="post-list-items-flex flex-v">
+					{(data &&
+						data.posts.map((post, i) => {
+							return <PostItem key={post.id} post={post} />;
+						})) || <CircleLoading />}
+				</div>
+			</div>
 		</div>
 	);
 };
