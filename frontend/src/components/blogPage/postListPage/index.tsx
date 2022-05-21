@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import usePostList from '../../hooks/post/usePostList';
 import PostItem from '../postItem';
 import { CircleLoading } from '../../utils/loading/CircularLoading';
@@ -7,6 +8,8 @@ import usePostFilter from '../../hooks/post/usePostFilter';
 const PostListMain = function () {
 	const params = useQueryParam();
 	const { filterType, filterString } = usePostFilter(params);
+
+	const [page, setPage] = useState(0);
 
 	const { data } = usePostList({
 		params: {
@@ -20,7 +23,7 @@ const PostListMain = function () {
 	console.log(data);
 
 	return (
-		<div className="post-list-items">
+		<div className="post-list-items-flex flex-v">
 			{(data &&
 				data.posts.map((post, i) => {
 					return <PostItem key={post.id} post={post} />;
