@@ -10,8 +10,8 @@ export interface IPostDto {
 }
 
 export interface IGetPostListParams {
-	curPage?: string;
-	pageSize: number;
+	page?: string;
+	size: number;
 	sort?: string;
 	filterType?: string;
 	filterString?: string;
@@ -20,9 +20,9 @@ export interface IGetPostListParams {
 export const DEFAULT_PAGE_SIZE = 4;
 
 export class GetPostListParams implements IGetPostListParams {
-	curPage: string;
+	page: string;
 
-	pageSize: number;
+	size: number;
 
 	sort: string;
 
@@ -31,8 +31,8 @@ export class GetPostListParams implements IGetPostListParams {
 	filterString: string;
 
 	constructor(postListParams?: IGetPostListParams) {
-		this.curPage = postListParams?.curPage || '';
-		this.pageSize = postListParams?.pageSize || DEFAULT_PAGE_SIZE;
+		this.page = postListParams?.page || '';
+		this.size = postListParams?.size || DEFAULT_PAGE_SIZE;
 		this.sort = postListParams?.sort || '';
 		this.filterType = postListParams?.filterType || '';
 		this.filterString = postListParams?.filterString || '';
