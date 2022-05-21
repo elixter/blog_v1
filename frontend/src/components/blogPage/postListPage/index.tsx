@@ -25,13 +25,13 @@ const PostListMain = function () {
 	return (
 		<div className="main">
 			<div className="blog-top">
-				{/* <img */}
-				{/*	alt="bg" */}
-				{/*	className="bg-img" */}
-				{/*	src="https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf" */}
-				{/* /> */}
+				<img
+					alt="bg"
+					className="bg-img"
+					src="https://www.gousa.or.kr/sites/default/files/styles/hero_xl_1600x700/public/images/hero_media_image/2017-01/Getty_515070156_EDITORIALONLY_LosAngeles_HollywoodBlvd_Web72DPI_0.jpg?itok=hxCEUSBf"
+				/>
 				<div className="top-content">
-					<h1>{filterString}</h1>
+					<h1>{filterType === 'hashtag' ? `#${filterString}` : filterString}</h1>
 				</div>
 			</div>
 
