@@ -1,22 +1,12 @@
 import usePostList from '../../hooks/post/usePostList';
 import PostItem from '../postItem';
 import { CircleLoading } from '../../utils/loading/CircularLoading';
-import useQueryParam from '../../hooks/post/useQueryParam';
+import useQueryParam from '../../hooks/useQueryParam';
+import usePostFilter from '../../hooks/post/usePostFilter';
 
 const PostListMain = function () {
 	const params = useQueryParam();
-
-	console.log(params);
-
-	let filterString: string | undefined = '';
-	let filterType: string | undefined = '';
-
-	Object.keys(params).forEach((key) => {
-		if (key === 'category' || key === 'hashtag') {
-			filterType = key as string | undefined;
-			filterString = params[key] as string | undefined;
-		}
-	});
+	const { filterType, filterString } = usePostFilter(params);
 
 	const { data } = usePostList({
 		params: {
