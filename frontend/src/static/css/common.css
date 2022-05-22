@@ -201,7 +201,9 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-hd h1 { font-size: 35px; }
 .post-list-hd .more { font-size: 20px; font-weight: bold; color: var(--base-color); }
 
-.post-list-item img { width: 100%; height: 50%; object-fit: cover; }
+.post-list-item { margin: 20px 0 20px 0 }
+.post-list-item .thumbnail-wrapper { width: 100%; height: 50%; background: var(--base-color); }
+.post-list-item img { width: 100%; height: 100%; object-fit: cover; }
 .post-list-item .tit { margin-top: 15px; font-size: 2.5em; }
 .post-list-item .post-summary { width: 100%; margin: 5px 0 25px 0; font-size: 1.6em; overflow: hidden; text-overflow: ellipsis; line-height: 1.2em; height: 3.6em;  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .post-list-item .post-item-bt { font-size: 1.6em; align-items: baseline; color: var(--base-color); display: flex; width: 100%; justify-content: space-between; }
@@ -210,9 +212,6 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 
 .post-list-items { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem;}
 .post-list-items-flex { width: 100%; display: flex; }
-
-.post-list-items-flex .post-list-item { margin: 20px 0 20px 0; }
-
 .post-top { margin-bottom: 30px; }
 .top-content {position: relative; }
 .top-content .hashtags { display: flex; flex-wrap: wrap; justify-content: center; margin: 10px 0; }

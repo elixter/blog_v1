@@ -7,13 +7,14 @@ import usePostFilter from '../../hooks/post/usePostFilter';
 
 const PostListMain = function () {
 	const params = useQueryParam();
+	console.log(parseInt(params.page as string, 10));
 	const { filterType, filterString } = usePostFilter(params);
 
 	const [page, setPage] = useState(0);
 
 	const { data } = usePostList({
 		params: {
-			page: 0,
+			page: parseInt(params.page as string, 10),
 			size: 10,
 			filterType,
 			filterString,
@@ -36,7 +37,7 @@ const PostListMain = function () {
 			</div>
 
 			<div className="blog-content">
-				<div className="post-list-items-flex flex-v">
+				<div className="post-list-items">
 					{(data &&
 						data.posts.map((post, i) => {
 							return <PostItem key={post.id} post={post} />;

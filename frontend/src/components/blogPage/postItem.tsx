@@ -14,7 +14,9 @@ const PostItem = function ({ post }: Props) {
 	return (
 		<div className="post-list-item">
 			<Link to={`../blog/posts/${post.id}`}>
-				<img alt="thumbnail" src={post.thumbnail} />
+				<div className="thumbnail-wrapper">
+					<img alt="thumbnail" src={post.thumbnail} />
+				</div>
 			</Link>
 			<div className="tit">
 				<Link to={`../blog/posts/${post.id}`}>
