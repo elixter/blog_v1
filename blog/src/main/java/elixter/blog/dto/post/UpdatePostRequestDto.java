@@ -2,7 +2,9 @@ package elixter.blog.dto.post;
 
 import elixter.blog.domain.post.Post;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,10 +14,16 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class UpdatePostRequestDto extends AbstractPostDto {
 
+    @Length(max = 50)
     private String title;
+
     private String content;
+
+    @NotBlank
     private String category;
+
     private String thumbnail;
+
     private LocalDateTime createAt;
 
     @Builder

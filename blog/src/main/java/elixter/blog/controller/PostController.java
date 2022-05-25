@@ -69,7 +69,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> PostCreatePostHandler(@Validated @RequestBody CreatePostRequestDto createPostBody, BindingResult bindingResult) {
+    public ResponseEntity<Object> PostCreatePostHandler(
+            @Validated @RequestBody CreatePostRequestDto createPostBody,
+            BindingResult bindingResult
+    ) {
 
         log.info("Request body : {}", createPostBody);
 
@@ -84,9 +87,17 @@ public class PostController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
+    public ResponseEntity<Object> PutUpdatePostHandler(
+            @Validated @RequestBody UpdatePostRequestDto updatePostBody,
+            BindingResult bindingResult
+    ) {
 
         log.info("Request body : {}", updatePostBody);
+
+        if (bindingResult.hasFieldErrors()) {
+            log.info("field error : {}", bindingResult.getFieldErrors());
+            throw new InvalidBodyFieldException(bindingResult.getFieldErrors());
+        }
 
         postService.updatePost(updatePostBody.PostMapping());
 
