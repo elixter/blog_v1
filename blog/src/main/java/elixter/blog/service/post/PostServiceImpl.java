@@ -11,6 +11,7 @@ import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,6 +37,14 @@ public class PostServiceImpl implements PostService {
 
     private final String cacheName = "posts";
 
+
+    private static String serverUri;
+
+    @Value("${server.uri}")
+    private void setServerUri(String uri) {
+        serverUri = uri;
+    }
+
     @Override
     @CacheEvict(value = cacheName, allEntries = true)
     public Post createPost(CreatePostRequestDto post) {
@@ -47,7 +56,7 @@ public class PostServiceImpl implements PostService {
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
-            List<String> storedNameList = getActiveImageUrls(newPost.getContent(), post.getImageUrlList());
+            List<String> storedNameList = getActiveImageStoredNames(newPost.getContent(), post.getImageUrlList());
             List<Image> images = imageRepository.findByStoredName(storedNameList);
             List<Long> imageIdList = new Vector<>();
 
@@ -130,16 +139,16 @@ public class PostServiceImpl implements PostService {
         hashtagRepository.deleteByPostId(id);
     }
 
-    private static List<String> getActiveImageUrls(String content, List<String> imageUrlList) {
-        List<String> urlList = new Vector<>();
+    private static List<String> getActiveImageStoredNames(String content, List<String> imageUrlList) {
+        List<String> storedNameList = new Vector<>();
 
         imageUrlList.parallelStream().forEach(url -> {
             if (content.contains(url)) {
-                urlList.add(url);
+                storedNameList.add(url.replace(serverUri + "/api/image/", ""));
             }
         });
 
-        return urlList;
+        return storedNameList;
     }
 
     private void setPostIdToHashtagList(Post newPost) {
