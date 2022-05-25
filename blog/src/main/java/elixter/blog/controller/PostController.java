@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class PostController {
     public ResponseEntity<GetAllPostsResponseDto> GetAllPostsHandler(
             @RequestParam(value = "filterType", required = false) String filterType,
             @RequestParam(value = "filterString", required = false) String filterString,
-            @PageableDefault Pageable pageable
+            @PageableDefault(sort = {"createAt"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
         log.info("filterType : {}, filterString : {}", filterType, filterString);
 
