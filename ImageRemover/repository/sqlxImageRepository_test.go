@@ -21,7 +21,7 @@ func mockDb() *mockDB {
 	once.Do(func() {
 		db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 		if err != nil {
-			panic(err)
+			panic(any(err))
 		}
 		instance = &mockDB{db: db, mock: mock}
 	})

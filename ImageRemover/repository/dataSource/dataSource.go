@@ -30,11 +30,11 @@ func init() {
 	case "mysql":
 		datasource, err = GetMySqlDataSource()
 		if err != nil {
-			panic(err)
+			panic(any(err))
 		}
 		break
 	default:
 		log.Errorf("Not implemented driver data source %s", dbConfig["driver"])
-		panic(err)
+		panic(any(err))
 	}
 }
