@@ -47,13 +47,14 @@ public class PostServiceImplTest {
                 .id(post.getId())
                 .title(post.getTitle())
                 .category(post.getCategory())
-                .content(post.getContent())
+                .content("asdf")
                 .imageUrlList(new ArrayList<>())
                 .createAt(post.getCreateAt())
                 .thumbnail(post.getThumbnail())
                 .hashtags(hashList)
                 .build();
 
+        post.setContent("asdf");
         postService.updatePost(updateDto);
 
         GetPostResponseDto result = postService.findPostById(post.getId());
