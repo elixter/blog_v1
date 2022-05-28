@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class PostController {
     public ResponseEntity<GetAllPostsResponseDto> GetAllPostsHandler(
             @RequestParam(value = "filterType", required = false) String filterType,
             @RequestParam(value = "filterString", required = false) String filterString,
-            @PageableDefault Pageable pageable
+            @PageableDefault(sort = {"createAt"}, direction = Sort.Direction.DESC) Pageable pageable
     ) {
         log.info("filterType : {}, filterString : {}", filterType, filterString);
 
@@ -68,7 +69,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> PostCreatePostHandler(@Validated @RequestBody CreatePostRequestDto createPostBody, BindingResult bindingResult) {
+    public ResponseEntity<Object> PostCreatePostHandler(
+            @Validated @RequestBody CreatePostRequestDto createPostBody,
+            BindingResult bindingResult
+    ) {
 
         log.info("Request body : {}", createPostBody);
 
@@ -83,9 +87,17 @@ public class PostController {
     }
 
     @PutMapping
-    public ResponseEntity<Object> PutUpdatePostHandler(@RequestBody UpdatePostRequestDto updatePostBody) {
+    public ResponseEntity<Object> PutUpdatePostHandler(
+            @Validated @RequestBody UpdatePostRequestDto updatePostBody,
+            BindingResult bindingResult
+    ) {
 
         log.info("Request body : {}", updatePostBody);
+
+        if (bindingResult.hasFieldErrors()) {
+            log.info("field error : {}", bindingResult.getFieldErrors());
+            throw new InvalidBodyFieldException(bindingResult.getFieldErrors());
+        }
 
         postService.updatePost(updatePostBody.PostMapping());
 
