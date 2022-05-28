@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Cacheable(value = cacheName, key = "{#filter, #filterVal, #pageable.offset}")
+    @Cacheable(value = cacheName, key = "{#filter, #filterVal, #pageable}")
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
         Page<Post> queryResult;
         List<Post> postList;
