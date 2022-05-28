@@ -7,6 +7,7 @@ export enum StaticPath {
 
 export enum DynamicPath {
 	BLOG_POST_DETAIL = '/blog/posts/:postId',
+	BLOG_POST_EDIT = '/blog/posts/:postId/edit',
 	BLOG_POST_LIST = '/blog/posts/:key/:value',
 }
 

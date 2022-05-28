@@ -1,19 +1,19 @@
 import { Post } from '../../api/post/types';
 import EditorMain from '../editor';
 
-const NewPostMain = function () {
-	const defaultPost: Post = {
-		id: -1,
-		title: '제목 없음',
-		content: '',
-		category: '',
-		thumbnail: '',
-		createAt: new Date(),
-		updateAt: new Date(),
-		hashtags: [],
-		images: [],
-	};
+export const defaultPost: Post = {
+	id: -1,
+	title: '',
+	content: '',
+	category: '',
+	thumbnail: '',
+	createAt: new Date(),
+	updateAt: new Date(),
+	hashtags: [],
+	imageUrlList: [],
+};
 
+const NewPostMain = function () {
 	return <EditorMain post={defaultPost} />;
 };
 
