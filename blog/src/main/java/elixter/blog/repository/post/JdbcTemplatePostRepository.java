@@ -2,6 +2,7 @@ package elixter.blog.repository.post;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
+import elixter.blog.exception.post.PostNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,7 +120,10 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.update("update posts set status = ? where id = ?", RecordStatus.deleted.ordinal(), id);
+        int affected = jdbcTemplate.update("update posts set status = ? where id = ?", RecordStatus.deleted.ordinal(), id);
+        if (affected == 0) {
+            throw new PostNotFoundException(id);
+        }
     }
 
     @Override
