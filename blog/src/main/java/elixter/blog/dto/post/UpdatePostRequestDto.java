@@ -17,9 +17,10 @@ public class UpdatePostRequestDto extends AbstractPostDto {
     private String category;
     private String thumbnail;
     private LocalDateTime createAt;
+    private List<String> imageUrlList;
 
     @Builder
-    public UpdatePostRequestDto(Long id, String title, String content, String category, String thumbnail, LocalDateTime createAt, List<String> hashtags) {
+    public UpdatePostRequestDto(Long id, String title, String content, String category, String thumbnail, LocalDateTime createAt, List<String> hashtags, List<String> imageUrlList) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -27,6 +28,7 @@ public class UpdatePostRequestDto extends AbstractPostDto {
         this.thumbnail = thumbnail;
         this.createAt = createAt;
         this.hashtags = hashtags;
+        this.imageUrlList = imageUrlList;
     }
 
     public Post PostMapping() {

@@ -4,6 +4,7 @@ import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.post.PostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,20 @@ public class PostServiceImplTest {
         System.out.println("post = " + post);
 
         post.setContent("update test");
-        postService.updatePost(post);
+        List<String> hashList = new ArrayList<>();
+        post.getHashtags().forEach(hashtag -> hashList.add(hashtag.getTag()));
+        UpdatePostRequestDto updateDto = UpdatePostRequestDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .category(post.getCategory())
+                .content(post.getContent())
+                .imageUrlList(new ArrayList<>())
+                .createAt(post.getCreateAt())
+                .thumbnail(post.getThumbnail())
+                .hashtags(hashList)
+                .build();
+
+        postService.updatePost(updateDto);
 
         GetPostResponseDto result = postService.findPostById(post.getId());
 

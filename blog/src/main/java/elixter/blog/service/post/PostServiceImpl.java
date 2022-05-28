@@ -6,6 +6,7 @@ import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
@@ -65,12 +66,28 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CacheEvict(value = cacheName, allEntries = true)
-    public void updatePost(Post post) {
-        post.setUpdateAt(LocalDateTime.now().withNano(0));
-        postRepository.update(post);
+    public void updatePost(UpdatePostRequestDto post) {
+        Post updatePost = post.PostMapping();
+        updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
+        postRepository.update(updatePost);
 
         hashtagRepository.deleteByPostId(post.getId());
-        hashtagRepository.batchSave(post.getHashtags());
+        hashtagRepository.batchSave(updatePost.getHashtags());
+
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        executorService.submit(() -> {
+            List<String> storedNameList = getActiveImageUrls(post.getContent(), post.getImageUrlList());
+            List<Image> images = imageRepository.findByStoredName(storedNameList);
+            List<Long> imageIdList = new Vector<>();
+
+            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
+            try {
+                imageRepository.relateWithPost(imageIdList, updatePost.getId());
+            } catch (DataIntegrityViolationException e) {
+                log.error("relation with post {} failed", updatePost.getId(), e);
+            }
+        });
+        executorService.shutdown();
     }
 
     @Override

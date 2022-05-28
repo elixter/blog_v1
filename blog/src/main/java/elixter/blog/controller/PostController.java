@@ -87,9 +87,9 @@ public class PostController {
 
         log.info("Request body : {}", updatePostBody);
 
-        postService.updatePost(updatePostBody.PostMapping());
+        postService.updatePost(updatePostBody);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().header("location", "/blog/posts/" + updatePostBody.getId()).build();
     }
 
     @DeleteMapping("/{id}")
