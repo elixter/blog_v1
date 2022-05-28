@@ -11,6 +11,7 @@ const NewPostMain = function () {
 		createAt: new Date(),
 		updateAt: new Date(),
 		hashtags: [],
+		images: [],
 	};
 
 	return <EditorMain post={defaultPost} />;
