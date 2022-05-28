@@ -12,10 +12,7 @@ public class PostControllerAdvice {
 
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<Map<String, Object>> postNotFoundExceptionHandler(PostNotFoundException e) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", e.getTimestamp());
-        response.put("status", e.getStatus().value());
-        response.put("message", e.getMessage());
+        Map<String, Object> response = e.getRestExceptionResponseMap();
 
         return new ResponseEntity<>(response, e.getStatus());
     }

@@ -39,7 +39,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("origin_name", image.getOriginName());
         params.put("stored_name", image.getStoredName());
-        params.put("url", image.getUrl());
         params.put("create_at", image.getCreateAt());
         params.put("status", image.getStatus().ordinal());
 
@@ -116,7 +115,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                         .id(rs.getLong("id"))
                         .originName(rs.getString("origin_name"))
                         .storedName(rs.getString("stored_name"))
-                        .url(rs.getString("url"))
                         .createAt(rs.getTimestamp("create_at").toLocalDateTime())
                         .status(RecordStatus.values()[rs.getInt("status")])
                         .build();

@@ -5,11 +5,13 @@ import elixter.blog.dto.image.ImageUploadResponseDto;
 import elixter.blog.exception.RestException;
 import elixter.blog.service.image.ImageService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,9 @@ public class ImageController {
     @Value("${server.uri}")
     private String serverUri;
 
+    @Value("${file.image}")
+    private String imageDir;
+
     private final ImageService imageService;
 
     @Autowired
@@ -31,7 +36,7 @@ public class ImageController {
     }
 
     @PostMapping
-    public ImageUploadResponseDto PostUploadImageHandler(@RequestPart MultipartFile image) {
+    public ResponseEntity<ImageUploadResponseDto> PostUploadImageHandler(@RequestPart MultipartFile image) {
         if (!image.getContentType().startsWith("image")) {
             throw new RestException(
                     HttpStatus.BAD_REQUEST,
@@ -48,7 +53,7 @@ public class ImageController {
         }
         String resultUrl = getImageUrl(savedImage);
 
-        return new ImageUploadResponseDto(resultUrl);
+        return ResponseEntity.ok(new ImageUploadResponseDto(resultUrl, savedImage.getOriginName()));
     }
 
     @GetMapping(value = "/{imageName}", produces = "image/*")
@@ -58,7 +63,12 @@ public class ImageController {
             throw new RestException(HttpStatus.NOT_FOUND, "image not found");
         }
 
-        return new UrlResource("file:" + image.getUrl());
+        return new UrlResource("file:" + getFullPath(image));
+    }
+
+    @NotNull
+    private String getFullPath(Image image) {
+        return imageDir + image.getStoredName();
     }
 
     private String getImageUrl(Image savedImage) {

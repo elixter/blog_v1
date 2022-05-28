@@ -1,10 +1,10 @@
-import { BaseSyntheticEvent, memo, useCallback, useRef, useState } from 'react';
+import { BaseSyntheticEvent, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { CreatePostDto, Post } from '../../api/post/types';
+import { CreatePostDto, Post, UpdatePostDto } from '../../api/post/types';
 import PostEditor from './postEditor';
 import Selector from '../../utils/selector';
 import HashTagEditor from './hashtagEditor';
-import { createPost } from '../../api/post';
+import { createPost, updatePost } from '../../api/post';
 import { uploadImage } from '../../api/image';
 
 type Props = {
@@ -17,6 +17,7 @@ const EditorMain = function ({ post }: Props) {
 	const [thumbnail, setThumbnail] = useState(post.thumbnail);
 	const [content, setContent] = useState(post.content);
 	const [hashtags, setHashtags] = useState(post.hashtags);
+	const [imageUrlList, setImageUrlList] = useState(post.imageUrlList);
 
 	const thumbnailRef = useRef<HTMLInputElement | null>(null);
 	const history = useHistory();
@@ -31,20 +32,42 @@ const EditorMain = function ({ post }: Props) {
 	}, []);
 
 	const onSave = useCallback(() => {
-		const createPostRequestBody: CreatePostDto = {
-			title,
-			category,
-			content,
-			thumbnail,
-			hashtags,
-		};
+		if (post.id === -1) {
+			const createPostRequestBody: CreatePostDto = {
+				title,
+				category,
+				content,
+				thumbnail,
+				hashtags,
+				imageUrlList,
+			};
 
-		createPost(createPostRequestBody).then((res) => {
-			if (res.status === 201) {
-				history.push(res.headers.location);
-			}
-		});
-	}, [category, content, hashtags, history, thumbnail, title]);
+			createPost(createPostRequestBody).then((res) => {
+				if (res.status === 201) {
+					history.push(res.headers.location);
+				}
+			});
+		} else {
+			const { id } = post;
+			const { createAt } = post;
+			const updatePostRequestBody: UpdatePostDto = {
+				id,
+				title,
+				category,
+				content,
+				thumbnail,
+				hashtags,
+				imageUrlList,
+				createAt,
+			};
+
+			updatePost(updatePostRequestBody).then((res) => {
+				if (res.status === 200) {
+					history.push(res.headers.location);
+				}
+			});
+		}
+	}, [category, content, hashtags, history, imageUrlList, post, thumbnail, title]);
 
 	const onChangeImage = useCallback(async () => {
 		const input = thumbnailRef.current as HTMLInputElement;
@@ -52,8 +75,8 @@ const EditorMain = function ({ post }: Props) {
 		if (!image) {
 			return;
 		}
-		const url = await uploadImage(image);
-		setThumbnail(url);
+		const response = await uploadImage(image);
+		setThumbnail(response.url);
 	}, []);
 
 	return (
@@ -77,7 +100,7 @@ const EditorMain = function ({ post }: Props) {
 			</div>
 			<div className="top-content">
 				<h1 className="post-title">
-					<input className="input-tit" placeholder="제목 없음" maxLength={50} onChange={onTitleChange} />
+					<input className="input-tit" value={title} placeholder="제목 없음" maxLength={50} onChange={onTitleChange} />
 				</h1>
 				<Selector defaultValue={category} onChange={onCategoryChange}>
 					<option>category1</option>
@@ -87,7 +110,7 @@ const EditorMain = function ({ post }: Props) {
 				<HashTagEditor hashtags={hashtags} setHashtags={setHashtags} />
 			</div>
 			<div className="main-content">
-				<PostEditor content={content} setContent={setContent} />
+				<PostEditor content={content} setContent={setContent} images={imageUrlList} setImages={setImageUrlList} />
 				<button className="editor-btn" type="button" onClick={onSave}>
 					등록
 				</button>

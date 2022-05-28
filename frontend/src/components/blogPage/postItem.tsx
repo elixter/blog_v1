@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Post } from '../api/post/types';
+import config from '../config';
 
 type Props = {
 	post: Post;
@@ -12,11 +13,13 @@ const PostItem = function ({ post }: Props) {
 
 	return (
 		<div className="post-list-item">
-			<Link to={`blog/posts/${post.id}`}>
-				<img alt="thumbnail" src={post.thumbnail} />
+			<Link to={`../blog/posts/${post.id}`}>
+				<div className="thumbnail-wrapper">
+					<img alt="thumbnail" src={post.thumbnail} />
+				</div>
 			</Link>
 			<div className="tit">
-				<Link to={`/blog/posts/${post.id}`}>
+				<Link to={`../blog/posts/${post.id}`}>
 					<h2>{post.title}</h2>
 				</Link>
 			</div>
@@ -35,7 +38,7 @@ const PostItem = function ({ post }: Props) {
 						);
 					})}
 				</div>
-				<Link className="post-more" to={`/blog/posts/${post.id}`}>
+				<Link className="post-more" to={`../blog/posts/${post.id}`}>
 					Read more
 				</Link>
 			</div>

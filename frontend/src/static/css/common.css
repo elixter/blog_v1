@@ -142,6 +142,8 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
     --base-color: #c26ade;
 }
 
+.flex-v { flex-direction: column; }
+
 .top { background: linear-gradient(to bottom,rgba(0,0,0,.7) 10%,rgba(0,0,0,0)); }
 .non-top { background: #1f1f1f; }
 .header { display: flex; color: white; z-index: 100000; position: fixed; top: 0; width: 100%; height: 50px; align-items: center; justify-content: space-between; transition: .5s; }
@@ -199,15 +201,18 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .post-list-hd h1 { font-size: 35px; }
 .post-list-hd .more { font-size: 20px; font-weight: bold; color: var(--base-color); }
 
-.post-list-items { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem;}
-
-.post-list-item img { width: 100%; height: 50%; object-fit: cover; }
+.post-list-item { margin: 20px 0 20px 0 }
+.post-list-item .thumbnail-wrapper { width: 100%; height: 50%; background: var(--base-color); }
+.post-list-item img { width: 100%; height: 100%; object-fit: cover; }
 .post-list-item .tit { margin-top: 15px; font-size: 2.5em; }
+.post-list-item .tit h2 { text-overflow: ellipsis; overflow: hidden;  }
 .post-list-item .post-summary { width: 100%; margin: 5px 0 25px 0; font-size: 1.6em; overflow: hidden; text-overflow: ellipsis; line-height: 1.2em; height: 3.6em;  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .post-list-item .post-item-bt { font-size: 1.6em; align-items: baseline; color: var(--base-color); display: flex; width: 100%; justify-content: space-between; }
 .post-list-item .post-item-bt .hashtags { display: flex; flex-wrap: wrap; max-width: 67%; }
 .post-list-item .post-item-bt .hashtags .hashtag { font-size: 13px; margin-right: 2px; }
 
+.post-list-items { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem;}
+.post-list-items-flex { width: 100%; display: flex; }
 .post-top { margin-bottom: 30px; }
 .top-content {position: relative; }
 .top-content .hashtags { display: flex; flex-wrap: wrap; justify-content: center; margin: 10px 0; }

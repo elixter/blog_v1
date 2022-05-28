@@ -10,8 +10,8 @@ export interface IPostDto {
 }
 
 export interface IGetPostListParams {
-	curPage?: string;
-	pageSize: number;
+	page?: number;
+	size: number;
 	sort?: string;
 	filterType?: string;
 	filterString?: string;
@@ -20,9 +20,9 @@ export interface IGetPostListParams {
 export const DEFAULT_PAGE_SIZE = 4;
 
 export class GetPostListParams implements IGetPostListParams {
-	curPage: string;
+	page: number;
 
-	pageSize: number;
+	size: number;
 
 	sort: string;
 
@@ -31,8 +31,8 @@ export class GetPostListParams implements IGetPostListParams {
 	filterString: string;
 
 	constructor(postListParams?: IGetPostListParams) {
-		this.curPage = postListParams?.curPage || '';
-		this.pageSize = postListParams?.pageSize || DEFAULT_PAGE_SIZE;
+		this.page = postListParams?.page || 0;
+		this.size = postListParams?.size || DEFAULT_PAGE_SIZE;
 		this.sort = postListParams?.sort || '';
 		this.filterType = postListParams?.filterType || '';
 		this.filterString = postListParams?.filterString || '';
@@ -40,8 +40,8 @@ export class GetPostListParams implements IGetPostListParams {
 }
 
 export interface Pagination {
-	curPage: number;
-	pageSize: number;
+	page: number;
+	size: number;
 	lastPage: number;
 	itemCount: number;
 }
@@ -60,6 +60,7 @@ export interface Post {
 	createAt: Date;
 	updateAt: Date;
 	hashtags: Array<string>;
+	imageUrlList: Array<string>;
 }
 
 export interface CreatePostDto {
@@ -68,4 +69,16 @@ export interface CreatePostDto {
 	category: string;
 	thumbnail: string;
 	hashtags: Array<string>;
+	imageUrlList: Array<string>;
+}
+
+export interface UpdatePostDto {
+	id: number;
+	title: string;
+	content: string;
+	category: string;
+	thumbnail: string;
+	createAt: Date;
+	hashtags: Array<string>;
+	imageUrlList: Array<string>;
 }

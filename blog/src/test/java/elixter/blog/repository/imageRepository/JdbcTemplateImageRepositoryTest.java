@@ -61,14 +61,12 @@ public class JdbcTemplateImageRepositoryTest {
         Image img1 = new Image();
         img1.setStoredName("http://localhost");
         img1.setOriginName("test");
-        img1.setUrl("http://test");
         img1.setCreateAt(LocalDateTime.now().withNano(0));
         img1.setStatus(RecordStatus.pending);
 
         Image img2 = new Image();
         img2.setStoredName("http://localhost2");
         img2.setOriginName("test2");
-        img2.setUrl("http://test");
         img2.setCreateAt(LocalDateTime.now().withNano(0));
         img2.setStatus(RecordStatus.pending);
 
@@ -100,7 +98,6 @@ public class JdbcTemplateImageRepositoryTest {
         Image img = new Image();
         img.setStoredName("findByUrlTestUrl123123");
         img.setOriginName("test");
-        img.setUrl("http://test");
         img.setCreateAt(LocalDateTime.now().withNano(0));
         img.setStatus(RecordStatus.pending);
         imageRepository.save(img);
@@ -117,14 +114,12 @@ public class JdbcTemplateImageRepositoryTest {
         Image img1 = new Image();
         img1.setStoredName("findByUrlTestUrl1");
         img1.setOriginName("test");
-        img1.setUrl("http://test");
         img1.setCreateAt(LocalDateTime.now().withNano(0));
         img1.setStatus(RecordStatus.pending);
 
         Image img2 = new Image();
         img2.setStoredName("findByUrlTestUrl2");
         img2.setOriginName("test2");
-        img2.setUrl("http://test");
         img2.setCreateAt(LocalDateTime.now().withNano(0));
         img2.setStatus(RecordStatus.pending);
 

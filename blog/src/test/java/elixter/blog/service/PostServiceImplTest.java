@@ -4,6 +4,7 @@ import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.post.PostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,21 @@ public class PostServiceImplTest {
         System.out.println("post = " + post);
 
         post.setContent("update test");
-        postService.updatePost(post);
+        List<String> hashList = new ArrayList<>();
+        post.getHashtags().forEach(hashtag -> hashList.add(hashtag.getTag()));
+        UpdatePostRequestDto updateDto = UpdatePostRequestDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .category(post.getCategory())
+                .content("asdf")
+                .imageUrlList(new ArrayList<>())
+                .createAt(post.getCreateAt())
+                .thumbnail(post.getThumbnail())
+                .hashtags(hashList)
+                .build();
+
+        post.setContent("asdf");
+        postService.updatePost(updateDto);
 
         GetPostResponseDto result = postService.findPostById(post.getId());
 
@@ -59,6 +74,7 @@ public class PostServiceImplTest {
                 .category("test")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag"))
                 .build();
         Post post = postService.createPost(dto);
         GetPostResponseDto responseDto1 = new GetPostResponseDto(post);
@@ -96,5 +112,21 @@ public class PostServiceImplTest {
 
         Assertions.assertThat(test_category.getPosts()).contains(responseDto2, responseDto4);
         Assertions.assertThat(test_category.getPosts()).doesNotContain(responseDto1, responseDto3);
+    }
+
+    @Test
+    void delete() {
+        CreatePostRequestDto dto = CreatePostRequestDto.builder()
+                .title("test")
+                .category("test")
+                .content("test")
+                .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag"))
+                .build();
+        Post post = postService.createPost(dto);
+        postService.deletePost(post.getId());
+
+        GetPostResponseDto postById = postService.findPostById(post.getId());
+        Assertions.assertThat(postById.isEmpty()).isTrue();
     }
 }

@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom';
 import { memo, useState } from 'react';
-import PostItem from './postItem';
-import { DEFAULT_PAGE_SIZE, GetPostListParams } from '../api/post/types';
-import usePostList from '../hooks/post/usePostList';
-import { CircleLoading } from '../utils/loading/CircularLoading';
-import { StaticPath } from '../pagePath/pagePath';
+import PostItem from '../postItem';
+import { DEFAULT_PAGE_SIZE, GetPostListParams } from '../../api/post/types';
+import usePostList from '../../hooks/post/usePostList';
+import { CircleLoading } from '../../utils/loading/CircularLoading';
+import { StaticPath } from '../../pagePath/pagePath';
 
 type Props = {
 	categoryName: string;
 };
 
-const PostList = function ({ categoryName }: Props) {
+const BlogMainPostList = function ({ categoryName }: Props) {
 	const [postListParams, setPostListParams] = useState(
 		new GetPostListParams({
-			curPage: '0',
-			pageSize: DEFAULT_PAGE_SIZE,
+			page: 0,
+			size: DEFAULT_PAGE_SIZE,
 			filterType: 'category',
 			filterString: categoryName,
 		})
@@ -43,4 +43,4 @@ const PostList = function ({ categoryName }: Props) {
 	);
 };
 
-export default memo(PostList);
+export default memo(BlogMainPostList);

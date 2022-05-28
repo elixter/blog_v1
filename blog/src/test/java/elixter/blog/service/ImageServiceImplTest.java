@@ -53,7 +53,6 @@ public class ImageServiceImplTest {
         Image image = Image.builder()
                 .originName("test")
                 .storedName("http://test.com")
-                .url("http://test")
                 .createAt(LocalDateTime.now())
                 .status(RecordStatus.exist).build();
 
