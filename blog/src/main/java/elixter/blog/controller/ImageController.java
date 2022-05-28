@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,7 @@ public class ImageController {
     }
 
     @PostMapping
-    public ImageUploadResponseDto PostUploadImageHandler(@RequestPart MultipartFile image) {
+    public ResponseEntity<ImageUploadResponseDto> PostUploadImageHandler(@RequestPart MultipartFile image) {
         if (!image.getContentType().startsWith("image")) {
             throw new RestException(
                     HttpStatus.BAD_REQUEST,
@@ -52,7 +53,7 @@ public class ImageController {
         }
         String resultUrl = getImageUrl(savedImage);
 
-        return new ImageUploadResponseDto(resultUrl);
+        return ResponseEntity.ok(new ImageUploadResponseDto(resultUrl, savedImage.getOriginName()));
     }
 
     @GetMapping(value = "/{imageName}", produces = "image/*")

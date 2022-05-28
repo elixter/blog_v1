@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 @Data
 public class ImageUploadResponseDto {
     private String url;
+    private String originName;
 
-    public ImageUploadResponseDto(String url) {
+    public ImageUploadResponseDto(String url, String originName) {
         this.url = url;
+        this.originName = originName;
     }
 }

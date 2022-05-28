@@ -6,6 +6,7 @@ import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
+import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
@@ -54,32 +55,23 @@ public class PostServiceImpl implements PostService {
         setPostIdToHashtagList(newPost);
         hashtagRepository.batchSave(newPost.getHashtags());
 
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        executorService.submit(() -> {
-            List<String> storedNameList = getActiveImageStoredNames(newPost.getContent(), post.getImageUrlList());
-            List<Image> images = imageRepository.findByStoredName(storedNameList);
-            List<Long> imageIdList = new Vector<>();
-
-            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
-            try {
-                imageRepository.relateWithPost(imageIdList, newPost.getId());
-            } catch (DataIntegrityViolationException e) {
-                log.error("relation with post {} failed", newPost.getId(), e);
-            }
-        });
-        executorService.shutdown();
+        asyncRelateImageWithPost(newPost, newPost.getContent(), post.getImageUrlList());
 
         return newPost;
     }
 
     @Override
     @CacheEvict(value = cacheName, allEntries = true)
-    public void updatePost(Post post) {
-        post.setUpdateAt(LocalDateTime.now().withNano(0));
-        postRepository.update(post);
+    public void updatePost(UpdatePostRequestDto post) {
+        Post updatePost = post.PostMapping();
+        updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
+        postRepository.update(updatePost);
 
         hashtagRepository.deleteByPostId(post.getId());
-        hashtagRepository.batchSave(post.getHashtags());
+        setPostIdToHashtagList(updatePost);
+        hashtagRepository.batchSave(updatePost.getHashtags());
+
+        asyncRelateImageWithPost(updatePost, post.getContent(), post.getImageUrlList());
     }
 
     @Override
@@ -137,6 +129,23 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long id) {
         postRepository.delete(id);
         hashtagRepository.deleteByPostId(id);
+    }
+
+    private void asyncRelateImageWithPost(Post newPost, String content, List<String> imageUrlList) {
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        executorService.submit(() -> {
+            List<String> storedNameList = getActiveImageStoredNames(content, imageUrlList);
+            List<Image> images = imageRepository.findByStoredName(storedNameList);
+            List<Long> imageIdList = new Vector<>();
+
+            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
+            try {
+                imageRepository.relateWithPost(imageIdList, newPost.getId());
+            } catch (DataIntegrityViolationException e) {
+                log.error("relation with post {} failed", newPost.getId(), e);
+            }
+        });
+        executorService.shutdown();
     }
 
     private static List<String> getActiveImageStoredNames(String content, List<String> imageUrlList) {

@@ -94,14 +94,13 @@ public class PostController {
 
         log.info("Request body : {}", updatePostBody);
 
+        postService.updatePost(updatePostBody);
         if (bindingResult.hasFieldErrors()) {
             log.info("field error : {}", bindingResult.getFieldErrors());
             throw new InvalidBodyFieldException(bindingResult.getFieldErrors());
         }
 
-        postService.updatePost(updatePostBody.PostMapping());
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().header("location", "/blog/posts/" + updatePostBody.getId()).build();
     }
 
     @DeleteMapping("/{id}")

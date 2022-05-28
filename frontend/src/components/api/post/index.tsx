@@ -1,6 +1,6 @@
 import * as queryString from 'querystring';
 import axios, { AxiosRequestConfig } from 'axios';
-import { GetPostListParams, IGetPostListParams, Posts, Post, CreatePostDto } from './types';
+import { GetPostListParams, IGetPostListParams, Posts, Post, CreatePostDto, UpdatePostDto } from './types';
 import config from '../../config';
 
 const axiosConfig: AxiosRequestConfig = {
@@ -30,5 +30,12 @@ export const createPost = async (postDto: CreatePostDto) => {
 
 	const response = await axios.post(uri, postDto, axiosConfig);
 	console.log(response);
+	return response;
+};
+
+export const updatePost = async (postDto: UpdatePostDto) => {
+	const uri = `${config.SERVER_PREFIX}/api/posts`;
+
+	const response = await axios.put(uri, postDto, axiosConfig);
 	return response;
 };
