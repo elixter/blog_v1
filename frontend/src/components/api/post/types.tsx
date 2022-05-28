@@ -60,6 +60,7 @@ export interface Post {
 	createAt: Date;
 	updateAt: Date;
 	hashtags: Array<string>;
+	images: Array<string>;
 }
 
 export interface CreatePostDto {
@@ -68,4 +69,5 @@ export interface CreatePostDto {
 	category: string;
 	thumbnail: string;
 	hashtags: Array<string>;
+	images: Array<string>;
 }

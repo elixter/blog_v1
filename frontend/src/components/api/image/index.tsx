@@ -14,5 +14,5 @@ export const uploadImage = async (image: any) => {
 	const uri = `${config.SERVER_PREFIX}/api/image`;
 	const response = await axios.post<IImageResponseDto>(uri, formData, axiosConfig);
 
-	return response.data.url;
+	return response.data;
 };

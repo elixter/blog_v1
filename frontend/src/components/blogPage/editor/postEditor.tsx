@@ -20,15 +20,18 @@ import { uploadImage } from '../../api/image';
 type Props = {
 	content: string;
 	setContent: Dispatch<SetStateAction<string>>;
+	images: Array<string>;
+	setImages: Dispatch<SetStateAction<Array<string>>>;
 };
 
-const PostEditor = function ({ content, setContent }: Props) {
+const PostEditor = function ({ content, setContent, images, setImages }: Props) {
 	const editorRef = useRef<Editor>(null);
 
 	const imageBlobHook = (blob: any, callback: any) => {
 		(async () => {
-			const url = await uploadImage(blob);
-			callback(url.replaceAll(' ', '%20'), '');
+			const response = await uploadImage(blob);
+			callback(response.url, response.originName);
+			setImages([...images, response.url]);
 		})();
 	};
 

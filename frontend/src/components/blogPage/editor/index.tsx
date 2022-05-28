@@ -17,6 +17,7 @@ const EditorMain = function ({ post }: Props) {
 	const [thumbnail, setThumbnail] = useState(post.thumbnail);
 	const [content, setContent] = useState(post.content);
 	const [hashtags, setHashtags] = useState(post.hashtags);
+	const [images, setImages] = useState(post.images);
 
 	const thumbnailRef = useRef<HTMLInputElement | null>(null);
 	const history = useHistory();
@@ -31,20 +32,25 @@ const EditorMain = function ({ post }: Props) {
 	}, []);
 
 	const onSave = useCallback(() => {
-		const createPostRequestBody: CreatePostDto = {
-			title,
-			category,
-			content,
-			thumbnail,
-			hashtags,
-		};
+		if (post.id === -1) {
+			const createPostRequestBody: CreatePostDto = {
+				title,
+				category,
+				content,
+				thumbnail,
+				hashtags,
+				images,
+			};
 
-		createPost(createPostRequestBody).then((res) => {
-			if (res.status === 201) {
-				history.push(res.headers.location);
-			}
-		});
-	}, [category, content, hashtags, history, thumbnail, title]);
+			createPost(createPostRequestBody).then((res) => {
+				if (res.status === 201) {
+					history.push(res.headers.location);
+				}
+			});
+		} else {
+			// update post
+		}
+	}, [category, content, hashtags, history, images, post.id, thumbnail, title]);
 
 	const onChangeImage = useCallback(async () => {
 		const input = thumbnailRef.current as HTMLInputElement;
@@ -52,8 +58,8 @@ const EditorMain = function ({ post }: Props) {
 		if (!image) {
 			return;
 		}
-		const url = await uploadImage(image);
-		setThumbnail(url);
+		const response = await uploadImage(image);
+		setThumbnail(response.url);
 	}, []);
 
 	return (
@@ -87,7 +93,7 @@ const EditorMain = function ({ post }: Props) {
 				<HashTagEditor hashtags={hashtags} setHashtags={setHashtags} />
 			</div>
 			<div className="main-content">
-				<PostEditor content={content} setContent={setContent} />
+				<PostEditor content={content} setContent={setContent} images={images} setImages={setImages} />
 				<button className="editor-btn" type="button" onClick={onSave}>
 					등록
 				</button>
