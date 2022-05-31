@@ -3,8 +3,8 @@ package elixter.blog.repository.post;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import elixter.blog.exception.post.PostNotFoundException;
+import elixter.blog.utils.RepositoryUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -95,9 +95,12 @@ public class JdbcTemplatePostRepository implements PostRepository {
     @Transactional(readOnly = true)
     public Page<Post> findByCategory(String category, Pageable pageable) {
 
+        String orderBy = RepositoryUtils.getOrderBy(pageable);
+        log.debug("order clause={}", orderBy);
+
         log.debug("get non-cached posts data with category [{}] and pageable [{}]", category, pageable);
         List<Post> result = jdbcTemplate.query(
-                "select * from posts where category = ? and status = ? limit ?, ?",
+                "select * from posts where category = ? and status = ? " + orderBy + " limit ?, ?",
                 postRowMapper(),
                 category,
                 RecordStatus.exist.ordinal(),
