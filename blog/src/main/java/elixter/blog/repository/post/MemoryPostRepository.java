@@ -55,6 +55,11 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
+    public Page<Post> findAllByStatus(RecordStatus status, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Page<Post> findByCategory(String category, Pageable pageable) {
         List<Post> result = new ArrayList<>();
 
@@ -70,7 +75,17 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
+    public Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable) {
         return null;
     }
 

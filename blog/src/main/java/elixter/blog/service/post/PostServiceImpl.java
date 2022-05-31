@@ -107,7 +107,7 @@ public class PostServiceImpl implements PostService {
                 postList = new ArrayList<>();
                 break;
             case FILTER_CATEGORY:
-                queryResult = postRepository.findByCategory(filterVal, pageable);
+                queryResult = postRepository.findByCategoryAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
                 break;
             case FILTER_CONTENT:
@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService {
                 postList = new ArrayList<>();
                 break;
             case FILTER_HASHTAG:
-                queryResult = postRepository.findByHashtag(filterVal, pageable);
+                queryResult = postRepository.findByHashtagAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
                 break;
             default:

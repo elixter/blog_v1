@@ -15,8 +15,11 @@ public interface PostRepository {
     Optional<Post> findById(Long id);
     Optional<Post> findByIdAndStatus(Long id, RecordStatus status);
     Page<Post> findAll(Pageable pageable);
+    Page<Post> findAllByStatus(RecordStatus status, Pageable pageable);
     Page<Post> findByCategory(String category, Pageable pageable);
+    Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable);
     Page<Post> findByHashtag(String hashtag, Pageable pageable);
+    Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable);
 
     void delete(Long id);
 }

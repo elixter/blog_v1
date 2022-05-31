@@ -33,11 +33,21 @@ public interface JpaPostRepository extends PostRepository, JpaRepository<Post, L
     Page<Post> findAll(Pageable pageable);
 
     @Override
+    Page<Post> findAllByStatus(RecordStatus status, Pageable pageable);
+
+    @Override
     Page<Post> findByCategory(String category, Pageable pageable);
+
+    @Override
+    Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable);
 
     @Override
     @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = 1")
     Page<Post> findByHashtag(String hashtag, Pageable pageable);
+
+    @Override
+    @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = :status")
+    Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable);
 
     @Override
     @Modifying
