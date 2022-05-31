@@ -1,5 +1,6 @@
 package elixter.blog.service.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
@@ -12,6 +13,8 @@ import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,7 +32,6 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -40,6 +42,13 @@ public class PostServiceImpl implements PostService {
 
 
     private static String serverUri;
+
+    @Autowired
+    public PostServiceImpl(@Qualifier("jpaPostRepository") PostRepository postRepository, ImageRepository imageRepository, HashtagRepository hashtagRepository) {
+        this.postRepository = postRepository;
+        this.imageRepository = imageRepository;
+        this.hashtagRepository = hashtagRepository;
+    }
 
     @Value("${server.uri}")
     private void setServerUri(String uri) {
@@ -77,7 +86,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Cacheable(value = cacheName, key = "#id")
     public GetPostResponseDto findPostById(Long id) {
-        Post foundPost = postRepository.findById(id).orElse(Post.emptyPost());
+        Post foundPost = postRepository.findByIdAndStatus(id, RecordStatus.exist).orElse(Post.emptyPost());
         if (foundPost.isEmpty()) {
             log.info("No such post with id [{}]", id);
             return GetPostResponseDto.getEmpty();

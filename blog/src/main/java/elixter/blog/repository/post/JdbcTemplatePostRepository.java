@@ -77,6 +77,12 @@ public class JdbcTemplatePostRepository implements PostRepository {
     }
 
     @Override
+    public Optional<Post> findByIdAndStatus(Long id, RecordStatus status) {
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, status.ordinal());
+        return result.stream().findAny();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> findAll(Pageable pageable) {
 

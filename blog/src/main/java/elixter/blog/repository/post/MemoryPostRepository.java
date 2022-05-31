@@ -1,5 +1,6 @@
 package elixter.blog.repository.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,6 +36,11 @@ public class MemoryPostRepository implements PostRepository {
     @Override
     public Optional<Post> findById(Long id) {
         return Optional.ofNullable(store.get(id));
+    }
+
+    @Override
+    public Optional<Post> findByIdAndStatus(Long id, RecordStatus status) {
+        return Optional.empty();
     }
 
     @Override

@@ -1,10 +1,12 @@
 package elixter.blog.repository.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,11 +20,14 @@ public interface JpaPostRepository extends PostRepository, JpaRepository<Post, L
     Post save(Post post);
 
     @Override
+    @Modifying
     @Query("update Post p set p.title = :#{#paramPost.title}, p.content = :#{#paramPost.content},  p.category = :#{#paramPost.category}, p.thumbnail = :#{#paramPost.thumbnail}, p.updateAt = :#{#paramPost.updateAt} where p.id = :#{#paramPost.id}")
     void update(@Param("paramPost") Post post);
 
     @Override
     Optional<Post> findById(Long id);
+
+    Optional<Post> findByIdAndStatus(Long id, RecordStatus status);
 
     @Override
     Page<Post> findAll(Pageable pageable);
@@ -35,6 +40,7 @@ public interface JpaPostRepository extends PostRepository, JpaRepository<Post, L
     Page<Post> findByHashtag(String hashtag, Pageable pageable);
 
     @Override
+    @Modifying
     @Query("update Post p set p.status = 0 where p.id = :id")
     void delete(@Param("id") Long id);
 }
