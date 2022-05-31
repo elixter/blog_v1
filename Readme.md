@@ -7,7 +7,7 @@
 - Database : MySQL
 
 ## 기능
-- [ ] 로그
+- [X] 블로그
 - [ ] SNS 통합 피드
 
 ## TODO List
@@ -15,10 +15,12 @@
 - [x] POST CRUD 
 - [x] User auth
 - [x] Image upload
-- [ ] Repository를 JPA 형식에 맞추기 
+- [ ] JPA 전환
 - [ ] 토큰 인증방식으로 바꾸기 
 
 ### Frontend
-- [ ] 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장
-- [ ] 카테고리별 게시글 페이지 
-- [ ] 해쉬태그별 게시글 페이지
+- [X] 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장
+- [X] 카테고리별 게시글 페이지 
+- [X] 해쉬태그별 게시글 페이지
+- [ ] 로그인, 회원가입 페이지
+- [ ] SNS 피드 페이지
