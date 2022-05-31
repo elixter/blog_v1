@@ -92,7 +92,7 @@ public class PostServiceImpl implements PostService {
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
         Page<Post> queryResult;
         List<Post> postList;
-        switch(filter) {
+        switch (filter) {
             case FILTER_TITLE:
                 log.info("not implemented : case FILTER_TITLE");
                 postList = new ArrayList<>();
@@ -134,6 +134,8 @@ public class PostServiceImpl implements PostService {
     private void asyncRelateImageWithPost(Post newPost, String content, List<String> imageUrlList) {
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
+            log.debug("start relate image");
+
             List<String> storedNameList = getActiveImageStoredNames(content, imageUrlList);
             List<Image> images = imageRepository.findByStoredName(storedNameList);
             List<Long> imageIdList = new Vector<>();
@@ -144,6 +146,8 @@ public class PostServiceImpl implements PostService {
             } catch (DataIntegrityViolationException e) {
                 log.error("relation with post {} failed", newPost.getId(), e);
             }
+
+            log.debug("relate image is finished");
         });
         executorService.shutdown();
     }
@@ -161,6 +165,6 @@ public class PostServiceImpl implements PostService {
     }
 
     private void setPostIdToHashtagList(Post newPost) {
-        newPost.getHashtags().forEach(hashtag->hashtag.setPostId(newPost.getId()));
+        newPost.getHashtags().forEach(hashtag -> hashtag.setPostId(newPost.getId()));
     }
 }
