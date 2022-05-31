@@ -17,7 +17,7 @@ const EditorMain = function ({ post }: Props) {
 	const [thumbnail, setThumbnail] = useState(post.thumbnail);
 	const [content, setContent] = useState(post.content);
 	const [hashtags, setHashtags] = useState(post.hashtags);
-	const [imageUrlList, setImageUrlList] = useState(post.imageUrlList);
+	const [imageUrlList, setImageUrlList] = useState<Array<string>>([]);
 
 	const thumbnailRef = useRef<HTMLInputElement | null>(null);
 	const history = useHistory();
@@ -42,6 +42,8 @@ const EditorMain = function ({ post }: Props) {
 				imageUrlList,
 			};
 
+			console.log(createPostRequestBody);
+
 			createPost(createPostRequestBody).then((res) => {
 				if (res.status === 201) {
 					history.push(res.headers.location);
@@ -60,6 +62,8 @@ const EditorMain = function ({ post }: Props) {
 				imageUrlList,
 				createAt,
 			};
+
+			console.log(updatePostRequestBody);
 
 			updatePost(updatePostRequestBody).then((res) => {
 				if (res.status === 200) {
