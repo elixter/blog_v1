@@ -32,6 +32,11 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
 
+    public void addHashtag(Hashtag hashtag) {
+        hashtag.setPost(this);
+        this.hashtags.add(hashtag);
+    }
+
     private static final Long emptyId = -1L;
 
     public Post() {

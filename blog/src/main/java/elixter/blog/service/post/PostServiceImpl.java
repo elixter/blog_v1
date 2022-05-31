@@ -11,7 +11,6 @@ import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -72,7 +71,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @CacheEvict(value = cacheName, allEntries = true)
     public void updatePost(UpdatePostRequestDto post) {
-        Post updatePost = post.PostMapping();
+        Post updatePost = post.postMapping();
         updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.update(updatePost);
 

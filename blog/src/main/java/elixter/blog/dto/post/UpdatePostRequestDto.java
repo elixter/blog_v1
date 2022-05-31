@@ -1,11 +1,14 @@
 package elixter.blog.dto.post;
 
+import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -39,16 +42,28 @@ public class UpdatePostRequestDto extends AbstractPostDto {
         this.imageUrlList = imageUrlList;
     }
 
-    public Post PostMapping() {
-        return Post.builder()
+    public Post postMapping() {
+        Post post = Post.builder()
                 .id(id)
                 .title(title)
                 .category(category)
                 .content(content)
                 .thumbnail(thumbnail)
                 .createAt(createAt)
-                .updateAt(LocalDateTime.now())
-                .hashtags(getHashtagAsInstance())
+                .hashtags(new ArrayList<>())
+                .updateAt(LocalDateTime.now().withNano(0))
+                .status(RecordStatus.exist)
                 .build();
+
+        if (hashtags != null) {
+            hashtags.forEach(tag -> {
+                Hashtag hashtag = new Hashtag();
+                hashtag.setTag(tag);
+                hashtag.setPost(post);
+                post.addHashtag(hashtag);
+            });
+        }
+
+        return post;
     }
 }
