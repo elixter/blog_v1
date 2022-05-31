@@ -12,6 +12,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "posts")
 @ToString(exclude = "hashtags")
 @EqualsAndHashCode
 public class Post {
@@ -27,7 +29,7 @@ public class Post {
     private LocalDateTime updateAt;
     private RecordStatus status;
 
-    @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Hashtag> hashtags = new ArrayList<>();
 
     private static final Long emptyId = -1L;

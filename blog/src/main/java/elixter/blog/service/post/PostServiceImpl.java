@@ -165,6 +165,6 @@ public class PostServiceImpl implements PostService {
     }
 
     private void setPostIdToHashtagList(Post newPost) {
-        newPost.getHashtags().forEach(hashtag -> hashtag.setPostId(newPost.getId()));
+        newPost.getHashtags().forEach(hashtag -> hashtag.getPost().setId(newPost.getId()));
     }
 }

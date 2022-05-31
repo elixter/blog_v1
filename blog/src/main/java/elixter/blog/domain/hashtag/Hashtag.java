@@ -1,25 +1,35 @@
 package elixter.blog.domain.hashtag;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import elixter.blog.domain.post.Post;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+@Entity
+@Table(name = "hashtags")
+@ToString(exclude = "post")
+@EqualsAndHashCode(exclude = "post")
 public class Hashtag {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String tag;
-    private Long postId;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     public Hashtag() {
+        this.post = new Post();
     }
 
-    public Hashtag(Long id, String tag, Long postId) {
+    @Builder
+    public Hashtag(Long id, String tag, Post post) {
         this.id = id;
         this.tag = tag;
-        this.postId = postId;
+        this.post = post;
     }
 }

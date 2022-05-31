@@ -62,7 +62,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
         for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
             Hashtag currentHashtag = currentEntry.getValue();
 
-            if (currentHashtag.getPostId().equals(postId)) {
+            if (currentHashtag.getPost().getId().equals(postId)) {
                 result.add(currentHashtag);
             }
         }
@@ -100,7 +100,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
 
         for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
             Hashtag currentHashtag = currentEntry.getValue();
-            if (currentHashtag.getPostId().equals(postId)) {
+            if (currentHashtag.getPost().getId().equals(postId)) {
                 removeList.add(currentHashtag);
             }
         }

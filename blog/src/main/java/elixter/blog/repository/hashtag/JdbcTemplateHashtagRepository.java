@@ -33,7 +33,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tag", hashtag.getTag());
-        parameters.put("post_id", hashtag.getPostId());
+        parameters.put("post_id", hashtag.getPost().getId());
         parameters.put("status", RecordStatus.exist.ordinal());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -52,7 +52,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         for (Hashtag hashtag : hashtags) {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("tag", hashtag.getTag());
-            parameters.put("post_id", hashtag.getPostId());
+            parameters.put("post_id", hashtag.getPost().getId());
             parameters.put("status", RecordStatus.exist.ordinal());
             batchParams.add(new MapSqlParameterSource(parameters));
         }
@@ -116,7 +116,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
                 Hashtag hashtag = new Hashtag();
                 hashtag.setId(rs.getLong("id"));
                 hashtag.setTag(rs.getString("tag"));
-                hashtag.setPostId(rs.getLong("post_id"));
+                hashtag.getPost().setId(rs.getLong("post_id"));
 
                 return hashtag;
             }

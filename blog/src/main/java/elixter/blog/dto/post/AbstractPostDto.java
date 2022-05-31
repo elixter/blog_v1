@@ -1,6 +1,7 @@
 package elixter.blog.dto.post;
 
 import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.post.Post;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public abstract class AbstractPostDto implements Serializable {
             for (String tag : hashtags) {
                 Hashtag hashtag = new Hashtag();
                 hashtag.setTag(tag);
-                hashtag.setPostId(id);
+                hashtag.setPost(Post.builder().id(id).build());
                 result.add(hashtag);
             }
         }
