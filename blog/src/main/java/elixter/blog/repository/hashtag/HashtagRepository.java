@@ -8,14 +8,14 @@ import java.util.Optional;
 
 public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
-    List<Hashtag> batchSave(List<Hashtag> hashtags);
+    List<Hashtag> saveAll(List<Hashtag> hashtag);
 
     Optional<Hashtag> findById(Long id);
     List<Hashtag> findByTag(String tag);
     List<Hashtag> findAll();
     List<Hashtag> findByPostId(Long postId);
 
-    List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit);
+    List<SearchHashtagDto> searchTag(String tag);
 
     void deleteById(Long id);
     void deleteByTag(String tag);

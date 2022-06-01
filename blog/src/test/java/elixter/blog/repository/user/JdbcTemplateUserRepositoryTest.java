@@ -1,7 +1,6 @@
-package elixter.blog.repository.userRepository;
+package elixter.blog.repository.user;
 
 import elixter.blog.domain.user.User;
-import elixter.blog.repository.user.JdbcTemplateUserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Transactional

@@ -23,7 +23,7 @@ public class HashtagServiceImpl implements HashtagService {
     @Override
     public List<Long> createHashtags(List<Hashtag> hashtags) {
         List<Long> result = new ArrayList<>();
-        hashtags = repository.batchSave(hashtags);
+        hashtags = repository.saveAll(hashtags);
 
         for (Hashtag hashtag : hashtags) {
             result.add(hashtag.getId());
@@ -53,8 +53,8 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public List<SearchHashtagDto> searchHashtagsByTag(String tag, Long offset, Long limit) {
-        return repository.searchTag(tag, offset, limit);
+    public List<SearchHashtagDto> searchHashtagsByTag(String tag) {
+        return repository.searchTag(tag);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+    public List<Hashtag> saveAll(List<Hashtag> hashtags) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("hashtags").usingGeneratedKeyColumns("id");
 
@@ -90,8 +90,8 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit) {
-        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag limit ?, ?", searchHashtagsRowMapper(), tag+'%', offset, limit);
+    public List<SearchHashtagDto> searchTag(String tag) {
+        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag", searchHashtagsRowMapper(), tag+'%');
     }
 
     @Override

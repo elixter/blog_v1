@@ -1,10 +1,8 @@
-package elixter.blog.repository.imageRepository;
+package elixter.blog.repository.image;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
-import elixter.blog.repository.image.ImageRepository;
-import elixter.blog.repository.image.ImageStorage;
 import elixter.blog.repository.post.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

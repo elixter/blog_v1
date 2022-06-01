@@ -21,7 +21,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+    public List<Hashtag> saveAll(List<Hashtag> hashtag) {
         return null;
     }
 
@@ -71,7 +71,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit) {
+    public List<SearchHashtagDto> searchTag(String tag) {
         return null;
     }
 

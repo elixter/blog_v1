@@ -22,6 +22,11 @@ public class Hashtag {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public void setPost(Post post) {
+        this.post = post;
+        this.post.addHashtag(this);
+    }
+
     public Hashtag() {
         this.post = new Post();
     }

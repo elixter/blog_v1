@@ -1,4 +1,4 @@
-package elixter.blog.repository.hashtagRepository;
+package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.repository.hashtag.MemoryHashtagRepository;

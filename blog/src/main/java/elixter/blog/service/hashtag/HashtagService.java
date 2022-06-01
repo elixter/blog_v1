@@ -13,7 +13,7 @@ public interface HashtagService {
     List<Hashtag> findAllHashtag();
     List<Hashtag> findHashtagByTag(String tag);
     List<Hashtag> findHashtagByPostId(Long postId);
-    List<SearchHashtagDto> searchHashtagsByTag(String tag, Long offset, Long limit);
+    List<SearchHashtagDto> searchHashtagsByTag(String tag);
     void deleteHashtagById(Long id);
     void deleteHashtagByTag(String tag);
     void deleteHashtagByPostId(Long postId);

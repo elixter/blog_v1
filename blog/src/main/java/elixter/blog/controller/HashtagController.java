@@ -32,6 +32,6 @@ public class HashtagController {
     ) {
         log.debug("search : {}, curPage : {}, pageSize : {}", search, curPage, pageSize);
 
-        return hashtagService.searchHashtagsByTag(search, curPage, pageSize);
+        return hashtagService.searchHashtagsByTag(search);
     }
 }

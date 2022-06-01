@@ -1,8 +1,6 @@
-package elixter.blog.repository.postRepository;
+package elixter.blog.repository.post;
 
 import elixter.blog.domain.post.Post;
-import elixter.blog.repository.post.PostRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

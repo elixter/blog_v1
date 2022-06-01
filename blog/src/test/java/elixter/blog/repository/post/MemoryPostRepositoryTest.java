@@ -1,15 +1,11 @@
-package elixter.blog.repository.postRepository;
+package elixter.blog.repository.post;
 
 import elixter.blog.domain.post.Post;
-import elixter.blog.repository.post.MemoryPostRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
