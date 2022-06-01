@@ -14,6 +14,7 @@ public interface JpaHashtagRepository extends HashtagRepository, JpaRepository<H
 
     @Override
     @Modifying
+    @SuppressWarnings("not used with JPA repository")
     @Query(value = "insert into Hashtag values(:hashtag)", nativeQuery = true)
     List<Hashtag> saveBatch(List<Hashtag> hashtag);
 

@@ -11,6 +11,8 @@ public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
     List<Hashtag> saveBatch(List<Hashtag> hashtag);
 
+    <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities);
+
     Optional<Hashtag> findById(Long id);
     List<Hashtag> findByTag(String tag);
     List<Hashtag> findAll();

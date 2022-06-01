@@ -70,6 +70,13 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
+    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
+        List<Hashtag> hashtagList = new ArrayList<>();
+        entities.forEach(hashtagList::add);
+        return (Iterable<S>) saveBatch(hashtagList);
+    }
+
+    @Override
     public Optional<Hashtag> findById(Long id) {
         List<Hashtag> result = jdbcTemplate.query("select * from hashtags where id = ? and status = ?", hashtagRowMapper(), id, RecordStatus.exist.ordinal());
         return result.stream().findAny();

@@ -26,6 +26,11 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
+    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
     public Optional<Hashtag> findById(Long id) {
         return Optional.ofNullable(hashtagStore.get(id));
     }

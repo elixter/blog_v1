@@ -1,5 +1,6 @@
 package elixter.blog.domain.hashtag;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class Hashtag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String tag;
+    private RecordStatus status;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -32,9 +34,10 @@ public class Hashtag {
     }
 
     @Builder
-    public Hashtag(Long id, String tag, Post post) {
+    public Hashtag(Long id, String tag, RecordStatus status, Post post) {
         this.id = id;
         this.tag = tag;
+        this.status = status;
         this.post = post;
     }
 }
