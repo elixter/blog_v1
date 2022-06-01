@@ -1,15 +1,13 @@
 package elixter.blog.repository.hashtag;
 
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.dto.hashtag.SearchHashtag;
+import elixter.blog.dto.hashtag.SearchHashtagInterface;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class JpaHashtagRepositoryTest {
@@ -23,7 +21,11 @@ class JpaHashtagRepositoryTest {
 
     @Test
     void searchTag() {
-        List<SearchHashtagDto> result = hashtagRepository.searchTag("소통해요");
+        List<SearchHashtagInterface> result = hashtagRepository.searchTag("소통해요");
+
+        result.forEach(res -> {
+            System.out.println("res = " + res.getTag() + " " + res.getCount());
+        });
 
     }
 }

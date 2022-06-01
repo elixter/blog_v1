@@ -1,7 +1,7 @@
 package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.dto.hashtag.SearchHashtagInterface;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> saveAll(List<Hashtag> hashtag) {
+    public List<Hashtag> saveBatch(List<Hashtag> hashtag) {
         return null;
     }
 
@@ -71,7 +71,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag) {
+    public List<SearchHashtagInterface> searchTag(String tag) {
         return null;
     }
 

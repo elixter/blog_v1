@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(newPost);
         setPostIdToHashtagList(newPost);
-        hashtagRepository.saveAll(newPost.getHashtags());
+        hashtagRepository.saveBatch(newPost.getHashtags());
 
         asyncRelateImageWithPost(newPost, newPost.getContent(), post.getImageUrlList());
 
@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
 
         hashtagRepository.deleteByPostId(post.getId());
         setPostIdToHashtagList(updatePost);
-        hashtagRepository.saveAll(updatePost.getHashtags());
+        hashtagRepository.saveBatch(updatePost.getHashtags());
 
         asyncRelateImageWithPost(updatePost, post.getContent(), post.getImageUrlList());
     }

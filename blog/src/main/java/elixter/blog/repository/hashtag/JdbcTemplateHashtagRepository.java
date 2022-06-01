@@ -2,7 +2,8 @@ package elixter.blog.repository.hashtag;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.dto.hashtag.SearchHashtag;
+import elixter.blog.dto.hashtag.SearchHashtagInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,7 +44,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> saveAll(List<Hashtag> hashtags) {
+    public List<Hashtag> saveBatch(List<Hashtag> hashtags) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("hashtags").usingGeneratedKeyColumns("id");
 
@@ -90,8 +91,8 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag) {
-        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag", searchHashtagsRowMapper(), tag+'%');
+    public List<SearchHashtagInterface> searchTag(String tag) {
+        return jdbcTemplate.query("Select h.tag as tag, count(*) as count from hashtags h where h.tag like ? group by h.tag", searchHashtagsRowMapper(), tag+'%');
     }
 
     @Override
@@ -123,11 +124,11 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         };
     }
 
-    private RowMapper<SearchHashtagDto> searchHashtagsRowMapper() {
-        return new RowMapper<SearchHashtagDto>() {
+    private RowMapper<SearchHashtagInterface> searchHashtagsRowMapper() {
+        return new RowMapper<SearchHashtagInterface>() {
             @Override
-            public SearchHashtagDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new SearchHashtagDto(rs.getString("tag"), rs.getLong("tag_count"));
+            public SearchHashtagInterface mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new SearchHashtag(rs.getString("tag"), rs.getLong("count"));
             }
         };
     }

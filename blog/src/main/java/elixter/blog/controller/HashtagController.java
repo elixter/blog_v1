@@ -1,6 +1,7 @@
 package elixter.blog.controller;
 
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.dto.hashtag.SearchHashtag;
+import elixter.blog.dto.hashtag.SearchHashtagInterface;
 import elixter.blog.service.hashtag.HashtagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class HashtagController {
     }
 
     @GetMapping
-    List<SearchHashtagDto> GetSearchHashtags(
+    List<SearchHashtagInterface> GetSearchHashtags(
             @RequestParam(value = "search") String search,
             @RequestParam(value = "curPage", required = false) Long curPage,
             @RequestParam(value = "pageSize", required = false) Long pageSize
