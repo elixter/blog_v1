@@ -25,8 +25,14 @@ public class Hashtag {
     private Post post;
 
     public void setPost(Post post) {
+        if (this.post != null) {
+            this.post.getHashtags().remove(this);
+        }
         this.post = post;
-        this.post.addHashtag(this);
+
+        if (!post.getHashtags().contains(this)) {
+            this.post.addHashtag(this);
+        }
     }
 
     public Hashtag() {

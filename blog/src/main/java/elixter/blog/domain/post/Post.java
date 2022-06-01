@@ -33,8 +33,13 @@ public class Post {
     private List<Hashtag> hashtags = new ArrayList<>();
 
     public void addHashtag(Hashtag hashtag) {
-        hashtag.setPost(this);
-        this.hashtags.add(hashtag);
+        if (!hashtags.contains(hashtag)) {
+            this.hashtags.add(hashtag);
+        }
+
+        if (hashtag.getPost().getId() != this.id) {
+            hashtag.setPost(this);
+        }
     }
 
     private static final Long emptyId = -1L;
