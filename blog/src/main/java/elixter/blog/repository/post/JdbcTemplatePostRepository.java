@@ -219,7 +219,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         );
 
         List<Post> result = jdbcTemplate.query(
-                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? limit ?, ?",
+                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? group by h.post_id limit ?, ?",
                 postRowMapper(),
                 hashtag,
                 status.ordinal(),

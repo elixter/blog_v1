@@ -46,7 +46,7 @@ public interface JpaPostRepository extends PostRepository, JpaRepository<Post, L
     Page<Post> findByHashtag(String hashtag, Pageable pageable);
 
     @Override
-    @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = :status")
+    @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = :status group by h.post.id")
     Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable);
 
     @Override
