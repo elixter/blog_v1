@@ -1,4 +1,4 @@
-package elixter.blog.dto.hashtag;
+package elixter.blog.domain.hashtag;
 
 import lombok.*;
 
@@ -6,14 +6,14 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode
-public class SearchHashtag implements SearchHashtagInterface {
+public class HashtagCount implements HashtagCountInterface {
     private String tag;
     private Long count;
 
-    public SearchHashtag() {
+    public HashtagCount() {
     }
 
-    public SearchHashtag(String tag, Long count) {
+    public HashtagCount(String tag, Long count) {
         this.tag = tag;
         this.count = count;
     }

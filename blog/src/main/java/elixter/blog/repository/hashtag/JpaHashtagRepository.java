@@ -1,7 +1,7 @@
 package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagInterface;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,7 +20,7 @@ public interface JpaHashtagRepository extends HashtagRepository, JpaRepository<H
 
     @Override
     @Query("Select h.tag as tag, count(h) as count from Hashtag h where h.tag like concat('%', :tag, '%')  group by h.tag")
-    List<SearchHashtagInterface> searchTag(String tag);
+    List<HashtagCountInterface> searchTag(String tag);
 
     @Override
     @Query("update Hashtag h set h.status = 0 where h.id = :id")

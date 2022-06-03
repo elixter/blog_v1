@@ -1,7 +1,7 @@
 package elixter.blog.service.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagInterface;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -53,7 +53,7 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
-    public List<SearchHashtagInterface> searchHashtagsByTag(String tag) {
+    public List<HashtagCountInterface> searchHashtagsByTag(String tag) {
         return repository.searchTag(tag);
     }
 

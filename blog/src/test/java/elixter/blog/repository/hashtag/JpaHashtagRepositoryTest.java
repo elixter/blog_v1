@@ -3,8 +3,7 @@ package elixter.blog.repository.hashtag;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
-import elixter.blog.dto.hashtag.SearchHashtag;
-import elixter.blog.dto.hashtag.SearchHashtagInterface;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ class JpaHashtagRepositoryTest {
 
     @Test
     void searchTag() {
-        List<SearchHashtagInterface> result = hashtagRepository.searchTag("소통해요");
+        List<HashtagCountInterface> result = hashtagRepository.searchTag("소통해요");
 
         result.forEach(res -> {
             System.out.println("res = " + res.getTag() + " " + res.getCount());

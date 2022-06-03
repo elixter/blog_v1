@@ -2,8 +2,8 @@ package elixter.blog.repository.hashtag;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtag;
-import elixter.blog.dto.hashtag.SearchHashtagInterface;
+import elixter.blog.domain.hashtag.HashtagCount;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -98,7 +98,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagInterface> searchTag(String tag) {
+    public List<HashtagCountInterface> searchTag(String tag) {
         return jdbcTemplate.query("Select h.tag as tag, count(*) as count from hashtags h where h.tag like ? group by h.tag", searchHashtagsRowMapper(), tag+'%');
     }
 
@@ -131,11 +131,11 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         };
     }
 
-    private RowMapper<SearchHashtagInterface> searchHashtagsRowMapper() {
-        return new RowMapper<SearchHashtagInterface>() {
+    private RowMapper<HashtagCountInterface> searchHashtagsRowMapper() {
+        return new RowMapper<HashtagCountInterface>() {
             @Override
-            public SearchHashtagInterface mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new SearchHashtag(rs.getString("tag"), rs.getLong("count"));
+            public HashtagCountInterface mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new HashtagCount(rs.getString("tag"), rs.getLong("count"));
             }
         };
     }
