@@ -1,5 +1,6 @@
 package elixter.blog.dto.user;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.user.User;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +11,16 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UpdateUserRequestDto {
-    @NotNull private Long id;
-    @NotBlank private String name;
-    @NotBlank private String loginPw;
-    @Email private String email;
-    @NotBlank private String profileImage;
+    @NotNull
+    private Long id;
+    @NotBlank
+    private String name;
+    @NotBlank
+    private String loginPw;
+    @Email
+    private String email;
+    @NotBlank
+    private String profileImage;
 
     public UpdateUserRequestDto() {
     }
@@ -29,6 +35,13 @@ public class UpdateUserRequestDto {
     }
 
     public User mapping() {
-        return new User(id, name, loginPw, email, profileImage);
+        return User.builder()
+                .id(id)
+                .loginPw(loginPw)
+                .name(name)
+                .email(email)
+                .profileImage(profileImage)
+                .status(RecordStatus.exist)
+                .build();
     }
 }

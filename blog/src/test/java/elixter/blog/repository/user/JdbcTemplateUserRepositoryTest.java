@@ -5,6 +5,7 @@ import elixter.blog.domain.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +14,12 @@ import java.util.List;
 @SpringBootTest
 @Transactional
 public class JdbcTemplateUserRepositoryTest {
-    @Autowired
-    JdbcTemplateUserRepository repository;
+
+    UserRepository repository;
+
+    public JdbcTemplateUserRepositoryTest(@Qualifier("jdbcTemplateUserRepository") UserRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     public void findById() {
@@ -26,6 +31,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setName("test");
         user.setEmail("test@test.com");
         user.setProfileImage("test");
+        user.setStatus(RecordStatus.exist);
 
         User savedUser = repository.save(user);
         User result = repository.findById(savedUser.getId()).get();
@@ -40,6 +46,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setName("test");
         user.setEmail("test@test.com");
         user.setProfileImage("test");
+        user.setStatus(RecordStatus.exist);
 
         User savedUser = repository.save(user);
         User result = repository.findByLoginId(user.getLoginId()).get();
@@ -54,6 +61,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setName("test");
         user.setEmail("test@test.com");
         user.setProfileImage("test");
+        user.setStatus(RecordStatus.exist);
 
         User savedUser = repository.save(user);
         List<User> result = repository.findByName(user.getName());
@@ -88,6 +96,7 @@ public class JdbcTemplateUserRepositoryTest {
         user1.setName("test");
         user1.setEmail("test@test.com");
         user1.setProfileImage("test");
+        user1.setStatus(RecordStatus.exist);
         repository.save(user1);
 
         User user2 = new User();
@@ -96,6 +105,7 @@ public class JdbcTemplateUserRepositoryTest {
         user2.setName("test");
         user2.setEmail("test123123@test.com");
         user2.setProfileImage("test");
+        user2.setStatus(RecordStatus.exist);
         repository.save(user2);
 
         List<User> userList = repository.findAll(0L, 50L);
@@ -111,6 +121,7 @@ public class JdbcTemplateUserRepositoryTest {
         user.setEmail("test@test.com");
         user.setName("test");
         user.setProfileImage("test");
+        user.setStatus(RecordStatus.exist);
         repository.save(user);
 
         repository.delete(user.getId());

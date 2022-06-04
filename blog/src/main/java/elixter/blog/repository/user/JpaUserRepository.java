@@ -24,7 +24,7 @@ public interface JpaUserRepository extends UserRepository, JpaRepository<User, L
 
     @Override
     @Modifying(clearAutomatically = true)
-    @Query("update User u set u.loginPw = :#{#user.loginPw} where u.id = :#{#user.id}")
+    @Query("update User u set u.loginPw = :#{#user.loginPw}, u.email = :#{#user.email}, u.profileImage = :#{#user.profileImage}, u.name = :#{#user.name} where u.id = :#{#user.id}")
     void update(User user);
 
     @Override

@@ -4,6 +4,7 @@ import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Slf4j
+@Qualifier("jdbcTemplateUserRepository")
 @Repository
 public class JdbcTemplateUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -177,6 +179,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 user.setEmail(rs.getString("email"));
                 user.setProfileImage(rs.getString("profile_image"));
                 user.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
+                user.setStatus(RecordStatus.values()[rs.getInt("status")]);
 
                 return user;
             }

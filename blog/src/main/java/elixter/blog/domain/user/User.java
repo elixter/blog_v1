@@ -84,7 +84,7 @@ public class User {
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
         this.createAt = LocalDateTime.now().withNano(0);
-        this.status = RecordStatus.exist;
+        this.status = user.status;
     }
 
     @JsonIgnore

@@ -74,11 +74,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(UpdateUserRequestDto user) {
-        String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
-        user.setLoginPw(hashedPw);
-        User result = user.mapping();
-        repository.update(result);
+        User updateUser = repository.findByIdAndStatus(user.getId(), RecordStatus.exist).orElse(User.getEmpty());
+        if (updateUser.isEmpty()) {
+            return updateUser;
+        }
 
-        return result;
+        updateUser(user, updateUser);
+        repository.update(updateUser);
+
+        return updateUser;
+    }
+
+    private void updateUser(UpdateUserRequestDto updateDto, User updateUser) {
+        String hashedPw = BCrypt.hashpw(updateDto.getLoginPw(), BCrypt.gensalt());
+        updateUser.setLoginPw(hashedPw);
+        updateUser.setEmail(updateDto.getEmail());
+        updateUser.setName(updateDto.getName());
+        updateUser.setProfileImage(updateDto.getProfileImage());
     }
 }
