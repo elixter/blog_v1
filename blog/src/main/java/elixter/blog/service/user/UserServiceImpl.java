@@ -5,6 +5,7 @@ import elixter.blog.constants.RecordErrorConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.exception.RestException;
 import elixter.blog.exception.user.UserAlreadyExistException;
+import elixter.blog.exception.user.UserNotFoundException;
 import elixter.blog.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,6 @@ public class UserServiceImpl implements UserService {
         String hashedPw = BCrypt.hashpw(user.getLoginPw(), BCrypt.gensalt());
         user.setLoginPw(hashedPw);
 
-        return repository.update(user).orElse(User.getEmpty());
+        return repository.update(user);
     }
 }

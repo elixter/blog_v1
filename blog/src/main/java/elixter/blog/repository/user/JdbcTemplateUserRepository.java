@@ -52,7 +52,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> update(User user) {
+    public User update(User user) {
         User result;
         int affectedCols = 0;
         try {
@@ -69,12 +69,12 @@ public class JdbcTemplateUserRepository implements UserRepository {
         }
 
         if (affectedCols == 0) {
-            result = null;
+            result = User.getEmpty();
         } else {
             result = user;
         }
 
-        return Optional.of(result);
+        return result;
     }
 
     @Override
