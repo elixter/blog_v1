@@ -66,6 +66,7 @@ public class User {
         this.loginPw = loginPw;
         this.email = email;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.status = RecordStatus.exist;
     }
 
     public User(String loginPw, String email, String profileImage) {

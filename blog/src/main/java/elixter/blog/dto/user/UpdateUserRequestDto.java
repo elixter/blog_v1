@@ -1,6 +1,7 @@
 package elixter.blog.dto.user;
 
 import elixter.blog.domain.user.User;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -18,6 +19,7 @@ public class UpdateUserRequestDto {
     public UpdateUserRequestDto() {
     }
 
+    @Builder
     public UpdateUserRequestDto(Long id, String name, String loginPw, String email, String profileImage) {
         this.id = id;
         this.name = name;

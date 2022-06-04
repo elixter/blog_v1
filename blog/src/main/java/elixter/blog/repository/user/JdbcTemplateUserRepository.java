@@ -17,10 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -54,11 +51,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public User update(User user) {
-        User result;
-        int affectedCols = 0;
+    public void update(User user) {
         try {
-            affectedCols = jdbcTemplate.update(
+            jdbcTemplate.update(
                     "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
                     user.getName(),
                     user.getLoginPw(),
@@ -69,14 +64,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-
-        if (affectedCols == 0) {
-            result = User.getEmpty();
-        } else {
-            result = user;
-        }
-
-        return result;
     }
 
     @Override
@@ -166,11 +153,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 limit
         );
         return result;
-    }
-
-    @Override
-    public Page<User> findAll(Pageable page) {
-        return null;
     }
 
     @Override

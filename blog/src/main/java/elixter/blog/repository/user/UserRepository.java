@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface UserRepository {
     User save(User user);
-    User update(User user);
+    void update(User user);
 
     Optional<User> findById(Long id);
     Optional<User> findByIdAndStatus(Long id, RecordStatus status);
@@ -31,7 +31,6 @@ public interface UserRepository {
     Page<User> findByNameAndStatus(String name, RecordStatus status, Pageable pageable);
 
     List<User> findAll(Long offset, Long limit);
-    Page<User> findAll(Pageable page);
 
     void delete(Long id);
 }

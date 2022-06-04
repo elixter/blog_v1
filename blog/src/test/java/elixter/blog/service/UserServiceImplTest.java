@@ -1,6 +1,7 @@
 package elixter.blog.service;
 
 import elixter.blog.domain.user.User;
+import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.service.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -48,8 +49,15 @@ public class UserServiceImplTest {
 
         service.createUser(user);
 
+        UpdateUserRequestDto dto = UpdateUserRequestDto.builder()
+                .id(user.getId())
+                .loginPw(user.getLoginPw())
+                .email(user.getEmail())
+                .name(user.getName())
+                .profileImage(user.getProfileImage())
+                .build();
         user.setName("updated");
-        user = service.updateUser(user);
+        user = service.updateUser(dto);
 
         List<User> result = service.findUser("id", user.getId().toString());
         Assertions.assertThat(result).contains(user);

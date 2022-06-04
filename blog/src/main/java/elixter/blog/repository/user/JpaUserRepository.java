@@ -2,6 +2,7 @@ package elixter.blog.repository.user;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.user.User;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,15 +15,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+
+@Qualifier("jpaUserRepository")
 public interface JpaUserRepository extends UserRepository, JpaRepository<User, Long> {
 
     @Override
     User save(User user);
 
     @Override
-    @Modifying
-    @Query("update User u set u.loginPw = :#{#user.loginPw}")
-    User update(User user);
+    @Modifying(clearAutomatically = true)
+    @Query("update User u set u.loginPw = :#{#user.loginPw} where u.id = :#{#user.id}")
+    void update(User user);
 
     @Override
     Optional<User> findById(Long id);
@@ -55,10 +58,10 @@ public interface JpaUserRepository extends UserRepository, JpaRepository<User, L
     Page<User> findByNameAndStatus(String name, RecordStatus status, Pageable pageable);
 
     @Override
+    @Modifying
+    @Query("select u from User u")
     List<User> findAll(Long offset, Long limit);
 
-    @Override
-    Page<User> findAll(Pageable page);
 
     @Override
     @Modifying
