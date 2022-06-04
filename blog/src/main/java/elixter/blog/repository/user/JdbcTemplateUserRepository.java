@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -32,7 +34,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public User save(User user) throws DataIntegrityViolationException {
+    public User save(User user) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("users").usingGeneratedKeyColumns("id");
 
@@ -90,6 +92,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByIdAndStatus(Long id, RecordStatus status) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> findByLoginId(String loginId) {
         List<User> result = jdbcTemplate.query(
           "select * from users where status = ? and login_id = ?",
@@ -99,6 +106,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
         );
 
         return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByLoginIdAndStatus(String loginId, RecordStatus status) {
+        return Optional.empty();
     }
 
     @Override
@@ -114,6 +126,21 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
+    public List<User> findByNameAndStatus(String name, RecordStatus status) {
+        return null;
+    }
+
+    @Override
+    public Page<User> findByName(String name, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<User> findByNameAndStatus(String name, RecordStatus status, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and email = ?",
@@ -122,6 +149,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 email
         );
         return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByEmailAndStatus(String email, RecordStatus status) {
+        return Optional.empty();
     }
 
     @Override
@@ -134,6 +166,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 limit
         );
         return result;
+    }
+
+    @Override
+    public Page<User> findAll(Pageable page) {
+        return null;
     }
 
     @Override

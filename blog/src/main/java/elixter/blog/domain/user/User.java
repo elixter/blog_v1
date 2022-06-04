@@ -1,24 +1,39 @@
 package elixter.blog.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import elixter.blog.constants.RecordStatus;
 import lombok.*;
 import org.apache.tomcat.jni.Time;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@Entity
+@Table(name = "users")
 public class User {
     public static final String defaultProfileImage = "default";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private String loginId;
+
     private String loginPw;
+
     private String email;
+
     private String profileImage;
+
     private LocalDateTime createAt;
+
+    private RecordStatus status;
 
     public User() {
         createAt = LocalDateTime.now().withNano(0);
@@ -33,7 +48,7 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt) {
+    public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt, RecordStatus status) {
         this.id = id;
         this.name = name;
         this.loginId = loginId;
@@ -42,6 +57,7 @@ public class User {
         this.profileImage = profileImage;
         this.createAt = createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.status = status;
     }
 
     public User(String name, String loginId, String loginPw, String email) {
@@ -67,6 +83,7 @@ public class User {
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.status = RecordStatus.exist;
     }
 
     @JsonIgnore
