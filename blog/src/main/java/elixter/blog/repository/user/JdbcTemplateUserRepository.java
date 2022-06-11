@@ -4,8 +4,11 @@ import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,12 +18,10 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
+@Qualifier("jdbcTemplateUserRepository")
 @Repository
 public class JdbcTemplateUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -32,7 +33,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public User save(User user) throws DataIntegrityViolationException {
+    public User save(User user) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("users").usingGeneratedKeyColumns("id");
 
@@ -52,11 +53,9 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> update(User user) {
-        User result;
-        int affectedCols = 0;
+    public void update(User user) {
         try {
-            affectedCols = jdbcTemplate.update(
+            jdbcTemplate.update(
                     "update users set name = ?, login_pw = ?, email = ?, profile_image = ? where id = ?",
                     user.getName(),
                     user.getLoginPw(),
@@ -67,14 +66,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }
-
-        if (affectedCols == 0) {
-            result = null;
-        } else {
-            result = user;
-        }
-
-        return Optional.of(result);
     }
 
     @Override
@@ -90,6 +81,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByIdAndStatus(Long id, RecordStatus status) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> findByLoginId(String loginId) {
         List<User> result = jdbcTemplate.query(
           "select * from users where status = ? and login_id = ?",
@@ -99,6 +95,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
         );
 
         return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByLoginIdAndStatus(String loginId, RecordStatus status) {
+        return Optional.empty();
     }
 
     @Override
@@ -114,6 +115,21 @@ public class JdbcTemplateUserRepository implements UserRepository {
     }
 
     @Override
+    public List<User> findByNameAndStatus(String name, RecordStatus status) {
+        return null;
+    }
+
+    @Override
+    public Page<User> findByName(String name, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<User> findByNameAndStatus(String name, RecordStatus status, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
         List<User> result = jdbcTemplate.query(
                 "select * from users where status = ? and email = ?",
@@ -122,6 +138,11 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 email
         );
         return result.stream().findAny();
+    }
+
+    @Override
+    public Optional<User> findByEmailAndStatus(String email, RecordStatus status) {
+        return Optional.empty();
     }
 
     @Override
@@ -158,6 +179,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 user.setEmail(rs.getString("email"));
                 user.setProfileImage(rs.getString("profile_image"));
                 user.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
+                user.setStatus(RecordStatus.values()[rs.getInt("status")]);
 
                 return user;
             }

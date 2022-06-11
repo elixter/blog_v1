@@ -1,7 +1,7 @@
 package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -21,7 +21,12 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+    public List<Hashtag> saveBatch(List<Hashtag> hashtag) {
+        return null;
+    }
+
+    @Override
+    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
         return null;
     }
 
@@ -62,7 +67,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
         for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
             Hashtag currentHashtag = currentEntry.getValue();
 
-            if (currentHashtag.getPostId().equals(postId)) {
+            if (currentHashtag.getPost().getId().equals(postId)) {
                 result.add(currentHashtag);
             }
         }
@@ -71,7 +76,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit) {
+    public List<HashtagCountInterface> searchTag(String tag) {
         return null;
     }
 
@@ -100,7 +105,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
 
         for (Map.Entry<Long, Hashtag> currentEntry : hashtagStore.entrySet()) {
             Hashtag currentHashtag = currentEntry.getValue();
-            if (currentHashtag.getPostId().equals(postId)) {
+            if (currentHashtag.getPost().getId().equals(postId)) {
                 removeList.add(currentHashtag);
             }
         }

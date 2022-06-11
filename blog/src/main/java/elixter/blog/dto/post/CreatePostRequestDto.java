@@ -42,15 +42,27 @@ public class CreatePostRequestDto extends AbstractPostDto {
     public Post postMapping() {
         LocalDateTime now = LocalDateTime.now().withNano(0);
 
-        return Post.builder()
+        Post post = Post.builder()
+                .id(id)
                 .title(title)
                 .category(category)
-                .thumbnail(thumbnail)
                 .content(content)
-                .status(RecordStatus.exist)
+                .thumbnail(thumbnail)
+                .hashtags(new ArrayList<>())
                 .createAt(now)
                 .updateAt(now)
-                .hashtags(getHashtagAsInstance())
+                .status(RecordStatus.exist)
                 .build();
+
+        if (hashtags != null) {
+            hashtags.forEach(tag -> {
+                Hashtag hashtag = new Hashtag();
+                hashtag.setTag(tag);
+                hashtag.setPost(post);
+                post.addHashtag(hashtag);
+            });
+        }
+
+        return post;
     }
 }

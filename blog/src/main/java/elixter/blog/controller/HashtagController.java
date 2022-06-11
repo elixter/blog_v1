@@ -1,9 +1,10 @@
 package elixter.blog.controller;
 
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import elixter.blog.service.hashtag.HashtagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +26,15 @@ public class HashtagController {
     }
 
     @GetMapping
-    List<SearchHashtagDto> GetSearchHashtags(
+    ResponseEntity<List<HashtagCountInterface>> GetSearchHashtags(
             @RequestParam(value = "search") String search,
             @RequestParam(value = "curPage", required = false) Long curPage,
             @RequestParam(value = "pageSize", required = false) Long pageSize
     ) {
         log.debug("search : {}, curPage : {}, pageSize : {}", search, curPage, pageSize);
 
-        return hashtagService.searchHashtagsByTag(search, curPage, pageSize);
+        List<HashtagCountInterface> searchHashtags = hashtagService.searchHashtagsByTag(search);
+
+        return ResponseEntity.ok(searchHashtags);
     }
 }

@@ -104,6 +104,7 @@ public class PostControllerTest {
                 .build();
         Post post1 = postService.createPost(requestBody1);
         GetPostResponseDto expectData1 = new GetPostResponseDto(post1, post1.getHashtags());
+        Thread.sleep(1000);
 
         CreatePostRequestDto requestBody2 = CreatePostRequestDto.builder()
                 .title("for testing232323")
@@ -115,6 +116,7 @@ public class PostControllerTest {
                 .build();
         Post post2 = postService.createPost(requestBody2);
         GetPostResponseDto expectData2 = new GetPostResponseDto(post2, post2.getHashtags());
+        Thread.sleep(1000);
 
         CreatePostRequestDto requestBody3 = CreatePostRequestDto.builder()
                 .title("for testing232323")
@@ -126,9 +128,10 @@ public class PostControllerTest {
                 .build();
         Post post3 = postService.createPost(requestBody3);
         GetPostResponseDto expectData3 = new GetPostResponseDto(post3, post3.getHashtags());
+        Thread.sleep(1000);
 
         GetAllPostsResponseDto expectResponse = new GetAllPostsResponseDto();
-        expectResponse.setPosts(Arrays.asList(expectData1, expectData2));
+        expectResponse.setPosts(Arrays.asList(expectData2, expectData1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts?filterType=category&filterString=TestCategory1")

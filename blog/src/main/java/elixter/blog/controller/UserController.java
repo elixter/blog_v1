@@ -64,7 +64,7 @@ public class UserController {
             @Valid @RequestBody UpdateUserRequestDto updateUserRequestBody
     ) {
 
-        User updateUser = service.updateUser(updateUserRequestBody.mapping());
+        User updateUser = service.updateUser(updateUserRequestBody);
         if (updateUser.isEmpty()) {
             log.debug("User update failed : user id {} not exist", updateUserRequestBody.getId());
             Map<String, String> cause = new HashMap<>();

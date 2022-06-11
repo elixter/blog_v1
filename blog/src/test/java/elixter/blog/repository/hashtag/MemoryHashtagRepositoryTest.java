@@ -1,4 +1,4 @@
-package elixter.blog.repository.hashtagRepository;
+package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.repository.hashtag.MemoryHashtagRepository;
@@ -24,7 +24,7 @@ public class MemoryHashtagRepositoryTest {
     void createTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.getPost().setId(1L);
 
         Hashtag result = repository.save(hashtag);
 
@@ -36,7 +36,7 @@ public class MemoryHashtagRepositoryTest {
     void findByIdTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.getPost().setId(1L);
         repository.save(hashtag);
 
         Optional<Hashtag> result = repository.findById(hashtag.getId());
@@ -51,12 +51,12 @@ public class MemoryHashtagRepositoryTest {
     void findByTagTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.getPost().setId(1L);
         repository.save(hashtag);
 
         Hashtag hashtag2 = new Hashtag();
         hashtag2.setTag("소통해요");
-        hashtag2.setPostId(2L);
+        hashtag2.getPost().setId(2L);
         repository.save(hashtag2);
 
         List<Hashtag> result = repository.findByTag("소통해요");
@@ -73,12 +73,12 @@ public class MemoryHashtagRepositoryTest {
     void findAllTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(1L);
+        hashtag.getPost().setId(1L);
         repository.save(hashtag);
 
         Hashtag hashtag2 = new Hashtag();
         hashtag2.setTag("소통해요");
-        hashtag2.setPostId(2L);
+        hashtag2.getPost().setId(2L);
         repository.save(hashtag2);
 
         List<Hashtag> result = repository.findAll();
@@ -91,12 +91,12 @@ public class MemoryHashtagRepositoryTest {
     void findByPostIdTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(555L);
+        hashtag.getPost().setId(555L);
         repository.save(hashtag);
 
         Hashtag hashtag2 = new Hashtag();
         hashtag2.setTag("소통해요");
-        hashtag2.setPostId(556L);
+        hashtag2.getPost().setId(556L);
         repository.save(hashtag2);
 
         List<Hashtag> result = repository.findByPostId(555L);
@@ -114,7 +114,7 @@ public class MemoryHashtagRepositoryTest {
     void deleteByIdTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(555L);
+        hashtag.getPost().setId(555L);
         repository.save(hashtag);
 
         repository.deleteById(hashtag.getId());
@@ -127,12 +127,12 @@ public class MemoryHashtagRepositoryTest {
     void deleteByTagTest() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(555L);
+        hashtag.getPost().setId(555L);
         repository.save(hashtag);
 
         Hashtag hashtag2 = new Hashtag();
         hashtag2.setTag("소통해요");
-        hashtag2.setPostId(556L);
+        hashtag2.getPost().setId(556L);
         repository.save(hashtag2);
 
         repository.deleteByTag("소통해요");
@@ -146,12 +146,12 @@ public class MemoryHashtagRepositoryTest {
     void deleteByPostId() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.setPostId(666L);
+        hashtag.getPost().setId(666L);
         repository.save(hashtag);
 
         Hashtag hashtag2 = new Hashtag();
         hashtag2.setTag("소통해요");
-        hashtag2.setPostId(666L);
+        hashtag2.getPost().setId(666L);
         repository.save(hashtag2);
 
         repository.deleteByPostId(666L);

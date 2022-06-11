@@ -2,7 +2,8 @@ package elixter.blog.repository.hashtag;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.dto.hashtag.SearchHashtagDto;
+import elixter.blog.domain.hashtag.HashtagCount;
+import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,7 +34,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("tag", hashtag.getTag());
-        parameters.put("post_id", hashtag.getPostId());
+        parameters.put("post_id", hashtag.getPost().getId());
         parameters.put("status", RecordStatus.exist.ordinal());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
@@ -43,7 +44,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> batchSave(List<Hashtag> hashtags) {
+    public List<Hashtag> saveBatch(List<Hashtag> hashtags) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("hashtags").usingGeneratedKeyColumns("id");
 
@@ -52,7 +53,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         for (Hashtag hashtag : hashtags) {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("tag", hashtag.getTag());
-            parameters.put("post_id", hashtag.getPostId());
+            parameters.put("post_id", hashtag.getPost().getId());
             parameters.put("status", RecordStatus.exist.ordinal());
             batchParams.add(new MapSqlParameterSource(parameters));
         }
@@ -66,6 +67,13 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         }
 
         return hashtags;
+    }
+
+    @Override
+    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
+        List<Hashtag> hashtagList = new ArrayList<>();
+        entities.forEach(hashtagList::add);
+        return (Iterable<S>) saveBatch(hashtagList);
     }
 
     @Override
@@ -90,8 +98,8 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<SearchHashtagDto> searchTag(String tag, Long offset, Long limit) {
-        return jdbcTemplate.query("Select tag, count(*) as tag_count from HASHTAGS where tag like ? group by tag limit ?, ?", searchHashtagsRowMapper(), tag+'%', offset, limit);
+    public List<HashtagCountInterface> searchTag(String tag) {
+        return jdbcTemplate.query("Select h.tag as tag, count(*) as count from hashtags h where h.tag like ? group by h.tag", searchHashtagsRowMapper(), tag+'%');
     }
 
     @Override
@@ -116,18 +124,18 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
                 Hashtag hashtag = new Hashtag();
                 hashtag.setId(rs.getLong("id"));
                 hashtag.setTag(rs.getString("tag"));
-                hashtag.setPostId(rs.getLong("post_id"));
+                hashtag.getPost().setId(rs.getLong("post_id"));
 
                 return hashtag;
             }
         };
     }
 
-    private RowMapper<SearchHashtagDto> searchHashtagsRowMapper() {
-        return new RowMapper<SearchHashtagDto>() {
+    private RowMapper<HashtagCountInterface> searchHashtagsRowMapper() {
+        return new RowMapper<HashtagCountInterface>() {
             @Override
-            public SearchHashtagDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new SearchHashtagDto(rs.getString("tag"), rs.getLong("tag_count"));
+            public HashtagCountInterface mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new HashtagCount(rs.getString("tag"), rs.getLong("count"));
             }
         };
     }

@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 public class PostServiceImplTest {
+
     @Autowired
     PostService postService;
 
@@ -34,6 +35,7 @@ public class PostServiceImplTest {
                 .category("test")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag", "isGood"))
                 .build();
 
         Post post = postService.createPost(dto);
@@ -65,6 +67,8 @@ public class PostServiceImplTest {
         System.out.println("result = " + result);
 
         assertThat(expect).isEqualTo(result);
+
+        assertThat(expect.getHashtags()).containsAll(hashList);
     }
 
     @Test
@@ -84,6 +88,7 @@ public class PostServiceImplTest {
                 .category("test_category")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(new ArrayList<>())
                 .build();
         Post post2 = postService.createPost(dto2);
         GetPostResponseDto responseDto2 = new GetPostResponseDto(post2);
@@ -93,6 +98,7 @@ public class PostServiceImplTest {
                 .category("test")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(new ArrayList<>())
                 .build();
         Post post3 = postService.createPost(dto3);
         GetPostResponseDto responseDto3 = new GetPostResponseDto(post3);
@@ -102,6 +108,7 @@ public class PostServiceImplTest {
                 .category("test_category")
                 .content("test")
                 .thumbnail("test")
+                .hashtags(new ArrayList<>())
                 .build();
         Post post4 = postService.createPost(dto4);
         GetPostResponseDto responseDto4 = new GetPostResponseDto(post4);

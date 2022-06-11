@@ -1,5 +1,6 @@
 package elixter.blog.service.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
@@ -10,8 +11,9 @@ import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
 import elixter.blog.repository.post.PostRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,7 +31,6 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -40,6 +41,13 @@ public class PostServiceImpl implements PostService {
 
 
     private static String serverUri;
+
+    @Autowired
+    public PostServiceImpl(@Qualifier("jpaPostRepository") PostRepository postRepository, ImageRepository imageRepository, HashtagRepository hashtagRepository) {
+        this.postRepository = postRepository;
+        this.imageRepository = imageRepository;
+        this.hashtagRepository = hashtagRepository;
+    }
 
     @Value("${server.uri}")
     private void setServerUri(String uri) {
@@ -53,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(newPost);
         setPostIdToHashtagList(newPost);
-        hashtagRepository.batchSave(newPost.getHashtags());
+        hashtagRepository.saveBatch(newPost.getHashtags());
 
         asyncRelateImageWithPost(newPost, newPost.getContent(), post.getImageUrlList());
 
@@ -63,13 +71,13 @@ public class PostServiceImpl implements PostService {
     @Override
     @CacheEvict(value = cacheName, allEntries = true)
     public void updatePost(UpdatePostRequestDto post) {
-        Post updatePost = post.PostMapping();
+        Post updatePost = post.postMapping();
         updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
         postRepository.update(updatePost);
 
         hashtagRepository.deleteByPostId(post.getId());
         setPostIdToHashtagList(updatePost);
-        hashtagRepository.batchSave(updatePost.getHashtags());
+        hashtagRepository.saveBatch(updatePost.getHashtags());
 
         asyncRelateImageWithPost(updatePost, post.getContent(), post.getImageUrlList());
     }
@@ -77,7 +85,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Cacheable(value = cacheName, key = "#id")
     public GetPostResponseDto findPostById(Long id) {
-        Post foundPost = postRepository.findById(id).orElse(Post.emptyPost());
+        Post foundPost = postRepository.findByIdAndStatus(id, RecordStatus.exist).orElse(Post.emptyPost());
         if (foundPost.isEmpty()) {
             log.info("No such post with id [{}]", id);
             return GetPostResponseDto.getEmpty();
@@ -92,13 +100,13 @@ public class PostServiceImpl implements PostService {
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
         Page<Post> queryResult;
         List<Post> postList;
-        switch(filter) {
+        switch (filter) {
             case FILTER_TITLE:
                 log.info("not implemented : case FILTER_TITLE");
                 postList = new ArrayList<>();
                 break;
             case FILTER_CATEGORY:
-                queryResult = postRepository.findByCategory(filterVal, pageable);
+                queryResult = postRepository.findByCategoryAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
                 break;
             case FILTER_CONTENT:
@@ -106,7 +114,7 @@ public class PostServiceImpl implements PostService {
                 postList = new ArrayList<>();
                 break;
             case FILTER_HASHTAG:
-                queryResult = postRepository.findByHashtag(filterVal, pageable);
+                queryResult = postRepository.findByHashtagAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
                 break;
             default:
@@ -134,16 +142,15 @@ public class PostServiceImpl implements PostService {
     private void asyncRelateImageWithPost(Post newPost, String content, List<String> imageUrlList) {
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         executorService.submit(() -> {
+            log.debug("start relate image");
+
             List<String> storedNameList = getActiveImageStoredNames(content, imageUrlList);
             List<Image> images = imageRepository.findByStoredName(storedNameList);
-            List<Long> imageIdList = new Vector<>();
+            images.forEach(image -> image.setPost(newPost));
 
-            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
-            try {
-                imageRepository.relateWithPost(imageIdList, newPost.getId());
-            } catch (DataIntegrityViolationException e) {
-                log.error("relation with post {} failed", newPost.getId(), e);
-            }
+            imageRepository.saveAll(images);
+
+            log.debug("relate image is finished");
         });
         executorService.shutdown();
     }
@@ -161,6 +168,6 @@ public class PostServiceImpl implements PostService {
     }
 
     private void setPostIdToHashtagList(Post newPost) {
-        newPost.getHashtags().forEach(hashtag->hashtag.setPostId(newPost.getId()));
+        newPost.getHashtags().forEach(hashtag -> hashtag.getPost().setId(newPost.getId()));
     }
 }

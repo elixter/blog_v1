@@ -8,6 +8,7 @@ import elixter.blog.exception.RestException;
 import elixter.blog.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,11 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     private final UserRepository repository;
 
     @Autowired
-    public AuthenticationServiceImpl(UserRepository repository) {
+    public AuthenticationServiceImpl(@Qualifier("jpaUserRepository") UserRepository repository) {
         this.repository = repository;
     }
 

@@ -48,11 +48,7 @@ public class GetPostResponseDto extends AbstractPostDto {
         thumbnail = post.getThumbnail();
         createAt = post.getCreateAt();
         updateAt = post.getUpdateAt();
-
-        hashtags = new ArrayList<>();
-        for (Hashtag hashtag : hashtagList) {
-            hashtags.add(hashtag.getTag());
-        }
+        hashtagMapping(hashtagList);
     }
 
     public void postMapping(Post post) {
@@ -63,9 +59,14 @@ public class GetPostResponseDto extends AbstractPostDto {
         thumbnail = post.getThumbnail();
         createAt = post.getCreateAt();
         updateAt = post.getUpdateAt();
+        hashtagMapping(post.getHashtags());
     }
 
     public void hashtagMapping(List<Hashtag> hashtagList) {
+        if (hashtags == null) {
+            hashtags = new ArrayList<>();
+        }
+
         for (Hashtag hashtag : hashtagList) {
             hashtags.add(hashtag.getTag());
         }

@@ -1,5 +1,6 @@
 package elixter.blog.repository.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,6 +39,11 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
+    public Optional<Post> findByIdAndStatus(Long id, RecordStatus status) {
+        return Optional.empty();
+    }
+
+    @Override
     public Page<Post> findAll(Pageable pageable) {
         List<Post> result = new ArrayList<>();
 
@@ -46,6 +52,11 @@ public class MemoryPostRepository implements PostRepository {
         }
 
         return new PageImpl<>(result, pageable, result.size());
+    }
+
+    @Override
+    public Page<Post> findAllByStatus(RecordStatus status, Pageable pageable) {
+        return null;
     }
 
     @Override
@@ -64,7 +75,17 @@ public class MemoryPostRepository implements PostRepository {
     }
 
     @Override
+    public Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable) {
         return null;
     }
 

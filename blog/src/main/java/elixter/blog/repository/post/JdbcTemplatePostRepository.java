@@ -3,8 +3,8 @@ package elixter.blog.repository.post;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import elixter.blog.exception.post.PostNotFoundException;
+import elixter.blog.utils.RepositoryUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -77,6 +77,12 @@ public class JdbcTemplatePostRepository implements PostRepository {
     }
 
     @Override
+    public Optional<Post> findByIdAndStatus(Long id, RecordStatus status) {
+        List<Post> result = jdbcTemplate.query("select * from posts where id = ? and status = ?", postRowMapper(), id, status.ordinal());
+        return result.stream().findAny();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> findAll(Pageable pageable) {
 
@@ -92,15 +98,61 @@ public class JdbcTemplatePostRepository implements PostRepository {
     }
 
     @Override
+    @Transactional
+    public Page<Post> findAllByStatus(RecordStatus status, Pageable pageable) {
+        log.debug("get non-cached posts data with pageable [{}]", pageable);
+        Long count = jdbcTemplate.queryForObject(
+                String.format("SELECT * FROM posts WHERE status = %d", RecordStatus.exist.ordinal()),
+                Long.class
+        );
+
+        List<Post> result = jdbcTemplate.query("select * from posts where status = ? limit ?, ?", postRowMapper(), status.ordinal(), pageable.getOffset(), pageable.getPageSize());
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Post> findByCategory(String category, Pageable pageable) {
 
+        String orderBy = RepositoryUtils.getOrderBy(pageable);
+        log.debug("order clause={}", orderBy);
+
         log.debug("get non-cached posts data with category [{}] and pageable [{}]", category, pageable);
         List<Post> result = jdbcTemplate.query(
-                "select * from posts where category = ? and status = ? limit ?, ?",
+                "select * from posts where category = ? and status = ? " + orderBy + " limit ?, ?",
                 postRowMapper(),
                 category,
                 RecordStatus.exist.ordinal(),
+                pageable.getOffset(),
+                pageable.getPageSize()
+        );
+
+        Long count = jdbcTemplate.queryForObject(
+                String.format(
+                        "SELECT COUNT(*) FROM posts WHERE category = '%s' AND status = %d",
+                        category,
+                        RecordStatus.exist.ordinal()
+                ),
+                Long.class
+        );
+
+
+        return new PageImpl<Post>(result, pageable, count);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable) {
+        String orderBy = RepositoryUtils.getOrderBy(pageable);
+        log.debug("order clause={}", orderBy);
+
+        log.debug("get non-cached posts data with category [{}] and pageable [{}]", category, pageable);
+        List<Post> result = jdbcTemplate.query(
+                "select * from posts where category = ? and status = ? " + orderBy + " limit ?, ?",
+                postRowMapper(),
+                category,
+                status.ordinal(),
                 pageable.getOffset(),
                 pageable.getPageSize()
         );
@@ -145,6 +197,32 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 postRowMapper(),
                 hashtag,
                 RecordStatus.exist.ordinal(),
+                pageable.getOffset(),
+                pageable.getPageSize()
+        );
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable) {
+
+        log.debug("get non-cached posts data with hashtag [{}] and pageable [{}]", hashtag, pageable);
+        Long count = jdbcTemplate.queryForObject(
+                String.format(
+                        "SELECT COUNT(*) FROM posts p JOIN hashtags h ON p.id = h.post_id WHERE h.tag = '%s' AND p.status = %d",
+                        hashtag,
+                        RecordStatus.exist.ordinal()
+                ),
+                Long.class
+        );
+
+        List<Post> result = jdbcTemplate.query(
+                "select * from posts p join hashtags h on p.id = h.post_id where h.tag = ? and p.status = ? group by h.post_id limit ?, ?",
+                postRowMapper(),
+                hashtag,
+                status.ordinal(),
                 pageable.getOffset(),
                 pageable.getPageSize()
         );

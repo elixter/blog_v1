@@ -1,10 +1,8 @@
-package elixter.blog.repository.imageRepository;
+package elixter.blog.repository.image;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
-import elixter.blog.repository.image.ImageRepository;
-import elixter.blog.repository.image.ImageStorage;
 import elixter.blog.repository.post.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,14 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
-public class JdbcTemplateImageRepositoryTest {
+public class JpaImageRepositoryTest {
 
     private final ImageRepository imageRepository;
     private final PostRepository postRepository;
     private final ImageStorage imageStorage;
 
     @Autowired
-    public JdbcTemplateImageRepositoryTest(ImageRepository imageRepository, PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+    public JpaImageRepositoryTest(ImageRepository imageRepository, @Qualifier("jpaPostRepository") PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
         this.imageStorage = imageStorage;
@@ -40,6 +38,7 @@ public class JdbcTemplateImageRepositoryTest {
         FileInputStream fileInputStream = new FileInputStream(new File(path));
         return new MockMultipartFile(fileName, fileName + "." + contentType, contentType, fileInputStream);
     }
+
 
     @Test
     @Transactional
@@ -76,18 +75,14 @@ public class JdbcTemplateImageRepositoryTest {
         post.setCategory("test category");
         post.setThumbnail("http://www.testimage.com");
 
-        postRepository.save(post);
-        Post savedPost = postRepository.findById(post.getId()).get();
-
+        post.addImage(img1);
+        post.addImage(img2);
+//        postRepository.save(post);
+//
         imageRepository.save(img1);
         imageRepository.save(img2);
 
-        List<Long> idList = new ArrayList<>();
-        idList.add(img1.getId());
-        idList.add(img2.getId());
-
-        imageRepository.relateWithPost(idList, savedPost.getId());
-        List<Image> result = imageRepository.findByPostId(savedPost.getId());
+        List<Image> result = imageRepository.findByPostId(post.getId());
 
         Assertions.assertThat(result).contains(img1, img2);
     }
