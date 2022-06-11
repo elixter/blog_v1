@@ -15,7 +15,7 @@
 - [x] POST CRUD 
 - [x] User auth
 - [x] Image upload
-- [ ] JPA 전환
+- [x] JPA 전환
 - [ ] 토큰 인증방식으로 바꾸기 
 
 ### Frontend
