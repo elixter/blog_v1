@@ -4,6 +4,8 @@ import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
+import elixter.blog.repository.image.JdbcTemplateImageRepository;
+import elixter.blog.repository.image.JpaImageRepository;
 import elixter.blog.repository.post.PostRepository;
 import elixter.blog.service.image.ImageService;
 import org.assertj.core.api.Assertions;
@@ -50,6 +52,10 @@ public class ImageServiceImplTest {
     @Test
     @Transactional
     public void relateWithPost() {
+        if (imageRepository.getClass() != JdbcTemplateImageRepository.class) {
+            return;
+        }
+
         Image image = Image.builder()
                 .originName("test")
                 .storedName("http://test.com")

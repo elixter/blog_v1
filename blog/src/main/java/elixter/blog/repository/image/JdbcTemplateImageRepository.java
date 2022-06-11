@@ -49,6 +49,11 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     }
 
     @Override
+    public <S extends Image> Iterable<S> saveAll(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
     public List<Image> findAll() {
         return jdbcTemplate.query("SELECT * FROM images", imageRowMapper());
     }

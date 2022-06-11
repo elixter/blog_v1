@@ -146,14 +146,9 @@ public class PostServiceImpl implements PostService {
 
             List<String> storedNameList = getActiveImageStoredNames(content, imageUrlList);
             List<Image> images = imageRepository.findByStoredName(storedNameList);
-            List<Long> imageIdList = new Vector<>();
+            images.forEach(image -> image.setPost(newPost));
 
-            images.parallelStream().forEach(image -> imageIdList.add(image.getId()));
-            try {
-                imageRepository.relateWithPost(imageIdList, newPost.getId());
-            } catch (DataIntegrityViolationException e) {
-                log.error("relation with post {} failed", newPost.getId(), e);
-            }
+            imageRepository.saveAll(images);
 
             log.debug("relate image is finished");
         });
