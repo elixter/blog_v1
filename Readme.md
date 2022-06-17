@@ -16,7 +16,6 @@
 - [x] User auth
 - [x] Image upload
 - [x] JPA 전환
-- [ ] 토큰 인증방식으로 바꾸기 
 
 ### Frontend
 - [X] 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장
