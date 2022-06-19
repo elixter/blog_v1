@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
-import { User } from '../../authentication/hooks/useAuthentication';
 import Logo from '../logo/logo';
 import DropMenu from '../../utils/dropMenu/dropMenu';
 import { StaticPath } from '../../pagePath/pagePath';
+import { User } from '../../hooks/auth/useAuthentication';
 
 const styles = makeStyles({
 	profileImage: {
@@ -58,7 +58,7 @@ const UserNavigation = function ({ user }: Props) {
 	return (
 		<div className="hd-profile" onClick={toggleMenu} tabIndex={0} role="button" onKeyDown={toggleMenu}>
 			<div className="user-info js-more">
-				<ProfileImage src={user?.profile?.profileImage?.url || ''} />
+				<ProfileImage src={user?.profile?.profileImage || ''} />
 				<div className="user-id">{user?.profile?.name} 님</div>
 			</div>
 

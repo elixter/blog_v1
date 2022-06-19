@@ -2,9 +2,11 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthNavigation from './authNavigation/authNavigation';
 import Logo from './logo/logo';
+import useAuthentication, { UserType } from '../hooks/auth/useAuthentication';
+import UserNavigation from './userNavigation/userNavigation';
 
 const TopNavigationBar = function () {
-	// const { user } = useAuthentication();
+	const { user } = useAuthentication();
 	const [top, setTop] = useState(true);
 	const onScroll = useCallback(() => {
 		if (document.documentElement.scrollTop > 0) {
@@ -15,7 +17,8 @@ const TopNavigationBar = function () {
 	}, []);
 	useEffect(() => {
 		window.addEventListener('scroll', onScroll);
-	}, [onScroll, top]);
+		console.log(user);
+	}, [onScroll, top, user]);
 
 	return (
 		<div className={`header ${top ? 'top' : 'non-top'}`}>
@@ -39,8 +42,7 @@ const TopNavigationBar = function () {
 				</div>
 			</div>
 			<div className="hd-right">
-				<AuthNavigation />
-				{/* {user && (user.type === UserType.Login ? <UserNavigation user={user} /> : <AuthNavigation />)} */}
+				{user && (user.type === UserType.Login ? <UserNavigation user={user} /> : <AuthNavigation />)}
 			</div>
 		</div>
 	);

@@ -203,6 +203,10 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .box-member .list-sns li { margin: 0 7px; }
 .box-member .list-sns a { display: flex; justify-content: center; align-items: center; width: 58px; height: 58px; border: 1px solid #d8d8d8; border-radius: 50%; box-sizing: border-box; }
 
+.btns-group { display: none; position: absolute; }
+.active { display: block; }
+
+.user-info { display: flex; flex-direction: row; }
 
 /*.main { margin-top: 50px; width: 100%; }*/
 .main .new-post-slider { width: 100%; height: 46.25vw; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }

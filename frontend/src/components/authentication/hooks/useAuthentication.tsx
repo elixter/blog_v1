@@ -10,13 +10,11 @@ export enum UserType {
 	Visitor = 'Visitor',
 }
 
-export type ProfileImage = {
-	url: string;
-};
-
 export type UserProfile = {
+	email: string;
+	loginId: string;
 	name: string;
-	profileImage: ProfileImage;
+	profileImage: string;
 };
 
 export type User = {
