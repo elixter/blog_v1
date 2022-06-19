@@ -8,11 +8,11 @@ const axiosConfig: AxiosRequestConfig = {
 };
 
 export const getUserProfile = async () => {
-	const res = await axios.get<UserProfile>('/api/user', axiosConfig);
+	const res = await axios.get<UserProfile>('/api/users', axiosConfig);
 	return res.data;
 };
 
-export const loginRequest = async (loginRequest: LoginParams) => {
-	const response = await axios.post(`${config.SERVER_PREFIX}/api/auth/signin`, loginRequest, axiosConfig);
+export const loginRequest = async (request: LoginParams) => {
+	const response = await axios.post(`${config.SERVER_PREFIX}/api/auth/signin`, request, axiosConfig);
 	return response.data;
 };
