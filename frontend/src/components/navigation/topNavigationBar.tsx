@@ -1,8 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import useAuthentication, { UserType } from '../authentication/hooks/useAuthentication';
 import AuthNavigation from './authNavigation/authNavigation';
-import UserNavigation from './userNavigation/userNavigation';
 import Logo from './logo/logo';
 
 const TopNavigationBar = function () {
