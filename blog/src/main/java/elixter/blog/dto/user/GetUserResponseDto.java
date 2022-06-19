@@ -1,6 +1,7 @@
 package elixter.blog.dto.user;
 
 import elixter.blog.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class GetUserResponseDto {
     public GetUserResponseDto() {
     }
 
+    @Builder
     public GetUserResponseDto(Long id, String name, String loginId, String profileImage) {
         this.id = id;
         this.name = name;
