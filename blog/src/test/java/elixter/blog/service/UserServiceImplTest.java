@@ -1,12 +1,16 @@
 package elixter.blog.service;
 
+import elixter.blog.constants.SessionConstants;
+import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
+import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.service.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -61,5 +65,26 @@ public class UserServiceImplTest {
 
         List<User> result = service.findUser("id", user.getId().toString());
         Assertions.assertThat(result).contains(user);
+    }
+
+    @Test
+    @Transactional
+    void findSessionUser() {
+        User user = new User("test", "test", "test", "test");
+        user.setProfileImage("default");
+        service.createUser(user);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(SessionConstants.AUTHENTICATION, new SessionUser(user.getId(), user.getLoginId()));
+
+        GetUserResponseDto sessionUser = service.findSessionUser(session);
+        Assertions.assertThat(sessionUser).isEqualTo(
+                GetUserResponseDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .loginId(user.getLoginId())
+                .profileImage(user.getProfileImage())
+                .build()
+        );
     }
 }

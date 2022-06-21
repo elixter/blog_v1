@@ -9,6 +9,7 @@ import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.exception.RestException;
+import elixter.blog.exception.auth.UnauthorizedException;
 import elixter.blog.exception.user.UserNotFoundException;
 import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
@@ -39,21 +40,18 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<GetUserResponseDto> GetUser(HttpServletRequest request) {
+    public ResponseEntity<GetUserResponseDto> GetSessionUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new RestException(HttpStatus.UNAUTHORIZED, "unauthorized");
+            throw new UnauthorizedException();
         }
 
-        SessionUser sessionInfo = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
-        User user = service.findUser("id", sessionInfo.getUserId().toString()).get(0);
-
-        GetUserResponseDto result = GetUserResponseDto.builder()
-                .id(user.getId())
-                .loginId(user.getLoginId())
-                .name(user.getName())
-                .profileImage(user.getProfileImage())
-                .build();
+        GetUserResponseDto result = service.findSessionUser(session);
+        if (result.isEmpty()) {
+            Map<String, String> searchKey = new HashMap<>();
+            searchKey.put("session", "");
+            throw new UserNotFoundException(searchKey);
+        }
 
         return ResponseEntity.ok(result);
     }
