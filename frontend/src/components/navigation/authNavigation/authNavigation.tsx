@@ -5,7 +5,7 @@ import useLogin from '../../hooks/auth/userLogin';
 import { LoginParams } from '../../authentication/hooks/types';
 import useAuthentication from '../../hooks/auth/useAuthentication';
 import { StaticPath } from '../../pagePath/pagePath';
-import Login from "./login";
+import Login from './login';
 
 const AuthNavigation = function () {
 	const [loginOpen, setLoginOpen] = useState(false);
