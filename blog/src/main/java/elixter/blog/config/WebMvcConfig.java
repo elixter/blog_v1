@@ -1,6 +1,11 @@
 package elixter.blog.config;
 
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
+import com.nhncorp.lucy.security.xss.LucyXssFilter;
+import com.nhncorp.lucy.security.xss.XssFilter;
+import com.nhncorp.lucy.security.xss.XssFilterException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,5 +29,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         .allowCredentials(true);
             }
         };
+    }
+
+    @Bean
+    public FilterRegistrationBean<XssEscapeServletFilter> getFilterRegistrationBean() {
+        FilterRegistrationBean<XssEscapeServletFilter> registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new XssEscapeServletFilter());
+        registrationBean.setOrder(1);
+        registrationBean.addUrlPatterns("/*");
+
+        return registrationBean;
     }
 }
