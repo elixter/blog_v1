@@ -1,10 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Modal from '../../utils/modal';
-import useLogin from '../../hooks/auth/userLogin';
-import { LoginParams } from '../../authentication/hooks/types';
-import useAuthentication from '../../hooks/auth/useAuthentication';
-import { StaticPath } from '../../pagePath/pagePath';
 import Login from './login';
 
 const AuthNavigation = function () {
