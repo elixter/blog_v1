@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { UserProfile } from '../../authentication/hooks/useAuthentication';
+import { UserProfile } from './useAuthentication';
 import config from '../../config';
 import { LoginParams } from './types';
 

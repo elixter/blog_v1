@@ -140,6 +140,8 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 
 :root {
     --base-color: #c26ade;
+    --base-color-dark: #4c2a58;
+    --base-color-green: #5edab7;
 }
 
 .flex-v { flex-direction: column; }
@@ -193,8 +195,8 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .box-member .util { margin-bottom: 27px; text-align: right; }
 .box-member .util .btn-link { border-bottom: 1px solid #454545; box-sizing: border-box; font-size: 15px; font-weight: 400; color: #454545; }
 
-.box-member .btn-frm { display: block; width: 100%; height: 50px; margin-bottom: 50px; border: none; border-radius: 5px; box-sizing: border-box; background: #5edab7; font-size: 20px; font-weight: 700; color: #fff; transition: .3s all ease-out; }
-.box-member .btn-frm:hover { background: #28413a; color: #fff; }
+.box-member .btn-frm { display: block; width: 100%; height: 50px; margin-bottom: 50px; border: none; border-radius: 5px; box-sizing: border-box; background: var(--base-color); font-size: 20px; font-weight: 700; color: #fff; transition: .3s all ease-out; }
+.box-member .btn-frm:hover { background: var(--base-color-dark); color: #fff; }
 
 .box-member .sns-login .top { position: relative; margin-bottom: 40px; text-align: center; }
 .box-member .sns-login .top:after { content: ''; display: block; position: absolute; top: 6px; left: 0; right: 0; width: 100%; height: 1px; background: #d5d5d5; }

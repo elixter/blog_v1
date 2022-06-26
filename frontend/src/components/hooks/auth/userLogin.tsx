@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import { atom, useRecoilState } from 'recoil';
-import { LoginParams } from '../../api/auth/types';
+import { LoginParams } from '../../authentication/hooks/types';
 import { sleep } from '../../utils';
-import { loginRequest } from '../../api/auth/user';
+import { loginRequest } from '../../authentication/hooks/user';
 
 type LoginRequestResult = {
 	error: AxiosError | null;

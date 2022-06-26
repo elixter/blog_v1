@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { AxiosError } from 'axios';
 import useSWR from 'swr';
-import { getUserProfile } from '../../api/auth/user';
+import { getUserProfile } from '../../authentication/hooks/user';
 import { UserProfile } from '../../authentication/hooks/useAuthentication';
 
 export enum UserType {
@@ -35,8 +35,11 @@ const useAuthentication = () => {
 				if (e && e.isAxiosError) {
 					const status = (e as AxiosError).response?.status;
 					if (status === 401 || status === 404) {
+						// 인증 실패 등 추가 처리 필요
 						return null;
 					}
+
+					return null;
 				}
 				throw e;
 			}
