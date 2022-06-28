@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 public class GetUserResponseDto {
-    private Long id;
     private String name;
     private String loginId;
     private String email;
@@ -21,8 +20,7 @@ public class GetUserResponseDto {
     }
 
     @Builder
-    public GetUserResponseDto(Long id, String name, String loginId, String email, String profileImage) {
-        this.id = id;
+    public GetUserResponseDto(String name, String loginId, String email, String profileImage) {
         this.name = name;
         this.loginId = loginId;
         this.email = email;
@@ -30,7 +28,6 @@ public class GetUserResponseDto {
     }
 
     public GetUserResponseDto(User user) {
-        this.id = user.getId();
         this.name = user.getName();
         this.loginId = user.getLoginId();
         this.email = user.getEmail();
@@ -38,7 +35,6 @@ public class GetUserResponseDto {
     }
 
     public void mapping(User user) {
-        this.id = user.getId();
         this.name = user.getName();
         this.loginId = user.getLoginId();
         this.email = user.getEmail();
@@ -47,16 +43,14 @@ public class GetUserResponseDto {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return id.equals(-1L) &&
-               name.isEmpty() &&
-               loginId.isEmpty() &&
-               email.isEmpty() &&
-               profileImage.isEmpty();
+        return name.isEmpty() &&
+                loginId.isEmpty() &&
+                email.isEmpty() &&
+                profileImage.isEmpty();
     }
 
     public static GetUserResponseDto getEmpty() {
         return GetUserResponseDto.builder()
-                .id(-1L)
                 .name("")
                 .loginId("")
                 .email("")

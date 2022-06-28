@@ -5,11 +5,9 @@ import elixter.blog.domain.user.User;
 import elixter.blog.domain.user.SessionUser;
 import elixter.blog.dto.auth.PostLoginRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
-import elixter.blog.message.Message;
 import elixter.blog.service.auth.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +28,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<Message> PostSigninHandler(
+    public ResponseEntity<GetUserResponseDto> PostSigninHandler(
             @RequestBody PostLoginRequestDto requestBody,
             HttpServletRequest request
     ) {
@@ -44,15 +42,11 @@ public class AuthenticationController {
 
         log.debug("UserInfo : {} try to signin", signinUser);
 
-        GetUserResponseDto responseData = new GetUserResponseDto();
-        responseData.mapping(loginUser);
-        Message responseBody = new Message(HttpStatus.OK, "authenticated", responseData);
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(new GetUserResponseDto(loginUser));
     }
 
     @GetMapping("/signout")
-    public ResponseEntity<Message> GetSignoutHandler(HttpServletRequest request) {
+    public ResponseEntity<Object> GetSignoutHandler(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         SessionUser signoutUser = service.logout(session);
 
@@ -61,16 +55,6 @@ public class AuthenticationController {
             log.debug("{}", signoutUser);
         }
 
-
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
-
-    @GetMapping
-    public ResponseEntity<Message> get(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        User currentUser = service.getSessionUser(session);
-
-        return new ResponseEntity<>(new Message(HttpStatus.OK, "Authenticated", currentUser), HttpStatus.OK);
-    }
-
 }

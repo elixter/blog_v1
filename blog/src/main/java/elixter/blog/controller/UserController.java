@@ -1,30 +1,21 @@
 package elixter.blog.controller;
 
-import elixter.blog.constants.RecordStatus;
-import elixter.blog.constants.RecordErrorConstants;
-import elixter.blog.constants.SessionConstants;
-import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
-import elixter.blog.exception.RestException;
 import elixter.blog.exception.auth.UnauthorizedException;
 import elixter.blog.exception.user.UserNotFoundException;
-import elixter.blog.message.Message;
 import elixter.blog.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
