@@ -16,7 +16,7 @@
 - [x] User auth
 - [x] Image upload
 - [x] JPA 전환
-- [ ] XSS 방지
+- [ ] XSS 방지 => 프론트에서 처리되기 때문에 보류
 
 ### Frontend
 - [X] 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장
