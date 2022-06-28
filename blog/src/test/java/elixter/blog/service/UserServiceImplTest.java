@@ -79,7 +79,6 @@ public class UserServiceImplTest {
         GetUserResponseDto sessionUser = service.findSessionUser(session);
         Assertions.assertThat(sessionUser).isEqualTo(
                 GetUserResponseDto.builder()
-                .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .loginId(user.getLoginId())

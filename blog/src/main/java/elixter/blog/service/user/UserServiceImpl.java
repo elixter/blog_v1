@@ -55,7 +55,6 @@ public class UserServiceImpl implements UserService {
         }
 
         return GetUserResponseDto.builder()
-                .id(user.getId())
                 .loginId(user.getLoginId())
                 .name(user.getName())
                 .email(user.getEmail())
