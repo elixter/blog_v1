@@ -3,7 +3,7 @@ package elixter.blog.repository.post;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
 import elixter.blog.exception.post.PostNotFoundException;
-import elixter.blog.utils.RepositoryUtils;
+import elixter.blog.repository.RepositoryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
