@@ -108,7 +108,7 @@ public class JdbcTemplateUserRepositoryTest {
         user2.setStatus(RecordStatus.exist);
         repository.save(user2);
 
-        List<User> userList = repository.findAll(0L, 50L);
+        List<User> userList = repository.findAll(0L, 500L);
 
         Assertions.assertThat(userList).contains(user1, user2);
     };
