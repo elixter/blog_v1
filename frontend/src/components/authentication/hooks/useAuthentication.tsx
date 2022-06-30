@@ -2,7 +2,7 @@ import { atom, useRecoilState } from 'recoil';
 import useSWR from 'swr';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
-import { getUserProfile } from '../../api/auth/user';
+import { getUserProfile } from './user';
 
 export enum UserType {
 	Login = 'Login',
@@ -10,13 +10,11 @@ export enum UserType {
 	Visitor = 'Visitor',
 }
 
-export type ProfileImage = {
-	url: string;
-};
-
 export type UserProfile = {
+	email: string;
+	loginId: string;
 	name: string;
-	profileImage: ProfileImage;
+	profileImage: string;
 };
 
 export type User = {
@@ -29,47 +27,3 @@ const Authentication = atom<User>({
 	key: 'Authentication',
 	default: null,
 });
-
-const useAuthentication = () => {
-	const [user, setUser] = useRecoilState(Authentication);
-
-	const result = useSWR(
-		() => 'api/user',
-		async () => {
-			try {
-				const res = await getUserProfile();
-				return res;
-			} catch (e: AxiosError | any) {
-				if (e && e.isAxiosError) {
-					const status = (e as AxiosError).response?.status;
-					if (status === 401 || status === 404) {
-						return null;
-					}
-				}
-				throw e;
-			}
-		}
-	);
-
-	const { data, error, mutate } = result;
-
-	useEffect(() => {
-		if (data !== undefined) {
-			setUser({
-				type: (data && UserType.Login) || UserType.Visitor,
-				profile: data,
-				isAuthenticated: !!data,
-			});
-		}
-	}, [data, setUser]);
-
-	return {
-		loading: !error && !user,
-		error,
-		user,
-		setUser,
-		mutate,
-	};
-};
-
-export default useAuthentication;

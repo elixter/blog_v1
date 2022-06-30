@@ -20,7 +20,7 @@ public class Hashtag {
     private String tag;
     private RecordStatus status;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
     private Post post;
 

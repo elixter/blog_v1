@@ -1,7 +1,10 @@
 package elixter.blog.service.user;
 
 import elixter.blog.constants.RecordStatus;
+import elixter.blog.constants.SessionConstants;
+import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
+import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.exception.user.UserAlreadyExistException;
 import elixter.blog.repository.user.UserRepository;
@@ -12,8 +15,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,6 +43,23 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public GetUserResponseDto findSessionUser(HttpSession session) {
+        SessionUser sessionInfo = (SessionUser) session.getAttribute(SessionConstants.AUTHENTICATION);
+
+        User user = repository.findByIdAndStatus(sessionInfo.getUserId(), RecordStatus.exist).orElse(User.getEmpty());
+        if (user.isEmpty()) {
+            return GetUserResponseDto.getEmpty();
+        }
+
+        return GetUserResponseDto.builder()
+                .loginId(user.getLoginId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .profileImage(user.getProfileImage())
+                .build();
     }
 
     @Override

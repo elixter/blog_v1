@@ -59,6 +59,7 @@ public class CreatePostRequestDto extends AbstractPostDto {
                 Hashtag hashtag = new Hashtag();
                 hashtag.setTag(tag);
                 hashtag.setPost(post);
+                hashtag.setStatus(RecordStatus.exist);
                 post.addHashtag(hashtag);
             });
         }

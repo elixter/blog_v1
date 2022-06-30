@@ -44,6 +44,8 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
 	testImplementation 'org.mockito:mockito-inline:2.13.0'
+
+	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.0'
 }
 
 test {

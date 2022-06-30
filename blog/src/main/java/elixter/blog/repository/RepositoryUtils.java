@@ -1,4 +1,4 @@
-package elixter.blog.utils;
+package elixter.blog.repository;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;

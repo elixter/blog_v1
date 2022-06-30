@@ -18,6 +18,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping(value = "/api/hashtags")
 public class HashtagController {
+
     private final HashtagService hashtagService;
 
     @Autowired
