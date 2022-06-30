@@ -28,7 +28,7 @@ public class JdbcTemplateImageRepositoryTest {
     private final ImageStorage imageStorage;
 
     @Autowired
-    public JdbcTemplateImageRepositoryTest(@Qualifier("jdbcTemplateImageRepository") ImageRepository imageRepository, PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+    public JdbcTemplateImageRepositoryTest(@Qualifier("jdbcTemplateImageRepository") ImageRepository imageRepository, @Qualifier("jpaPostRepository") PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
         this.imageStorage = imageStorage;

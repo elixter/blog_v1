@@ -15,9 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-public class JpaPostRepositoryTest {
+public class PostRepositoryTest {
 
-    @Autowired @Qualifier("jpaPostRepository")
+    @Autowired @Qualifier("jdbcTemplatePostRepository")
     PostRepository repository;
 
     @Test

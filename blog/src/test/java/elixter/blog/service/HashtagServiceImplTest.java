@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,14 @@ import java.util.NoSuchElementException;
 @Transactional
 class HashtagServiceImplTest {
 
-    @Autowired
-    HashtagService hashtagService;
+    private final HashtagService hashtagService;
+    private final PostRepository postRepository;
 
     @Autowired
-    PostRepository postRepository;
+    public HashtagServiceImplTest(HashtagService hashtagService, @Qualifier("jpaPostRepository") PostRepository postRepository) {
+        this.hashtagService = hashtagService;
+        this.postRepository = postRepository;
+    }
 
     Post post;
 

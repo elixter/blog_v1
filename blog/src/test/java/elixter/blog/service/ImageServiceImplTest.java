@@ -11,6 +11,7 @@ import elixter.blog.service.image.ImageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,14 +26,16 @@ import java.util.Arrays;
 @SpringBootTest
 public class ImageServiceImplTest {
 
-    @Autowired
-    ImageService imageService;
+    private final ImageService imageService;
+    private final ImageRepository imageRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    ImageRepository imageRepository;
-
-    @Autowired
-    PostRepository postRepository;
+    public ImageServiceImplTest(ImageService imageService, ImageRepository imageRepository, @Qualifier("jpaPostRepository") PostRepository postRepository) {
+        this.imageService = imageService;
+        this.imageRepository = imageRepository;
+        this.postRepository = postRepository;
+    }
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(path));
