@@ -31,7 +31,7 @@ public class HashtagServiceImpl implements HashtagService {
     @Override
     public List<Long> createHashtags(List<Hashtag> hashtags) {
         List<Long> result = new ArrayList<>();
-        hashtags = repository.saveBatch(hashtags);
+        hashtags = (List<Hashtag>) repository.saveAll(hashtags);
 
         for (Hashtag hashtag : hashtags) {
             result.add(hashtag.getId());

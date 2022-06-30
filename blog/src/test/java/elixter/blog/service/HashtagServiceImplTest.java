@@ -52,7 +52,7 @@ class HashtagServiceImplTest {
     void createHashtag() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.getPost().setId(post.getId());
+        hashtag.setPost(post);
         hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
@@ -68,7 +68,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
-            hashtag.getPost().setId(post.getId());
+            hashtag.setPost(post);
             hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
@@ -82,7 +82,7 @@ class HashtagServiceImplTest {
     void findHashtagById() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.getPost().setId(post.getId());
+        hashtag.setPost(post);
         hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
@@ -100,7 +100,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
-            hashtag.getPost().setId(post.getId());
+            hashtag.setPost(post);
             hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
@@ -119,7 +119,7 @@ class HashtagServiceImplTest {
         for (int i = 0; i < 5; i++) {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요" + i);
-            hashtag.getPost().setId(post.getId());
+            hashtag.setPost(post);
             hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
@@ -137,7 +137,7 @@ class HashtagServiceImplTest {
     void findHashtagByPostId() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.getPost().setId(post.getId());
+        hashtag.setPost(post);
         hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
@@ -153,11 +153,11 @@ class HashtagServiceImplTest {
     void deleteHashtagById() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.getPost().setId(post.getId());
+        hashtag.setPost(post);
         hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
-        hashtagService.deleteHashtagById(id.longValue());
+        hashtagService.deleteHashtagById(hashtag.getId());
 
         org.junit.jupiter.api.Assertions.assertThrows(NoSuchElementException.class, () -> hashtagService.findHashtagById(id.longValue()).get());
     }
@@ -166,7 +166,7 @@ class HashtagServiceImplTest {
     void deleteHashtagByTag() {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
-        hashtag.getPost().setId(post.getId());
+        hashtag.setPost(post);
         hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);

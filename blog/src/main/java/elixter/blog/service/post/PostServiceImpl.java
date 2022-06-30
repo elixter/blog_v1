@@ -9,7 +9,9 @@ import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
+import elixter.blog.repository.hashtag.JdbcTemplateHashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
+import elixter.blog.repository.post.JdbcTemplatePostRepository;
 import elixter.blog.repository.post.PostRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,11 +78,16 @@ public class PostServiceImpl implements PostService {
     public void updatePost(UpdatePostRequestDto post) {
         Post updatePost = post.postMapping();
         updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
+        hashtagRepository.deleteByPostId(post.getId());
+
+        setPostIdToHashtagList(updatePost);
         postRepository.update(updatePost);
 
-        hashtagRepository.deleteByPostId(post.getId());
-        setPostIdToHashtagList(updatePost);
-        hashtagRepository.saveBatch(updatePost.getHashtags());
+        if (hashtagRepository.getClass().isInstance(JdbcTemplateHashtagRepository.class)
+            && postRepository.getClass().isInstance(JdbcTemplatePostRepository.class)
+        ) {
+            hashtagRepository.saveAll(updatePost.getHashtags());
+        }
 
         asyncRelateImageWithPost(updatePost, post.getContent(), post.getImageUrlList());
     }
