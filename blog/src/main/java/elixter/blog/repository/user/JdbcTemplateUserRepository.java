@@ -33,7 +33,6 @@ public class JdbcTemplateUserRepository implements UserRepository {
     private final SimpleJdbcInsert jdbcInsert;
 
     @Autowired
-
     public JdbcTemplateUserRepository(DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
