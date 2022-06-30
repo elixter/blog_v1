@@ -18,12 +18,12 @@ import java.util.List;
 
 @Transactional
 @SpringBootTest
-class JpaHashtagRepositoryTest {
+class HashtagRepositoryTest {
 
     private HashtagRepository hashtagRepository;
 
     @Autowired
-    public JpaHashtagRepositoryTest(@Qualifier("jpaHashtagRepository") HashtagRepository hashtagRepository) {
+    public HashtagRepositoryTest(@Qualifier("jdbcTemplateHashtagRepository") HashtagRepository hashtagRepository) {
         this.hashtagRepository = hashtagRepository;
     }
 

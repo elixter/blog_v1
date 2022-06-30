@@ -23,14 +23,17 @@ public interface JpaHashtagRepository extends HashtagRepository, JpaRepository<H
     List<HashtagCountInterface> searchTag(String tag);
 
     @Override
+    @Modifying
     @Query("update Hashtag h set h.status = 0 where h.id = :id")
     void deleteById(Long id);
 
     @Override
+    @Modifying
     @Query("update Hashtag h set h.status = 0 where h.tag = :tag")
     void deleteByTag(String tag);
 
     @Override
+    @Modifying
     @Query("update Hashtag h set h.status = 0 where h.post.id = :postId")
     void deleteByPostId(Long postId);
 }

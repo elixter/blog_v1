@@ -53,6 +53,7 @@ class HashtagServiceImplTest {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
         hashtag.getPost().setId(post.getId());
+        hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
 
@@ -68,6 +69,7 @@ class HashtagServiceImplTest {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
             hashtag.getPost().setId(post.getId());
+            hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
         }
@@ -81,6 +83,7 @@ class HashtagServiceImplTest {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
         hashtag.getPost().setId(post.getId());
+        hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
 
@@ -98,6 +101,7 @@ class HashtagServiceImplTest {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요");
             hashtag.getPost().setId(post.getId());
+            hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
         }
@@ -116,6 +120,7 @@ class HashtagServiceImplTest {
             Hashtag hashtag = new Hashtag();
             hashtag.setTag("소통해요" + i);
             hashtag.getPost().setId(post.getId());
+            hashtag.setStatus(RecordStatus.exist);
 
             hashtagList.add(hashtag);
         }
@@ -133,6 +138,7 @@ class HashtagServiceImplTest {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
         hashtag.getPost().setId(post.getId());
+        hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
 
@@ -148,6 +154,7 @@ class HashtagServiceImplTest {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
         hashtag.getPost().setId(post.getId());
+        hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
         hashtagService.deleteHashtagById(id.longValue());
@@ -160,6 +167,7 @@ class HashtagServiceImplTest {
         Hashtag hashtag = new Hashtag();
         hashtag.setTag("소통해요");
         hashtag.getPost().setId(post.getId());
+        hashtag.setStatus(RecordStatus.exist);
 
         Number id = hashtagService.createHashtag(hashtag);
         hashtagService.deleteHashtagByTag("소통해요");

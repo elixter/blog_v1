@@ -4,16 +4,24 @@ import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.hashtag.HashtagCountInterface;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-@RequiredArgsConstructor
+@Service
 public class HashtagServiceImpl implements HashtagService {
+
     private final HashtagRepository repository;
+
+    @Autowired
+    public HashtagServiceImpl(@Qualifier("jpaHashtagRepository") HashtagRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public Long createHashtag(Hashtag hashtag) {
