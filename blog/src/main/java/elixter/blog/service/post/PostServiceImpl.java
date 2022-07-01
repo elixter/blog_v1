@@ -83,9 +83,8 @@ public class PostServiceImpl implements PostService {
         setPostIdToHashtagList(updatePost);
         postRepository.update(updatePost);
 
-        if (hashtagRepository.getClass().isInstance(JdbcTemplateHashtagRepository.class)
-            && postRepository.getClass().isInstance(JdbcTemplatePostRepository.class)
-        ) {
+        if (hashtagRepository instanceof JdbcTemplateHashtagRepository
+            && postRepository instanceof JdbcTemplatePostRepository) {
             hashtagRepository.saveAll(updatePost.getHashtags());
         }
 
