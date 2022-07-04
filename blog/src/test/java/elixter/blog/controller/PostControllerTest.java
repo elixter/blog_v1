@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import elixter.blog.domain.post.Post;
+import elixter.blog.dto.PageDto;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -132,6 +135,7 @@ public class PostControllerTest {
 
         GetAllPostsResponseDto expectResponse = new GetAllPostsResponseDto();
         expectResponse.setPosts(Arrays.asList(expectData2, expectData1));
+        expectResponse.setPage(new PageDto(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createAt")),2L, 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts?filterType=category&filterString=TestCategory1")
@@ -140,6 +144,7 @@ public class PostControllerTest {
 
         GetAllPostsResponseDto expectResponse2 = new GetAllPostsResponseDto();
         expectResponse2.setPosts(Arrays.asList(expectData3));
+        expectResponse2.setPage(new PageDto(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createAt")),1L, 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts?filterType=category&filterString=TestCategory2")
@@ -187,6 +192,8 @@ public class PostControllerTest {
 
         GetAllPostsResponseDto expectResponse = new GetAllPostsResponseDto();
         expectResponse.setPosts(Arrays.asList(expectData1, expectData2, expectData3));
+        expectResponse.setPage(new PageDto(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createAt")),3L, 1));
+
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts?filterType=hashtag&filterString=소통해요테스트")
@@ -195,6 +202,7 @@ public class PostControllerTest {
 
         GetAllPostsResponseDto expectResponse2 = new GetAllPostsResponseDto();
         expectResponse2.setPosts(Arrays.asList(expectData2));
+        expectResponse2.setPage(new PageDto(PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "createAt")),1L, 1));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/posts?filterType=hashtag&filterString=소통해요테스트헤헤")
