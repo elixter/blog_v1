@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 public class JdbcTemplateImageRepositoryTest {
@@ -129,5 +130,28 @@ public class JdbcTemplateImageRepositoryTest {
         List<Image> results = imageRepository.findByStoredName(storedName);
 
         Assertions.assertThat(results).contains(img1, img2);
+    }
+
+    @Test
+    @Transactional
+    public void saveAll() {
+        Image img1 = new Image();
+        img1.setStoredName("findByUrlTestUrl1");
+        img1.setOriginName("test");
+        img1.setCreateAt(LocalDateTime.now().withNano(0));
+        img1.setStatus(RecordStatus.pending);
+
+        Image img2 = new Image();
+        img2.setStoredName("findByUrlTestUrl2");
+        img2.setOriginName("test2");
+        img2.setCreateAt(LocalDateTime.now().withNano(0));
+        img2.setStatus(RecordStatus.pending);
+
+        List<Image> images = (List<Image>) imageRepository.saveAll(Arrays.asList(img1, img2));
+
+        Image result1 = imageRepository.findById(img1.getId()).get();
+        Image result2 = imageRepository.findById(img2.getId()).get();
+
+        Assertions.assertThat(images).contains(result1, result2);
     }
 }

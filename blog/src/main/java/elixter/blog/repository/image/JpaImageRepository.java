@@ -1,5 +1,6 @@
 package elixter.blog.repository.image;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -21,7 +22,7 @@ public interface JpaImageRepository extends ImageRepository, JpaRepository<Image
     List<Image> findAll();
 
     @Override
-    List<Image> findByStatus(String status);
+    List<Image> findByStatus(RecordStatus status);
 
     @Override
     List<Image> findByPostId(Long postId);
