@@ -1,5 +1,6 @@
 package elixter.blog.dto.post;
 
+import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public abstract class AbstractPostDto implements Serializable {
                 Hashtag hashtag = new Hashtag();
                 hashtag.setTag(tag);
                 hashtag.setPost(Post.builder().id(id).build());
+                hashtag.setStatus(RecordStatus.exist);
                 result.add(hashtag);
             }
         }
