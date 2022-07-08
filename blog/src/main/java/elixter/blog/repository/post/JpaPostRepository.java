@@ -2,6 +2,7 @@ package elixter.blog.repository.post;
 
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.post.Post;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,48 +10,75 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 
+@Repository
 @Qualifier(value = "jpaPostRepository")
-public interface JpaPostRepository extends PostRepository, JpaRepository<Post, Long> {
+public class JpaPostRepository implements PostRepository {
+
+    private final SpringDataJpaPostRepository repository;
+
+    @Autowired
+    public JpaPostRepository(SpringDataJpaPostRepository repository) {
+        this.repository = repository;
+    }
+
 
     @Override
-    Post save(Post post);
+    public Post save(Post post) {
+        return repository.save(post);
+    }
 
     @Override
-    @Modifying
-    @Query("update Post p set p.title = :#{#paramPost.title}, p.content = :#{#paramPost.content},  p.category = :#{#paramPost.category}, p.thumbnail = :#{#paramPost.thumbnail}, p.updateAt = :#{#paramPost.updateAt} where p.id = :#{#paramPost.id}")
-    void update(@Param("paramPost") Post post);
+    public void update(Post post) {
+        repository.update(post);
+    }
 
     @Override
-    Optional<Post> findById(Long id);
-
-    Optional<Post> findByIdAndStatus(Long id, RecordStatus status);
-
-    @Override
-    Page<Post> findAll(Pageable pageable);
+    public Optional<Post> findById(Long id) {
+        return repository.findById(id);
+    }
 
     @Override
-    Page<Post> findAllByStatus(RecordStatus status, Pageable pageable);
+    public Optional<Post> findByIdAndStatus(Long id, RecordStatus status) {
+        return repository.findByIdAndStatus(id, status);
+    }
 
     @Override
-    Page<Post> findByCategory(String category, Pageable pageable);
+    public Page<Post> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
 
     @Override
-    Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable);
+    public Page<Post> findAllByStatus(RecordStatus status, Pageable pageable) {
+        return repository.findAllByStatus(status, pageable);
+    }
 
     @Override
-    @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = 1")
-    Page<Post> findByHashtag(String hashtag, Pageable pageable);
+    public Page<Post> findByCategory(String category, Pageable pageable) {
+        return repository.findAllByCategory(category, pageable);
+    }
 
     @Override
-    @Query("select p from Post p join Hashtag h on p.id = h.post.id where h.tag = :hashtag and p.status = :status group by h.post.id")
-    Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable);
+    public Page<Post> findByCategoryAndStatus(String category, RecordStatus status, Pageable pageable) {
+        return repository.findAllByCategoryAndStatus(category, status, pageable);
+    }
 
     @Override
-    @Modifying
-    @Query("update Post p set p.status = 0 where p.id = :id")
-    void delete(@Param("id") Long id);
+    public Page<Post> findByHashtag(String hashtag, Pageable pageable) {
+        return repository.findByHashtag(hashtag, pageable);
+    }
+
+    @Override
+    public Page<Post> findByHashtagAndStatus(String hashtag, RecordStatus status, Pageable pageable) {
+        return repository.findByHashtagAndStatus(hashtag, status, pageable);
+    }
+
+    @Override
+    public void delete(Long id) {
+        repository.delete(id);
+    }
 }

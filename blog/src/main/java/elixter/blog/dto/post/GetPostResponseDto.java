@@ -1,5 +1,6 @@
 package elixter.blog.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import lombok.EqualsAndHashCode;
@@ -37,7 +38,7 @@ public class GetPostResponseDto extends AbstractPostDto {
         thumbnail = post.getThumbnail();
         createAt = post.getCreateAt();
         updateAt = post.getUpdateAt();
-        hashtags = new ArrayList<>();
+        hashtagMapping(post.getHashtags());
     }
 
     public GetPostResponseDto(Post post, List<Hashtag> hashtagList) {
@@ -72,6 +73,7 @@ public class GetPostResponseDto extends AbstractPostDto {
         }
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return id.equals(emptyId) &&
                 title.isEmpty() &&

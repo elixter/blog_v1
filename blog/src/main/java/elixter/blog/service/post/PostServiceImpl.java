@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,9 +84,8 @@ public class PostServiceImpl implements PostService {
         setPostIdToHashtagList(updatePost);
         postRepository.update(updatePost);
 
-        if (hashtagRepository.getClass().isInstance(JdbcTemplateHashtagRepository.class)
-            && postRepository.getClass().isInstance(JdbcTemplatePostRepository.class)
-        ) {
+        if (hashtagRepository instanceof JdbcTemplateHashtagRepository
+                && postRepository instanceof JdbcTemplatePostRepository) {
             hashtagRepository.saveAll(updatePost.getHashtags());
         }
 
@@ -112,33 +112,42 @@ public class PostServiceImpl implements PostService {
     public GetAllPostsResponseDto findAllPost(String filter, String filterVal, Pageable pageable) {
         Page<Post> queryResult;
         List<Post> postList;
+        GetAllPostsResponseDto result;
+
         switch (filter) {
             case FILTER_TITLE:
                 log.info("not implemented : case FILTER_TITLE");
                 postList = new ArrayList<>();
+                result = new GetAllPostsResponseDto();
                 break;
             case FILTER_CATEGORY:
                 queryResult = postRepository.findByCategoryAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
+                result = new GetAllPostsResponseDto(queryResult.getPageable(), queryResult.getTotalElements(), queryResult.getTotalPages());
                 break;
             case FILTER_CONTENT:
                 log.info("not implemented : case FILTER_CONTENT");
                 postList = new ArrayList<>();
+                result = new GetAllPostsResponseDto();
                 break;
             case FILTER_HASHTAG:
                 queryResult = postRepository.findByHashtagAndStatus(filterVal, RecordStatus.exist, pageable);
                 postList = queryResult.getContent();
+                result = new GetAllPostsResponseDto(queryResult.getPageable(), queryResult.getTotalElements(), queryResult.getTotalPages());
                 break;
             default:
                 postList = new ArrayList<>();
+                result = new GetAllPostsResponseDto();
                 break;
         }
 
-        GetAllPostsResponseDto result = new GetAllPostsResponseDto();
-
         for (Post post : postList) {
-            List<Hashtag> hashtagList = hashtagRepository.findByPostId(post.getId());
-            result.getPosts().add(new GetPostResponseDto(post, hashtagList));
+            if (hashtagRepository instanceof JdbcTemplateHashtagRepository) {
+                List<Hashtag> hashtagList = hashtagRepository.findByPostId(post.getId());
+                result.getPosts().add(new GetPostResponseDto(post, hashtagList));
+            } else {
+                result.getPosts().add(new GetPostResponseDto(post));
+            }
         }
 
         return result;
