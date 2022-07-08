@@ -21,12 +21,7 @@ public class MemoryHashtagRepository implements HashtagRepository {
     }
 
     @Override
-    public List<Hashtag> saveBatch(List<Hashtag> hashtag) {
-        return null;
-    }
-
-    @Override
-    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
+    public List<Hashtag> saveAll(List<Hashtag> hashtag) {
         return null;
     }
 

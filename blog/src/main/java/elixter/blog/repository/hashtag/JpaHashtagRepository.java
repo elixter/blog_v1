@@ -2,55 +2,74 @@ package elixter.blog.repository.hashtag;
 
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.hashtag.HashtagCountInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 @Qualifier("jpaHashtagRepository")
-public interface JpaHashtagRepository extends HashtagRepository, JpaRepository<Hashtag, Long> {
+public class JpaHashtagRepository implements HashtagRepository {
+
+    private final SpringDataJpaHashtagRepository repository;
+
+    @Autowired
+    public JpaHashtagRepository(SpringDataJpaHashtagRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
-    @Modifying
-    @SuppressWarnings("not used with JPA repository")
-    @Query(value = "insert into Hashtag values(:hashtag)", nativeQuery = true)
-    List<Hashtag> saveBatch(List<Hashtag> hashtag);
+    public Hashtag save(Hashtag hashtag) {
+        return repository.save(hashtag);
+    }
 
     @Override
-    @Query("Select h.tag as tag, count(h) as count from Hashtag h where h.tag like concat('%', :tag, '%')  group by h.tag")
-    List<HashtagCountInterface> searchTag(String tag);
+    public List<Hashtag> saveAll(List<Hashtag> hashtag) {
+        return repository.saveAll(hashtag);
+    }
 
     @Override
-    @Query("select h from Hashtag h where h.id = :id and h.status = 1")
-    Optional<Hashtag> findById(Long id);
+    public Optional<Hashtag> findById(Long id) {
+        return repository.findById(id);
+    }
 
     @Override
-    @Query("select h from Hashtag h where h.tag = :tag and h.status = 1")
-    List<Hashtag> findByTag(String tag);
+    public List<Hashtag> findByTag(String tag) {
+        return repository.findByTag(tag);
+    }
 
     @Override
-    @Query("select h from Hashtag h where h.status = 1")
-    List<Hashtag> findAll();
+    public List<Hashtag> findAll() {
+        return repository.findAll();
+    }
 
     @Override
-    @Query("select h from Hashtag h where h.post.id = :postId and h.status = 1")
-    List<Hashtag> findByPostId(Long postId);
+    public List<Hashtag> findByPostId(Long postId) {
+        return repository.findByPostId(postId);
+    }
 
     @Override
-    @Modifying
-    @Query("update Hashtag h set h.status = 0 where h.id = :id")
-    void deleteById(Long id);
+    public List<HashtagCountInterface> searchTag(String tag) {
+        return repository.searchTag(tag);
+    }
 
     @Override
-    @Modifying
-    @Query("update Hashtag h set h.status = 0 where h.tag = :tag")
-    void deleteByTag(String tag);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
 
     @Override
-    @Modifying
-    @Query("update Hashtag h set h.status = 0 where h.post.id = :postId")
-    void deleteByPostId(Long postId);
+    public void deleteByTag(String tag) {
+        repository.deleteByTag(tag);
+    }
+
+    @Override
+    public void deleteByPostId(Long postId) {
+        repository.deleteByPostId(postId);
+    }
 }

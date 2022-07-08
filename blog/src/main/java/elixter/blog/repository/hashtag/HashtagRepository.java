@@ -8,9 +8,7 @@ import java.util.Optional;
 
 public interface HashtagRepository {
     Hashtag save(Hashtag hashtag);
-    List<Hashtag> saveBatch(List<Hashtag> hashtag);
-
-    <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities);
+    List<Hashtag> saveAll(List<Hashtag> hashtag);
 
     Optional<Hashtag> findById(Long id);
     List<Hashtag> findByTag(String tag);

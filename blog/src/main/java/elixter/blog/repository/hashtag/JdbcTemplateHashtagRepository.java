@@ -6,8 +6,6 @@ import elixter.blog.domain.hashtag.HashtagCount;
 import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,8 +15,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Qualifier("jdbcTemplateHashtagRepository")
@@ -52,7 +48,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
     @Override
     @Transactional
-    public List<Hashtag> saveBatch(List<Hashtag> hashtags) {
+    public List<Hashtag> saveAll(List<Hashtag> hashtags) {
 
         List<SqlParameterSource> batchParams = new ArrayList<>();
         for (Hashtag hashtag : hashtags) {
@@ -74,13 +70,6 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         }
 
         return hashtags;
-    }
-
-    @Override
-    public <S extends Hashtag> Iterable<S> saveAll(Iterable<S> entities) {
-        List<Hashtag> hashtagList = new ArrayList<>();
-        entities.forEach(hashtagList::add);
-        return (Iterable<S>) saveBatch(hashtagList);
     }
 
     @Override
