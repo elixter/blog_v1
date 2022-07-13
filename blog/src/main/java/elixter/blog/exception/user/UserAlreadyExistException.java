@@ -8,6 +8,6 @@ import java.util.Map;
 public class UserAlreadyExistException extends RestException {
 
     public UserAlreadyExistException() {
-        super(HttpStatus.BAD_REQUEST, "email or login id is already used");
+        super(HttpStatus.CONFLICT, "email or login id is already used");
     }
 }
