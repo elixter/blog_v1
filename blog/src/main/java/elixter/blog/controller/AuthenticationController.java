@@ -4,6 +4,7 @@ import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.domain.user.SessionUser;
 import elixter.blog.dto.auth.PostLoginRequestDto;
+import elixter.blog.dto.user.EmailCheckRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.service.auth.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
@@ -56,5 +57,20 @@ public class AuthenticationController {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<Object> PostEmailValidateHandler(@RequestBody String email) {
+        // TODO: 이메일 확인하여 중복인지 확인 및 코드생성하여 이메일 발송.
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<Object> GetEmailCheckHandler(@RequestBody EmailCheckRequestDto requestBody) {
+
+        // TODO: 이메일을 key, 코드를 value로 하여 이메일 인증;
+
+        return ResponseEntity.ok().build();
     }
 }
