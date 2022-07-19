@@ -28,11 +28,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.session:spring-session-core'
 	implementation 'org.jetbrains:annotations:20.1.0'
+	implementation 'org.projectlombok:lombok:1.18.18'
 	compileOnly 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.session:spring-session-data-redis'
+
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	implementation 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'mysql:mysql-connector-java'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'io.lettuce:lettuce-core:6.1.8.RELEASE'
 
