@@ -35,6 +35,8 @@ public class User {
 
     private RecordStatus status;
 
+    // TODO: 이메일 인증여부 추가해야함.
+
     public User() {
         createAt = LocalDateTime.now().withNano(0);
     }
