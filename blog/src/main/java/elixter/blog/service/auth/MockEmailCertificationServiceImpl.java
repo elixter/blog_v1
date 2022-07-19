@@ -21,7 +21,12 @@ public class MockEmailCertificationServiceImpl implements CertificationService {
     @Override
     public boolean ValidateEmailByCode(String email, String code) {
         EmailCert emailCert = emailCertRepository.findByEmail(email).orElseThrow();
+        boolean certified = emailCert.getCode().equals(code);
 
-        return emailCert.getCode().equals(code);
+        if (certified) {
+            emailCertRepository.deleteById(emailCert.getId());
+        }
+
+        return certified;
     }
 }

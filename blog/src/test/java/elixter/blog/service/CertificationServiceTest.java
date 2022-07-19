@@ -31,8 +31,8 @@ public class CertificationServiceTest {
         EmailCert emailCert = new EmailCert("ltw971@naver.com", "1q2w3e4r");
         emailCertRepository.save(emailCert);
 
-        Assertions.assertThat(service.ValidateEmailByCode("ltw971@naver.com", "1q2w3e4r")).isTrue();
         Assertions.assertThat(service.ValidateEmailByCode("ltw971@naver.com", "asdf123")).isFalse();
+        Assertions.assertThat(service.ValidateEmailByCode("ltw971@naver.com", "1q2w3e4r")).isTrue();
 
     }
 }
