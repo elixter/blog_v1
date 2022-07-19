@@ -1,6 +1,6 @@
 package elixter.blog.service.auth;
 
 public interface CertificationService {
-
-    boolean ValidateEmailByCode(String email, String code);
+    boolean validateEmailByCode(String email, String code);
+    String generateEmailCertificationCode(String email);
 }
