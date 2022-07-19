@@ -6,10 +6,13 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @RedisHash("emailCert")
 public class EmailCert implements Serializable {
+
+    static private Long validateMinute = 3L;
 
     @Id
     private String id;
@@ -19,6 +22,8 @@ public class EmailCert implements Serializable {
 
     @Indexed
     private String code;
+
+    private LocalDateTime expiredAt;
 
     public EmailCert() {
     }
@@ -30,5 +35,9 @@ public class EmailCert implements Serializable {
     public EmailCert(String email, String code) {
         this.email = email;
         this.code = code;
+    }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isBefore(expiredAt);
     }
 }
