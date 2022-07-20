@@ -9,9 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class EmailCheckRequestDto {
 
+    private String email;
     private String code;
 
-    public EmailCheckRequestDto(String code) {
+    public EmailCheckRequestDto(String email, String code) {
+        this.email = email;
         this.code = code;
     }
 }

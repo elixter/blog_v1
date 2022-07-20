@@ -87,6 +87,12 @@ public class UserServiceImpl implements UserService {
             case "userName":
                 result = repository.findByNameAndStatus(filterKey, RecordStatus.exist);
                 break;
+            case "email":
+                result.add(repository.findByEmailAndStatus(filterKey, RecordStatus.exist).orElse(User.getEmpty()));
+                if (result.get(0).isEmpty()) {
+                    log.debug("No such user email: {}", filterKey);
+                }
+                break;
             default:
                 break;
         }

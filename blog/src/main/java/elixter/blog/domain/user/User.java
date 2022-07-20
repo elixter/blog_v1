@@ -33,7 +33,10 @@ public class User {
 
     private LocalDateTime createAt;
 
+    private boolean emailVerified;
+
     private RecordStatus status;
+
 
     // TODO: 이메일 인증여부 추가해야함.
 
@@ -50,7 +53,17 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt, RecordStatus status) {
+    public User(
+            Long id,
+            String name,
+            String loginId,
+            String loginPw,
+            String email,
+            String profileImage,
+            LocalDateTime createAt,
+            Boolean emailVerified,
+            RecordStatus status
+    ) {
         this.id = id;
         this.name = name;
         this.loginId = loginId;
@@ -59,6 +72,7 @@ public class User {
         this.profileImage = profileImage;
         this.createAt = createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.emailVerified = emailVerified;
         this.status = status;
     }
 
@@ -86,6 +100,7 @@ public class User {
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.emailVerified = user.emailVerified;
         this.status = user.status;
     }
 

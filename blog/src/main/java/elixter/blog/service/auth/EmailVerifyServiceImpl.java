@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @Qualifier("mockEmailCertificationService")
-public class EmailVerifyServiceImpl implements CertificationService {
+public class EmailVerifyServiceImpl implements VerifyService {
 
     @Value("${emailCertExpire}")
     private Long expireTime;
@@ -43,7 +43,7 @@ public class EmailVerifyServiceImpl implements CertificationService {
     }
 
     @Override
-    public String generateEmailCertificationCode(String email) {
+    public String generateEmailVerificationCode(String email) {
 
         // 알파뱃, 숫자조합 10자리 랜덤 코드 생성
         String certificationCode = RandomStringUtils.random(10, true, true);
@@ -53,5 +53,10 @@ public class EmailVerifyServiceImpl implements CertificationService {
         redisTemplate.expire(emailVerify.getId(), expireTime, TimeUnit.MINUTES);
 
         return certificationCode;
+    }
+
+    @Override
+    public void sendVerifyEmail(String email, String code) {
+        log.info("email={}, code={}", email, code);
     }
 }
