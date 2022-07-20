@@ -1,6 +1,6 @@
 package elixter.blog.repository.auth;
 
-import elixter.blog.domain.auth.EmailCert;
+import elixter.blog.domain.auth.EmailVerify;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -13,14 +13,14 @@ import java.util.*;
 
 @Slf4j
 @SpringBootTest
-public class EmailCertRepositoryTest {
+public class EmailVerifyRepositoryTest {
 
-    private final EmailCertRepository emailCertRepository;
+    private final EmailVerifyRepository emailVerifyRepository;
     private final RedisTemplate redisTemplate;
 
     @Autowired
-    public EmailCertRepositoryTest(EmailCertRepository emailCertRepository, RedisTemplate redisTemplate) {
-        this.emailCertRepository = emailCertRepository;
+    public EmailVerifyRepositoryTest(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate) {
+        this.emailVerifyRepository = emailVerifyRepository;
         this.redisTemplate = redisTemplate;
     }
 
@@ -46,12 +46,12 @@ public class EmailCertRepositoryTest {
 
     @Test
     void findTest() {
-        EmailCert emailCert = new EmailCert("ltw971@naver.com", "1q2w3e4r");
+        EmailVerify emailVerify = new EmailVerify("ltw971@naver.com", "1q2w3e4r");
 
-        emailCert.setId(emailCertRepository.save(emailCert).getId());
-        log.info("emailCert={}", emailCert);
+        emailVerify.setId(emailVerifyRepository.save(emailVerify).getId());
+        log.info("emailCert={}", emailVerify);
 
-        Assertions.assertThat(emailCertRepository.findByEmail("ltw971@naver.com").get()).isEqualTo(emailCert);
-        Assertions.assertThat(emailCertRepository.findByCode("1q2w3e4r").get()).isEqualTo(emailCert);
+        Assertions.assertThat(emailVerifyRepository.findByEmail("ltw971@naver.com").get()).isEqualTo(emailVerify);
+        Assertions.assertThat(emailVerifyRepository.findByCode("1q2w3e4r").get()).isEqualTo(emailVerify);
     }
 }

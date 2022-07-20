@@ -1,7 +1,7 @@
 package elixter.blog.service.auth;
 
-import elixter.blog.domain.auth.EmailCert;
-import elixter.blog.repository.auth.EmailCertRepository;
+import elixter.blog.domain.auth.EmailVerify;
+import elixter.blog.repository.auth.EmailVerifyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +15,28 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @Qualifier("mockEmailCertificationService")
-public class MockEmailCertificationServiceImpl implements CertificationService {
+public class EmailVerifyServiceImpl implements CertificationService {
 
     @Value("${emailCertExpire}")
     private Long expireTime;
 
-    private final EmailCertRepository emailCertRepository;
+    private final EmailVerifyRepository emailVerifyRepository;
     private final RedisTemplate redisTemplate;
 
     @Autowired
-    public MockEmailCertificationServiceImpl(EmailCertRepository emailCertRepository, RedisTemplate redisTemplate) {
-        this.emailCertRepository = emailCertRepository;
+    public EmailVerifyServiceImpl(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate) {
+        this.emailVerifyRepository = emailVerifyRepository;
         this.redisTemplate = redisTemplate;
     }
 
     @Override
     public boolean validateEmailByCode(String email, String code) {
-        EmailCert emailCert = emailCertRepository.findByEmail(email).orElseThrow();
-        boolean certified = emailCert.getCode().equals(code);
+        EmailVerify emailVerify = emailVerifyRepository.findByEmail(email).orElseThrow();
+        boolean certified = emailVerify.getCode().equals(code);
 
         if (certified) {
             log.info("certification success with email={}", email);
-            emailCertRepository.deleteById(emailCert.getId());
+            emailVerifyRepository.deleteById(emailVerify.getId());
         }
 
         return certified;
@@ -49,8 +49,8 @@ public class MockEmailCertificationServiceImpl implements CertificationService {
         String certificationCode = RandomStringUtils.random(10, true, true);
         log.debug("generated certification code={}", certificationCode);
 
-        EmailCert emailCert = emailCertRepository.save(new EmailCert(email, certificationCode));
-        redisTemplate.expire(emailCert.getId(), expireTime, TimeUnit.MINUTES);
+        EmailVerify emailVerify = emailVerifyRepository.save(new EmailVerify(email, certificationCode));
+        redisTemplate.expire(emailVerify.getId(), expireTime, TimeUnit.MINUTES);
 
         return certificationCode;
     }

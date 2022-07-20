@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @RedisHash("emailCert")
-public class EmailCert implements Serializable {
+public class EmailVerify implements Serializable {
 
     static private Long validateMinute = 3L;
 
@@ -25,14 +25,14 @@ public class EmailCert implements Serializable {
 
     private LocalDateTime expiredAt;
 
-    public EmailCert() {
+    public EmailVerify() {
     }
 
-    public EmailCert(String email) {
+    public EmailVerify(String email) {
         this.email = email;
     }
 
-    public EmailCert(String email, String code) {
+    public EmailVerify(String email, String code) {
         this.email = email;
         this.code = code;
     }

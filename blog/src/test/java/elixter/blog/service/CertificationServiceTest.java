@@ -1,7 +1,7 @@
 package elixter.blog.service;
 
-import elixter.blog.domain.auth.EmailCert;
-import elixter.blog.repository.auth.EmailCertRepository;
+import elixter.blog.domain.auth.EmailVerify;
+import elixter.blog.repository.auth.EmailVerifyRepository;
 import elixter.blog.service.auth.CertificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -14,22 +14,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class CertificationServiceTest {
 
-    private final EmailCertRepository emailCertRepository;
+    private final EmailVerifyRepository emailVerifyRepository;
     private final CertificationService service;
 
     @Autowired
     public CertificationServiceTest(
             @Qualifier("mockEmailCertificationService") CertificationService service,
-            EmailCertRepository emailCertRepository
+            EmailVerifyRepository emailVerifyRepository
     ) {
         this.service = service;
-        this.emailCertRepository = emailCertRepository;
+        this.emailVerifyRepository = emailVerifyRepository;
     }
 
     @Test
     void validateCode() {
-        EmailCert emailCert = new EmailCert("ltw971@naver.com", "1q2w3e4r");
-        emailCertRepository.save(emailCert);
+        EmailVerify emailVerify = new EmailVerify("ltw971@naver.com", "1q2w3e4r");
+        emailVerifyRepository.save(emailVerify);
 
         Assertions.assertThat(service.validateEmailByCode("ltw971@naver.com", "asdf123")).isFalse();
         Assertions.assertThat(service.validateEmailByCode("ltw971@naver.com", "1q2w3e4r")).isTrue();
