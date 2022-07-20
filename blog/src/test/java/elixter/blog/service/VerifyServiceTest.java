@@ -2,7 +2,7 @@ package elixter.blog.service;
 
 import elixter.blog.domain.auth.EmailVerify;
 import elixter.blog.repository.auth.EmailVerifyRepository;
-import elixter.blog.service.auth.VerifyService;
+import elixter.blog.service.user.VerifyService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

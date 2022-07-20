@@ -1,4 +1,4 @@
-package elixter.blog.service.auth;
+package elixter.blog.service.user;
 
 public interface VerifyService {
     boolean validateEmailByCode(String email, String code);

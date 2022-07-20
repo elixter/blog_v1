@@ -1,4 +1,4 @@
-package elixter.blog.service.auth;
+package elixter.blog.service.user;
 
 import elixter.blog.domain.auth.EmailVerify;
 import elixter.blog.repository.auth.EmailVerifyRepository;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 @Qualifier("mockEmailCertificationService")
-public class EmailVerifyServiceImpl implements VerifyService {
+public class VerifyServiceImpl implements VerifyService {
 
     @Value("${emailCertExpire}")
     private Long expireTime;
@@ -24,7 +24,7 @@ public class EmailVerifyServiceImpl implements VerifyService {
     private final RedisTemplate redisTemplate;
 
     @Autowired
-    public EmailVerifyServiceImpl(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate) {
+    public VerifyServiceImpl(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate) {
         this.emailVerifyRepository = emailVerifyRepository;
         this.redisTemplate = redisTemplate;
     }
