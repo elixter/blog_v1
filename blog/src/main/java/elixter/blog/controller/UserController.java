@@ -1,5 +1,6 @@
 package elixter.blog.controller;
 
+import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.CreateUserRequestDto;
 import elixter.blog.dto.user.EmailCheckRequestDto;
@@ -73,9 +74,21 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> PostCreateUserHandler(
+            HttpServletRequest request,
             @Valid @RequestBody CreateUserRequestDto createUserRequestBody
     ) {
-        userService.createUser(createUserRequestBody.mapping());
+
+        User newUser = createUserRequestBody.mapping();
+        HttpSession session = request.getSession(false);
+        boolean emailVerified = (boolean) session.getAttribute(SessionConstants.EMAIL_VERIFY);
+
+        if (emailVerified) {
+            newUser.setEmailVerified(true);
+            userService.createUser(newUser);
+            session.removeAttribute(SessionConstants.EMAIL_VERIFY);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.noContent().build();
     }
@@ -114,11 +127,14 @@ public class UserController {
     }
 
     @GetMapping("/emailVerify")
-    public ResponseEntity<Object> GetEmailCheckHandler(@RequestBody EmailCheckRequestDto requestBody) {
+    public ResponseEntity<Object> GetEmailCheckHandler(HttpServletRequest request, @RequestBody EmailCheckRequestDto requestBody) {
 
         boolean verified = verifyService.validateEmailByCode(requestBody.getEmail(), requestBody.getCode());
 
         if (verified) {
+            HttpSession session = request.getSession();
+            session.setAttribute(SessionConstants.EMAIL_VERIFY, true);
+
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.badRequest().build();
