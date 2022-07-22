@@ -5,6 +5,7 @@ import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.dto.user.UpdateUserRequestDto;
+import elixter.blog.service.user.UserSearchType;
 import elixter.blog.service.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,10 +26,11 @@ public class UserServiceImplTest {
     void createUser() {
         User user = new User("test", "test", "test", "test");
         user.setProfileImage("default");
+        user.setEmailVerified(false);
 
         service.createUser(user);
 
-        List<User> result = service.findUser("userName", user.getName());
+        List<User> result = service.findUser(UserSearchType.USER_SEARCH_TYPE_USER_NAME, user.getName());
 
         Assertions.assertThat(result).contains(user);
     }
@@ -37,12 +39,13 @@ public class UserServiceImplTest {
     void deleteUser() {
         User user = new User("test", "test", "test", "test");
         user.setProfileImage("default");
+        user.setEmailVerified(false);
 
         service.createUser(user);
 
         service.deleteUser(user.getId());
 
-        List<User> result = service.findUser("id", user.getId().toString());
+        List<User> result = service.findUser(UserSearchType.USER_SEARCH_TYPE_ID, user.getId().toString());
         Assertions.assertThat(result.get(0)).isEqualTo(User.getEmpty());
     }
 
@@ -50,6 +53,7 @@ public class UserServiceImplTest {
     void updateUser() {
         User user = new User("test", "test", "test", "test");
         user.setProfileImage("default");
+        user.setEmailVerified(false);
 
         service.createUser(user);
 
@@ -63,7 +67,7 @@ public class UserServiceImplTest {
         user.setName("updated");
         user = service.updateUser(dto);
 
-        List<User> result = service.findUser("id", user.getId().toString());
+        List<User> result = service.findUser(UserSearchType.USER_SEARCH_TYPE_ID, user.getId().toString());
         Assertions.assertThat(result).contains(user);
     }
 
@@ -72,6 +76,8 @@ public class UserServiceImplTest {
     void findSessionUser() {
         User user = new User("test", "test", "test", "test");
         user.setProfileImage("default");
+        user.setEmailVerified(false);
+
         service.createUser(user);
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(SessionConstants.AUTHENTICATION, new SessionUser(user.getId(), user.getLoginId()));

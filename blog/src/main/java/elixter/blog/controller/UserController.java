@@ -9,6 +9,7 @@ import elixter.blog.dto.user.UpdateUserRequestDto;
 import elixter.blog.exception.auth.UnauthorizedException;
 import elixter.blog.exception.user.EmailAlreadyUseException;
 import elixter.blog.exception.user.UserNotFoundException;
+import elixter.blog.service.user.UserSearchType;
 import elixter.blog.service.user.VerifyService;
 import elixter.blog.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class UserController {
     ) {
         log.info("finding user with login id = [{}]", loginId);
 
-        User foundUser = userService.findUser("loginId", loginId).get(0);
+        User foundUser = userService.findUser(UserSearchType.USER_SEARCH_TYPE_LOGIN_ID, loginId).get(0);
         if (foundUser.isEmpty()) {
             log.info("login id [{}] user is not found", loginId);
             Map<String, String> cause = new HashMap<>();
@@ -113,7 +114,7 @@ public class UserController {
     public ResponseEntity<Object> PostEmailValidateHandler(@RequestBody String email) {
 
         // TODO: 이메일 확인하여 중복인지 확인 및 코드생성하여 이메일 발송.
-        List<User> user = userService.findUser("email", email);
+        List<User> user = userService.findUser(UserSearchType.USER_SEARCH_TYPE_EMAIL, email);
         if (user.get(0).isEmpty() || user.size() > 1) {
             log.info("Email={} already exist", email);
             throw new EmailAlreadyUseException();
