@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             messageHelper.setFrom(sender);
-            messageHelper.setTo((String[]) receivers.toArray());
+            messageHelper.setTo(receivers.toArray(new String[receivers.size()]));
             messageHelper.setSubject(title);
             messageHelper.setText(content);
         } catch (MessagingException e) {
