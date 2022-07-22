@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.mail.SendFailedException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,17 @@ public class EmailServiceImpl {
         String content = "test";
 
         Assertions.assertDoesNotThrow(() -> emailService.send(from, to, title, content));
+    }
+
+    @Test
+    void send_badAddress() {
+        String from = "sdasdasd";
+        List<String> to = Arrays.asList("q12w2e");
+        String title = "test";
+        String content = "test";
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> emailService.send(from, to, title, content))
+                .isInstanceOf(SendFailedException.class);
     }
 }
 

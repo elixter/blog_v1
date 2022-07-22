@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -44,18 +45,10 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setSubject(title);
             messageHelper.setText(content);
         } catch (MessagingException e) {
-            throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "MessagingException");
+            throw new RuntimeException("MessagingException from MailService send()");
         }
 
-        try {
-            mailSender.send(mimeMessage);
-        } catch (MailAuthenticationException e) {
-            log.info("MailAuthenticationException", e);
-            throw new RestException(HttpStatus.UNAUTHORIZED, "Mail Authentication needed");
-        } catch (MailSendException e) {
-            log.info("MailSendException", e);
-            throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send mail");
-        }
+        mailSender.send(mimeMessage);
 
         log.info("mail={} sent successfully", mimeMessage);
         List<Mail> mailList = new ArrayList<>();
