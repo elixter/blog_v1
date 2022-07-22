@@ -4,12 +4,10 @@ import elixter.blog.constants.RecordStatus;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "mails")
 @NoArgsConstructor
 public class Mail {
 

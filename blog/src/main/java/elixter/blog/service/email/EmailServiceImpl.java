@@ -27,8 +27,8 @@ public class EmailServiceImpl implements EmailService {
     private final MailRepository mailRepository;
 
     @Autowired
-    public EmailServiceImpl(MailRepository mailRepository) {
-        this.mailSender = new JavaMailSenderImpl();
+    public EmailServiceImpl(MailRepository mailRepository, JavaMailSender javaMailSender) {
+        this.mailSender = javaMailSender;
         this.mailRepository = mailRepository;
     }
 

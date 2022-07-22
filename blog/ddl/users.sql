@@ -1,14 +1,16 @@
+-- auto-generated definition
 create table users
 (
-    id            bigint auto_increment
+    id             bigint auto_increment
         primary key,
-    name          varchar(50)                         not null,
-    login_id      varchar(50)                         not null,
-    login_pw      varbinary(72)                       not null,
-    email         varchar(100)                        not null,
-    profile_image text                                null,
-    create_at     timestamp default CURRENT_TIMESTAMP not null,
-    status        tinyint                             not null,
+    name           varchar(50)                          not null,
+    login_id       varchar(50)                          not null,
+    login_pw       varbinary(72)                        not null,
+    email          varchar(100)                         not null,
+    profile_image  text                                 null,
+    create_at      timestamp  default CURRENT_TIMESTAMP not null,
+    email_verified tinyint(1) default 0                 null,
+    status         tinyint                              not null,
     constraint users_email_uindex
         unique (email),
     constraint users_login_id_uindex
@@ -17,3 +19,4 @@ create table users
 
 create index USERS_ID_INDEX
     on users (id);
+
