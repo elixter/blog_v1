@@ -15,10 +15,16 @@ public class Mail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50)
     private String sender;
+
+    @Column(length = 50)
     private String receiver;
+
     private String title;
     private String content;
+
+    @Enumerated(EnumType.ORDINAL)
     private RecordStatus status;
 
     @Builder

@@ -23,6 +23,8 @@ public class Image {
     private String originName;
     private String storedName;
     private LocalDateTime createAt;
+
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

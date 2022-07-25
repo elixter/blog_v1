@@ -6,7 +6,7 @@ create table mails
     receiver varchar(50)  not null,
     title    varchar(100) not null,
     content  text         null,
-    status   tinyint      not null,
+    status   varchar(10)  not null,
     constraint mails_id_uindex
         unique (id)
 );

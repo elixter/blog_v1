@@ -22,12 +22,22 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 50)
     private String title;
+
     private String content;
+
+    @Column(length = 20)
     private String category;
+
     private String thumbnail;
+
     private LocalDateTime createAt;
+
     private LocalDateTime updateAt;
+
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

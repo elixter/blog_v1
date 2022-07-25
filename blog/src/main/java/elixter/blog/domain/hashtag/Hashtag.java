@@ -17,7 +17,11 @@ public class Hashtag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 50)
     private String tag;
+
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

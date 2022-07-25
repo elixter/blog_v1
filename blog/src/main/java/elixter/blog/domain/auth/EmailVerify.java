@@ -17,7 +17,7 @@ public class EmailVerify implements Serializable {
     @Id
     private String id;
 
-    @Indexed
+    @Indexed // Redis key index
     private String email;
 
     @Indexed

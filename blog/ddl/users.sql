@@ -10,7 +10,7 @@ create table users
     profile_image  text                                 null,
     create_at      timestamp  default CURRENT_TIMESTAMP not null,
     email_verified tinyint(1) default 0                 null,
-    status         tinyint                              not null,
+    status         varchar(10)                          not null,
     constraint users_email_uindex
         unique (email),
     constraint users_login_id_uindex
