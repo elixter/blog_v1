@@ -9,7 +9,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableCaching
 @SpringBootApplication
 public class BlogApplication {
-	// TODO: RecordStatus Ordinal이 아닌 String으로 바꿔야함
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlogApplication.class, args);
