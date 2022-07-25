@@ -51,7 +51,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
                 .addValue("email", user.getEmail())
                 .addValue("profile_image", user.getProfileImage())
                 .addValue("create_at", user.getCreateAt())
-                .addValue("status", user.getStatus().ordinal());
+                .addValue("status", user.getStatus().toString());
         Number key = jdbcInsert.executeAndReturnKey(param);
         user.setId(key.longValue());
 
@@ -80,7 +80,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and id = :id";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("id", id);
 
         try {
@@ -96,7 +96,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and id = :id";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("id", id);
 
         try {
@@ -112,7 +112,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and login_id = :loginId";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("loginId", loginId);
 
         try {
@@ -128,7 +128,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and login_id = :loginId";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("loginId", loginId);
 
         try {
@@ -144,7 +144,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and name = :name";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("name", name);
         List<User> result = jdbcTemplate.query(sql, param, userRowMapper());
 
@@ -156,7 +156,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and name = :name";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("name", name);
         List<User> result = jdbcTemplate.query(sql, param, userRowMapper());
 
@@ -170,7 +170,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and name = :name";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("name", name);
         List<User> result = jdbcTemplate.query(sql, param, userRowMapper());
 
@@ -184,7 +184,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and name = :name";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("name", name);
         List<User> result = jdbcTemplate.query(sql, param, userRowMapper());
 
@@ -196,7 +196,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and email = :email";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("email", email);
         try {
             User user = jdbcTemplate.queryForObject(sql, param, userRowMapper());
@@ -211,7 +211,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status and email = :email";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("email", email);
         try {
             User user = jdbcTemplate.queryForObject(sql, param, userRowMapper());
@@ -226,7 +226,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
         String sql = "select * from users where status = :status limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("offset", offset)
                 .addValue("limit", limit);
         List<User> result = jdbcTemplate.query(sql, param, userRowMapper());
@@ -237,9 +237,10 @@ public class JdbcTemplateUserRepository implements UserRepository {
     @Override
     public void delete(Long id) {
 
+        log.info("recordStatus = {}", RecordStatus.deleted);
         String sql = "update users set status = :status where id = :id";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.deleted.ordinal())
+                .addValue("status", RecordStatus.deleted.toString())
                 .addValue("id", id);
         jdbcTemplate.update(sql, param);
     }
@@ -254,7 +255,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
             user.setEmail(rs.getString("email"));
             user.setProfileImage(rs.getString("profile_image"));
             user.setCreateAt(rs.getTimestamp("create_at").toLocalDateTime());
-            user.setStatus(RecordStatus.values()[rs.getInt("status")]);
+            user.setStatus(RecordStatus.valueOf(rs.getString("status")));
             return user;
         });
     }
@@ -263,7 +264,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
         String sql = "select count(*) from users where name = :name and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("name", name)
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
 
         return jdbcTemplate.queryForObject(sql, param, Long.class);
     }

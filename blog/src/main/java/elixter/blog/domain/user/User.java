@@ -21,12 +21,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50)
     private String name;
 
     private String loginId;
 
     private String loginPw;
 
+    @Column(length = 100)
     private String email;
 
     private String profileImage;
@@ -35,6 +37,7 @@ public class User {
 
     private boolean emailVerified;
 
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     public User() {

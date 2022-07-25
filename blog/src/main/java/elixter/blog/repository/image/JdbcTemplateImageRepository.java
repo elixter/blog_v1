@@ -52,7 +52,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                 .addValue("origin_name", image.getOriginName())
                 .addValue("stored_name", image.getStoredName())
                 .addValue("create_at", image.getCreateAt())
-                .addValue("status", image.getStatus().ordinal());
+                .addValue("status", image.getStatus().toString());
         Number key = jdbcInsert.executeAndReturnKey(params);
         image.setId(key.longValue());
 
@@ -71,7 +71,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                     .addValue("origin_name", img.getOriginName())
                     .addValue("stored_name", img.getStoredName())
                     .addValue("create_at", img.getCreateAt())
-                    .addValue("status", img.getStatus().ordinal());
+                    .addValue("status", img.getStatus().toString());
             batchParams.add(param);
         }
         jdbcInsert.executeBatch(batchParams.toArray(new SqlParameterSource[0]));
@@ -115,7 +115,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
 
         String sql = "select * from images where status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
 
         return jdbcTemplate.query(sql, param, imageRowMapper());
     }
@@ -190,7 +190,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                 .originName(rs.getString("origin_name"))
                 .storedName(rs.getString("stored_name"))
                 .createAt(rs.getTimestamp("create_at").toLocalDateTime())
-                .status(RecordStatus.values()[rs.getInt("status")])
+                .status(RecordStatus.valueOf(rs.getString("status")))
                 .build());
     }
 }
