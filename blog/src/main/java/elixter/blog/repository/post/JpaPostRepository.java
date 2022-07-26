@@ -34,7 +34,14 @@ public class JpaPostRepository implements PostRepository {
 
     @Override
     public void update(Post post) {
-        repository.update(post);
+        Post target = repository.findById(post.getId()).orElseThrow();
+        target.setTitle(post.getTitle());
+        target.setCategory(post.getCategory());
+        target.setContent(post.getContent());
+        target.setThumbnail(post.getThumbnail());
+        target.setImages(post.getImages());
+        target.setHashtags(post.getHashtags());
+        target.setUpdateAt(post.getUpdateAt());
     }
 
     @Override

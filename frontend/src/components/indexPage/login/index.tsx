@@ -5,7 +5,7 @@ import useAuthentication from '../../hooks/auth/useAuthentication';
 import { LoginParams } from '../../authentication/hooks/types';
 import { StaticPath } from '../../pagePath/pagePath';
 
-const Login = function () {
+const Index = function () {
 	const { fetch, loading } = useLogin();
 	const { mutate } = useAuthentication();
 	const history = useHistory();
@@ -79,4 +79,4 @@ const Login = function () {
 	);
 };
 
-export default Login;
+export default Index;

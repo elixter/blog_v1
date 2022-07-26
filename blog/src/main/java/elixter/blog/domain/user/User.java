@@ -21,18 +21,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50, nullable = false)
     private String name;
 
+    @Column(length = 50, nullable = false)
     private String loginId;
 
+    @Column(length = 72, nullable = false)
     private String loginPw;
 
+    @Column(length = 100, nullable = false)
     private String email;
 
+    @Column(columnDefinition = "TEXT")
     private String profileImage;
 
+    @Column(nullable = false)
     private LocalDateTime createAt;
 
+    private boolean emailVerified;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     public User() {
@@ -48,7 +58,17 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String name, String loginId, String loginPw, String email, String profileImage, LocalDateTime createAt, RecordStatus status) {
+    public User(
+            Long id,
+            String name,
+            String loginId,
+            String loginPw,
+            String email,
+            String profileImage,
+            LocalDateTime createAt,
+            Boolean emailVerified,
+            RecordStatus status
+    ) {
         this.id = id;
         this.name = name;
         this.loginId = loginId;
@@ -57,6 +77,7 @@ public class User {
         this.profileImage = profileImage;
         this.createAt = createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.emailVerified = emailVerified;
         this.status = status;
     }
 
@@ -84,6 +105,7 @@ public class User {
         this.profileImage = user.profileImage;
         this.createAt = user.createAt;
         this.createAt = LocalDateTime.now().withNano(0);
+        this.emailVerified = user.emailVerified;
         this.status = user.status;
     }
 
@@ -97,6 +119,7 @@ public class User {
                 .name("")
                 .loginId("")
                 .loginPw("")
+                .emailVerified(false)
                 .build();
     }
 }

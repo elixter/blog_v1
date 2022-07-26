@@ -2,7 +2,7 @@ import { atom, useRecoilState } from 'recoil';
 import useSWR from 'swr';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
-import { getUserProfile } from './user';
+import { getUserProfile } from '../../api/user';
 
 export enum UserType {
 	Login = 'Login',

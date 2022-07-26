@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { atom, useRecoilState } from 'recoil';
 import { LoginParams } from '../../authentication/hooks/types';
 import { sleep } from '../../utils';
-import { loginRequest } from '../../authentication/hooks/user';
+import { loginRequest } from '../../api/user';
 
 type LoginRequestResult = {
 	error: AxiosError | null;

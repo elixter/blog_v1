@@ -1,5 +1,6 @@
 export enum StaticPath {
 	MAIN = '/',
+	SIGNUP = '/signup',
 	PROFILE = '/profile',
 	BLOG = '/blog',
 	BLOG_NEW_POST = '/blog/new',

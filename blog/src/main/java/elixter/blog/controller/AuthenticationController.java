@@ -4,6 +4,7 @@ import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.User;
 import elixter.blog.domain.user.SessionUser;
 import elixter.blog.dto.auth.PostLoginRequestDto;
+import elixter.blog.dto.user.EmailCheckRequestDto;
 import elixter.blog.dto.user.GetUserResponseDto;
 import elixter.blog.service.auth.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+
     User createUser(User user);
     User updateUser(UpdateUserRequestDto user);
 
@@ -16,5 +17,5 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    List<User> findUser(String filterType, String filterKey);
+    List<User> findUser(UserSearchType filterType, String filterKey);
 }
