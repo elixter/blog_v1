@@ -35,7 +35,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     public EmailServiceImpl(MailRepository mailRepository,
                             JavaMailSender javaMailSender,
-                            @Qualifier("mailTemplateEngine") TemplateEngine templateEngine) {
+                            TemplateEngine templateEngine) {
         this.mailSender = javaMailSender;
         this.mailRepository = mailRepository;
         this.templateEngine = templateEngine;
