@@ -18,7 +18,7 @@
 - [x] JPA 전환
 - [ ] XSS 방지 => 프론트에서 처리되기 때문에 보류
 - [ ] 회원가입시 아이디 중복확인 API
-- [ ] 이메일 인증 API (Optional)
+- [x] 이메일 인증 API (Optional)
 
 ### Frontend
 - [X] 게시글 작성 중 이미지 업로드 했을 때 url들 state로 저장
