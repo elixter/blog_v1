@@ -20,8 +20,12 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TEXT")
     private String originName;
+
+    @Column(columnDefinition = "TEXT")
     private String storedName;
+
     private LocalDateTime createAt;
 
     @Enumerated(EnumType.STRING)

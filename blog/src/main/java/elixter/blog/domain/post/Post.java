@@ -26,11 +26,13 @@ public class Post {
     @Column(length = 50)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(length = 20)
     private String category;
 
+    @Column(columnDefinition = "TEXT")
     private String thumbnail;
 
     private LocalDateTime createAt;

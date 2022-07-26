@@ -21,10 +21,13 @@ public class Mail {
     @Column(length = 50)
     private String receiver;
 
+    @Column(length = 100)
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
     @Builder

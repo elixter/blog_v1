@@ -21,22 +21,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String name;
 
+    @Column(length = 50, nullable = false)
     private String loginId;
 
+    @Column(length = 72, nullable = false)
     private String loginPw;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String email;
 
+    @Column(columnDefinition = "TEXT")
     private String profileImage;
 
+    @Column(nullable = false)
     private LocalDateTime createAt;
 
     private boolean emailVerified;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RecordStatus status;
 

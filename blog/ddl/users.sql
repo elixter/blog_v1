@@ -5,7 +5,7 @@ create table users
         primary key,
     name           varchar(50)                          not null,
     login_id       varchar(50)                          not null,
-    login_pw       varbinary(72)                        not null,
+    login_pw       varchar(72)                        not null,
     email          varchar(100)                         not null,
     profile_image  text                                 null,
     create_at      timestamp  default CURRENT_TIMESTAMP not null,
