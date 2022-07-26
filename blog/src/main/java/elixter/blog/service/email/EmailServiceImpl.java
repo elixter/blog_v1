@@ -43,6 +43,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void send(String sender, List<String> receivers, String title, String content) {
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper;
 
@@ -75,13 +76,12 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendTemplate(String sender, List<String> receivers, String title, String template, Map<String, Object> model) {
 
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper;
         String content = genTemplateMailContent(template, model);
         send(sender, receivers, title, content);
     }
 
     private String genTemplateMailContent(String template, Map<String, Object> model) {
+
         Context ctx = new Context();
         ctx.setVariables(model);
         return templateEngine.process(template, ctx);
