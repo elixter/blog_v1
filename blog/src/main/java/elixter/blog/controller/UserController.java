@@ -2,10 +2,7 @@ package elixter.blog.controller;
 
 import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.User;
-import elixter.blog.dto.user.CreateUserRequestDto;
-import elixter.blog.dto.user.EmailCheckRequestDto;
-import elixter.blog.dto.user.GetUserResponseDto;
-import elixter.blog.dto.user.UpdateUserRequestDto;
+import elixter.blog.dto.user.*;
 import elixter.blog.exception.auth.UnauthorizedException;
 import elixter.blog.exception.user.EmailAlreadyUseException;
 import elixter.blog.exception.user.UserNotFoundException;
@@ -80,12 +77,13 @@ public class UserController {
 
         User newUser = createUserRequestBody.mapping();
         HttpSession session = request.getSession(false);
-        boolean emailVerified = (boolean) session.getAttribute(SessionConstants.EMAIL_VERIFY);
-
-        if (emailVerified) {
-            newUser.setEmailVerified(true);
-            userService.createUser(newUser);
-            session.removeAttribute(SessionConstants.EMAIL_VERIFY);
+        if (session != null) {
+            boolean emailVerified = (boolean) session.getAttribute(SessionConstants.EMAIL_VERIFY);
+            if (emailVerified) {
+                newUser.setEmailVerified(true);
+                userService.createUser(newUser);
+                session.removeAttribute(SessionConstants.EMAIL_VERIFY);
+            }
         } else {
             return ResponseEntity.badRequest().build();
         }
@@ -110,12 +108,12 @@ public class UserController {
     }
 
 
-    @PostMapping("/emailVerify")
-    public ResponseEntity<Object> PostEmailValidateHandler(@RequestBody String email) {
+    @GetMapping("/emailVerify")
+    public ResponseEntity<Object> PostEmailVerifyHandler(@RequestBody PostEmailVerifyRequestDto requestBody) {
 
-        // TODO: 이메일 확인하여 중복인지 확인 및 코드생성하여 이메일 발송.
+        String email = requestBody.getEmail();
         List<User> user = userService.findUser(UserSearchType.USER_SEARCH_TYPE_EMAIL, email);
-        if (user.get(0).isEmpty() || user.size() > 1) {
+        if (!user.get(0).isEmpty() || user.size() > 1) {
             log.info("Email={} already exist", email);
             throw new EmailAlreadyUseException();
         }
@@ -126,7 +124,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/emailVerify")
+    @PostMapping("/emailVerify")
     public ResponseEntity<Object> GetEmailCheckHandler(HttpServletRequest request, @RequestBody EmailCheckRequestDto requestBody) {
 
         boolean verified = verifyService.validateEmailByCode(requestBody.getEmail(), requestBody.getCode());

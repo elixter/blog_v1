@@ -2,6 +2,7 @@ package elixter.blog.service.user;
 
 import elixter.blog.domain.auth.EmailVerify;
 import elixter.blog.repository.auth.EmailVerifyRepository;
+import elixter.blog.service.email.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -20,13 +22,18 @@ public class VerifyServiceImpl implements VerifyService {
     @Value("${emailCertExpire}")
     private Long expireTime;
 
+    @Value("${emailAddress}")
+    private String companyEmail;
+
     private final EmailVerifyRepository emailVerifyRepository;
     private final RedisTemplate redisTemplate;
+    private final EmailService emailService;
 
     @Autowired
-    public VerifyServiceImpl(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate) {
+    public VerifyServiceImpl(EmailVerifyRepository emailVerifyRepository, RedisTemplate redisTemplate, EmailService emailService) {
         this.emailVerifyRepository = emailVerifyRepository;
         this.redisTemplate = redisTemplate;
+        this.emailService = emailService;
     }
 
     @Override
@@ -58,5 +65,6 @@ public class VerifyServiceImpl implements VerifyService {
     @Override
     public void sendVerifyEmail(String email, String code) {
         log.info("email={}, code={}", email, code);
+        emailService.send(companyEmail, Arrays.asList(email), "verfication code", code);
     }
 }
