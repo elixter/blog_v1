@@ -10,6 +10,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @SpringBootApplication
 public class BlogApplication {
 
+	// TODO : 회원가입시 로그인 아이디 중복 확인 API
 	public static void main(String[] args) {
 		SpringApplication.run(BlogApplication.class, args);
 	}
