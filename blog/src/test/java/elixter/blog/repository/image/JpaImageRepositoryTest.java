@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,8 +74,8 @@ public class JpaImageRepositoryTest {
         post.setCategory("test category");
         post.setThumbnail("http://www.testimage.com");
 
-        post.addImage(img1);
-        post.addImage(img2);
+        post.addPostImage(img1);
+        post.addPostImage(img2);
 //        postRepository.save(post);
 //
         imageRepository.save(img1);
