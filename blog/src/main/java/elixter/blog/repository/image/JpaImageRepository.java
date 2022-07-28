@@ -34,8 +34,4 @@ public interface JpaImageRepository extends ImageRepository, JpaRepository<Image
 
     @Override
     Optional<Image> findByStoredName(String storedName);
-
-    @Override
-    @Query(value = "insert into images_posts values(:idList, :postId)", nativeQuery = true)
-    void relateWithPost(List<Long> idList, Long postId);
 }

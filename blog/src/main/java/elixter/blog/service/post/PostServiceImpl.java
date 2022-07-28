@@ -83,6 +83,7 @@ public class PostServiceImpl implements PostService {
             );
         }
         hashtagRepository.saveAll(hashtags);
+        newPost.getHashtags().addAll(hashtags);
 
         if (post.getImageUrlList().isEmpty()) {
             return newPost;
@@ -110,19 +111,44 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @CacheEvict(value = cacheName, allEntries = true)
     public void updatePost(UpdatePostRequestDto post) {
+
         Post updatePost = post.postMapping();
         updatePost.setUpdateAt(LocalDateTime.now().withNano(0));
-        hashtagRepository.deleteByPostId(post.getId());
-
-        setPostToHashtagList(updatePost);
         postRepository.update(updatePost);
 
-        if (hashtagRepository instanceof JdbcTemplateHashtagRepository
-                && postRepository instanceof JdbcTemplatePostRepository) {
-            hashtagRepository.saveAll(updatePost.getHashtags());
+        hashtagRepository.deleteByPostId(post.getId());
+        List<Hashtag> hashtags = new ArrayList<>();
+        for (String hashtag : post.getHashtags()) {
+            hashtags.add(
+                    Hashtag.builder()
+                            .tag(hashtag)
+                            .status(RecordStatus.exist)
+                            .post(updatePost)
+                            .build()
+            );
+        }
+        hashtagRepository.saveAll(hashtags);
+        updatePost.getHashtags().addAll(hashtags);
+
+        postImageRepository.deleteByPostId(updatePost.getId());
+        if (post.getImageUrlList().isEmpty()) {
+            return;
         }
 
-        asyncRelateImageWithPost(updatePost, post.getContent(), post.getImageUrlList());
+        List<String> storedNameList = new ArrayList<>();
+        for (String imageUrl : post.getImageUrlList()) {
+            storedNameList.add(StringUtils.removeStart(imageUrl, serverUri + "/api/images/"));
+        }
+        List<Image> images = imageRepository.findByStoredName(storedNameList);
+
+        List<PostImage> postImages = new ArrayList<>();
+        for (Image image : images) {
+            postImages.add(PostImage.builder()
+                    .post(updatePost)
+                    .image(image)
+                    .build());
+        }
+        postImageRepository.saveAll(postImages);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class Hashtag {
     @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 

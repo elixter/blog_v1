@@ -31,7 +31,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final SimpleJdbcInsert jdbcRelate;
 
     @Autowired
     public JdbcTemplateImageRepository(DataSource dataSource) {
@@ -39,10 +38,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("images")
                 .usingGeneratedKeyColumns("id");
-
-        this.jdbcRelate = new SimpleJdbcInsert(dataSource)
-                .withTableName("images_posts")
-                .usingColumns("image_id", "post_id");
     }
 
     @Override
@@ -123,7 +118,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     @Override
     public List<Image> findByPostId(Long postId) {
 
-        String sql = "select * from images join images_posts ip on images.id = ip.image_id where ip.post_id = :postId";
+        String sql = "select * from images join posts_images pi on images.id = pi.image_id where pi.post_id = :postId";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("postId", postId);
 
@@ -154,20 +149,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    @Override
-    public void relateWithPost(List<Long> idList, Long postId) {
-
-        List<Map<String, Object>> records = new LinkedList<>();
-        for (Long imageId : idList) {
-            Map<String, Object> record = new HashMap<>();
-            record.put("image_id", imageId);
-            record.put("post_id", postId);
-            records.add(record);
-        }
-
-        jdbcRelate.executeBatch(SqlParameterSourceUtils.createBatch(records));
     }
 
     @NotNull
