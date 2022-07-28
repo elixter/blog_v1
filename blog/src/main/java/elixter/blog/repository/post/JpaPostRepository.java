@@ -39,7 +39,7 @@ public class JpaPostRepository implements PostRepository {
         target.setCategory(post.getCategory());
         target.setContent(post.getContent());
         target.setThumbnail(post.getThumbnail());
-        target.setImages(post.getImages());
+        target.setPostImages(post.getPostImages());
         target.setHashtags(post.getHashtags());
         target.setUpdateAt(post.getUpdateAt());
     }

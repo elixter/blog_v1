@@ -25,6 +25,7 @@ public interface JpaImageRepository extends ImageRepository, JpaRepository<Image
     List<Image> findByStatus(RecordStatus status);
 
     @Override
+    @Query("select i from Image i join PostImage pi on i.id = pi.image.id where pi.post.id = :postId")
     List<Image> findByPostId(Long postId);
 
     @Override

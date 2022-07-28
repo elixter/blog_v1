@@ -45,7 +45,7 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public void relateWithPost(List<Image> images, Post post) {
-        images.forEach(image -> image.setPost(post));
+//        images.forEach(image -> image.setPost(post));
     }
 
     @Override

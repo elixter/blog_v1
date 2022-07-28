@@ -74,8 +74,8 @@ public class JpaImageRepositoryTest {
         post.setCategory("test category");
         post.setThumbnail("http://www.testimage.com");
 
-        post.addPostImage(img1);
-        post.addPostImage(img2);
+//        post.addPostImage(img1);
+//        post.addPostImage(img2);
 //        postRepository.save(post);
 //
         imageRepository.save(img1);

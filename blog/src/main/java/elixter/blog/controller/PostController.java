@@ -1,30 +1,21 @@
 package elixter.blog.controller;
 
-import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.post.Post;
 import elixter.blog.dto.post.CreatePostRequestDto;
 import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.exception.InvalidBodyFieldException;
-import elixter.blog.exception.RestException;
 import elixter.blog.exception.post.PostNotFoundException;
-import elixter.blog.service.hashtag.HashtagService;
-import elixter.blog.service.image.ImageService;
 import elixter.blog.service.post.PostService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

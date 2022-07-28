@@ -32,7 +32,7 @@ public class PostImage {
     @Builder
     public PostImage(Long id, Post post, Image image) {
         this.id = id;
-        this.post = post;
+        changePost(post);
         this.image = image;
     }
 
