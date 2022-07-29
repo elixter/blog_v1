@@ -13,7 +13,7 @@ const AuthNavigation = function () {
 	return (
 		<>
 			<div className="hd-login-before">
-				<Link to="" onClick={onClickLogin}>
+				<Link to="#" onClick={onClickLogin}>
 					로그인
 				</Link>
 				&#10072;
