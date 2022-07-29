@@ -144,7 +144,7 @@ public class UserController {
     public ResponseEntity<Object> GetLoginIdValidate(@RequestBody String loginId) {
 
         List<User> user = userService.findUser(UserSearchType.USER_SEARCH_TYPE_LOGIN_ID, loginId);
-        if (!user.isEmpty()) {
+        if (!user.get(0).isEmpty()) {
             throw new UserAlreadyExistException();
         }
 
