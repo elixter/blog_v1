@@ -19,6 +19,4 @@ public interface ImageRepository {
     List<Image> findByStoredName(List<String> urlList);
 
     Optional<Image> findByStoredName(String storedName);
-
-    void relateWithPost(List<Long> idList, Long postId);
 }

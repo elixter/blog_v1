@@ -5,6 +5,7 @@ import elixter.blog.domain.user.User;
 import elixter.blog.dto.user.*;
 import elixter.blog.exception.auth.UnauthorizedException;
 import elixter.blog.exception.user.EmailAlreadyUseException;
+import elixter.blog.exception.user.UserAlreadyExistException;
 import elixter.blog.exception.user.UserNotFoundException;
 import elixter.blog.service.user.UserSearchType;
 import elixter.blog.service.user.VerifyService;
@@ -137,5 +138,16 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/loginIdValidate")
+    public ResponseEntity<Object> GetLoginIdValidate(@RequestBody String loginId) {
+
+        List<User> user = userService.findUser(UserSearchType.USER_SEARCH_TYPE_LOGIN_ID, loginId);
+        if (!user.isEmpty()) {
+            throw new UserAlreadyExistException();
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

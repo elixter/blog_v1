@@ -6,6 +6,7 @@ import elixter.blog.dto.post.GetAllPostsResponseDto;
 import elixter.blog.dto.post.GetPostResponseDto;
 import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.service.post.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,31 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 @SpringBootTest
 @Transactional
 public class PostServiceImplTest {
 
     @Autowired
     PostService postService;
+
+    @Test
+    void createPost() {
+        CreatePostRequestDto dto = CreatePostRequestDto.builder()
+                .title("test")
+                .category("test")
+                .content("test")
+                .thumbnail("test")
+                .hashtags(Arrays.asList("test", "hashtag", "isGood"))
+                .imageUrlList(Arrays.asList(
+                        "http://localhost:8080/api/images/fd9429d3-0796-40d2-8104-0b39524de4bf.png",
+                        "http://localhost:8080/api/images/69d50b14-75e1-47a6-b735-5b0626c06edf.png"
+                ))
+                .build();
+
+        Post post = postService.createPost(dto);
+        log.info("result = {}", post);
+    }
 
     @Test
     void updatePost() {

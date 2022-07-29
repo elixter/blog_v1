@@ -25,6 +25,7 @@ public interface JpaImageRepository extends ImageRepository, JpaRepository<Image
     List<Image> findByStatus(RecordStatus status);
 
     @Override
+    @Query("select i from Image i join PostImage pi on i.id = pi.image.id where pi.post.id = :postId")
     List<Image> findByPostId(Long postId);
 
     @Override
@@ -33,8 +34,4 @@ public interface JpaImageRepository extends ImageRepository, JpaRepository<Image
 
     @Override
     Optional<Image> findByStoredName(String storedName);
-
-    @Override
-    @Query(value = "insert into images_posts values(:idList, :postId)", nativeQuery = true)
-    void relateWithPost(List<Long> idList, Long postId);
 }

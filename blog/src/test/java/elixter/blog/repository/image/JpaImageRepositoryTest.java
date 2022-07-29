@@ -3,7 +3,9 @@ package elixter.blog.repository.image;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
+import elixter.blog.domain.postImage.PostImage;
 import elixter.blog.repository.post.PostRepository;
+import elixter.blog.repository.postImage.PostImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,12 +27,19 @@ public class JpaImageRepositoryTest {
     private final ImageRepository imageRepository;
     private final PostRepository postRepository;
     private final ImageStorage imageStorage;
+    private final PostImageRepository postImageRepository;
 
     @Autowired
-    public JpaImageRepositoryTest(ImageRepository imageRepository, @Qualifier("jpaPostRepository") PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+    public JpaImageRepositoryTest(
+            ImageRepository imageRepository,
+            @Qualifier("jpaPostRepository") PostRepository postRepository,
+            @Qualifier("localImageStorage") ImageStorage imageStorage,
+            PostImageRepository postImageRepository
+    ) {
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
         this.imageStorage = imageStorage;
+        this.postImageRepository = postImageRepository;
     }
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
@@ -57,6 +65,13 @@ public class JpaImageRepositoryTest {
     @Test
     @Transactional
     public void findByPostId() {
+
+        Post post = new Post();
+        post.setTitle("Test title");
+        post.setContent("This is test content");
+        post.setCategory("test category");
+        post.setThumbnail("http://www.testimage.com");
+
         Image img1 = new Image();
         img1.setStoredName("http://localhost");
         img1.setOriginName("test");
@@ -69,18 +84,23 @@ public class JpaImageRepositoryTest {
         img2.setCreateAt(LocalDateTime.now().withNano(0));
         img2.setStatus(RecordStatus.pending);
 
-        Post post = new Post();
-        post.setTitle("Test title");
-        post.setContent("This is test content");
-        post.setCategory("test category");
-        post.setThumbnail("http://www.testimage.com");
 
-        post.addImage(img1);
-        post.addImage(img2);
-//        postRepository.save(post);
-//
+        postRepository.save(post);
+
         imageRepository.save(img1);
         imageRepository.save(img2);
+
+        PostImage postImage1 = PostImage.builder()
+                .post(post)
+                .image(img1)
+                .build();
+
+        PostImage postImage2 = PostImage.builder()
+                .post(post)
+                .image(img2)
+                .build();
+
+        postImageRepository.saveAll(Arrays.asList(postImage1, postImage2));
 
         List<Image> result = imageRepository.findByPostId(post.getId());
 

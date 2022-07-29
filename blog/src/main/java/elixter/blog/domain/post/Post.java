@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.image.Image;
+import elixter.blog.domain.postImage.PostImage;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "posts")
-@ToString(exclude = {"hashtags", "images"})
+@ToString(exclude = {"hashtags", "postImages"})
 @EqualsAndHashCode
 public class Post {
 
@@ -42,28 +43,11 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private RecordStatus status;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "images_posts",
-            joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName = "id")
-    )
-    private List<Image> images;
-
-    public void addImage(Image image) {
-        if (!images.contains(image)) {
-            this.images.add(image);
-        }
-
-        if (image.getPost() != null) {
-            if (!image.getPost().equals(this)) {
-                image.setPost(this);
-            }
-        }
-    }
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private List<PostImage> postImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-    private List<Hashtag> hashtags;
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     public void addHashtag(Hashtag hashtag) {
         if (!hashtags.contains(hashtag)) {
@@ -80,8 +64,6 @@ public class Post {
     private static final Long emptyId = -1L;
 
     public Post() {
-        hashtags = new ArrayList<>();
-        images = new ArrayList<>();
         status = RecordStatus.exist;
         createAt = LocalDateTime.now().withNano(0);
         updateAt = LocalDateTime.now().withNano(0);
@@ -93,15 +75,10 @@ public class Post {
         this.content = content;
         this.category = category;
         this.thumbnail = thumbnail;
-        hashtags = new ArrayList<>();
-        images = new ArrayList<>();
     }
 
     @Builder
-    public Post(Long id, String title, String content, String category, String thumbnail, RecordStatus status, LocalDateTime createAt, LocalDateTime updateAt, List<Hashtag> hashtags, List<Image> images) {
-        this.hashtags = new ArrayList<>();
-        this.images = new ArrayList<>();
-
+    public Post(Long id, String title, String content, String category, String thumbnail, RecordStatus status, LocalDateTime createAt, LocalDateTime updateAt, List<Hashtag> hashtags, List<PostImage> postImages) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -115,8 +92,8 @@ public class Post {
             this.hashtags.addAll(hashtags);
         }
 
-        if (images != null) {
-            this.images.addAll(images);
+        if (postImages != null) {
+            this.postImages.addAll(postImages);
         }
     }
 

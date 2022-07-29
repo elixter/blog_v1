@@ -3,7 +3,9 @@ package elixter.blog.repository.image;
 import elixter.blog.constants.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
+import elixter.blog.domain.postImage.PostImage;
 import elixter.blog.repository.post.PostRepository;
+import elixter.blog.repository.postImage.PostImageRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,19 @@ public class JdbcTemplateImageRepositoryTest {
     private final ImageRepository imageRepository;
     private final PostRepository postRepository;
     private final ImageStorage imageStorage;
+    private final PostImageRepository postImageRepository;
 
     @Autowired
-    public JdbcTemplateImageRepositoryTest(@Qualifier("jdbcTemplateImageRepository") ImageRepository imageRepository, @Qualifier("jpaPostRepository") PostRepository postRepository, @Qualifier("localImageStorage") ImageStorage imageStorage) {
+    public JdbcTemplateImageRepositoryTest(
+            @Qualifier("jdbcTemplateImageRepository") ImageRepository imageRepository,
+            @Qualifier("jpaPostRepository") PostRepository postRepository,
+            @Qualifier("localImageStorage") ImageStorage imageStorage,
+            PostImageRepository postImageRepository
+    ) {
         this.imageRepository = imageRepository;
         this.postRepository = postRepository;
         this.imageStorage = imageStorage;
+        this.postImageRepository = postImageRepository;
     }
 
     private MockMultipartFile getMockMultipartFile(String fileName, String contentType, String path) throws IOException {
@@ -85,7 +94,17 @@ public class JdbcTemplateImageRepositoryTest {
         idList.add(img1.getId());
         idList.add(img2.getId());
 
-        imageRepository.relateWithPost(idList, savedPost.getId());
+        PostImage postImage1 = PostImage.builder()
+                .post(post)
+                .image(img1)
+                .build();
+
+        PostImage postImage2 = PostImage.builder()
+                .post(post)
+                .image(img2)
+                .build();
+
+        postImageRepository.saveAll(Arrays.asList(postImage1, postImage2));
         List<Image> result = imageRepository.findByPostId(savedPost.getId());
 
         Assertions.assertThat(result).contains(img1, img2);
