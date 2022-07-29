@@ -1,6 +1,6 @@
 package elixter.blog.repository.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

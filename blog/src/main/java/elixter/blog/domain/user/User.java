@@ -1,9 +1,8 @@
 package elixter.blog.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import lombok.*;
-import org.apache.tomcat.jni.Time;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

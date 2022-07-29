@@ -1,9 +1,8 @@
 package elixter.blog.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
-import elixter.blog.domain.image.Image;
 import elixter.blog.domain.postImage.PostImage;
 import lombok.*;
 

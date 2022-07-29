@@ -1,10 +1,9 @@
 package elixter.blog.repository.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;

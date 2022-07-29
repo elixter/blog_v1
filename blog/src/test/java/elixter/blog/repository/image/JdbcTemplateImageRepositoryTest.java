@@ -1,6 +1,6 @@
 package elixter.blog.repository.image;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.domain.postImage.PostImage;
@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 public class JdbcTemplateImageRepositoryTest {

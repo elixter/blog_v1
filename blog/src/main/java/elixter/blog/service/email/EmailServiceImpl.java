@@ -1,20 +1,13 @@
 package elixter.blog.service.email;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.mail.Mail;
-import elixter.blog.exception.RestException;
 import elixter.blog.repository.mail.MailRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.mail.MailAuthenticationException;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 

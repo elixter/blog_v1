@@ -1,6 +1,6 @@
 package elixter.blog.service.post;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
@@ -12,7 +12,6 @@ import elixter.blog.dto.post.UpdatePostRequestDto;
 import elixter.blog.repository.hashtag.HashtagRepository;
 import elixter.blog.repository.hashtag.JdbcTemplateHashtagRepository;
 import elixter.blog.repository.image.ImageRepository;
-import elixter.blog.repository.post.JdbcTemplatePostRepository;
 import elixter.blog.repository.post.PostRepository;
 import elixter.blog.repository.postImage.PostImageRepository;
 import lombok.extern.slf4j.Slf4j;

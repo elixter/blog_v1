@@ -1,6 +1,6 @@
 package elixter.blog.service.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

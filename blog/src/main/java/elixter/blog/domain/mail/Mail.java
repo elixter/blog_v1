@@ -1,6 +1,6 @@
 package elixter.blog.domain.mail;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 

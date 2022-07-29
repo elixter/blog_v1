@@ -1,6 +1,6 @@
 package elixter.blog.domain.hashtag;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 
