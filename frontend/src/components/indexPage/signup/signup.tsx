@@ -20,6 +20,8 @@ const Signup = function () {
 	const [visiblePassword, setVisiblePassword] = useState(false);
 	const [passwordValidation, setPasswordValidation] = useState(false);
 	const [confirmPasswordValidation, setConfirmPasswordValidation] = useState(false);
+	const [idValidation, setIdValidation] = useState<boolean>(false);
+	const [idValidated, setIdValidated] = useState<boolean>(false);
 	const history = useHistory();
 	const { fetch, loading } = useSignUp();
 
@@ -30,6 +32,10 @@ const Signup = function () {
 				...inputs,
 				[name]: value,
 			});
+			if (inputs.id === '') {
+				setIdValidated(false);
+			}
+
 			if (name === 'password') {
 				setPasswordValidation(new RegExp(passwordValidationRegExp).test(value));
 				setConfirmPasswordValidation(inputs.validatePassword === value);
@@ -59,6 +65,11 @@ const Signup = function () {
 		});
 	};
 
+	const onIdValidate = useCallback(() => {
+		console.log(inputs.id);
+		setIdValidated(true);
+	}, [inputs.id]);
+
 	return (
 		<div id="container">
 			{loading}
@@ -80,7 +91,26 @@ const Signup = function () {
 							/>
 						</li>
 						<li>
-							<input type="text" name="id" placeholder="아이디를 입력하세요" className="inp-frm" onChange={onChange} />
+							<div className="inp-group">
+								<input
+									type="text"
+									name="id"
+									placeholder="아이디를 입력하세요"
+									className="inp-frm"
+									onChange={onChange}
+								/>
+							</div>
+							<div>
+								<button type="button" className="btn-link id-validate" onClick={onIdValidate}>
+									중복확인
+								</button>
+								{!idValidation && inputs.id !== '' && idValidated && (
+									<div className="txt">
+										<img src={icoWarning1} alt=" " />
+										사용중인 아이디입니다.
+									</div>
+								)}
+							</div>
 						</li>
 						<li>
 							<div className="inp-group">

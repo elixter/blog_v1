@@ -217,6 +217,8 @@ select::-ms-expand { display: none; /* 화살표 없애기 for IE10, 11*/ }
 .box-member .list-frm .txt { display: flex; align-items: center; margin-top: 5px; font-family: 'Noto Sans KR'; font-size: 12px; font-weight: 400; color: #e94646; }
 .box-member .list-frm .txt img { margin-right: 5px; }
 
+.id-validate { padding: 5px; background: var(--base-color); margin-top: 5px; border-radius: 5px; color: #f0f0f0; }
+
 .btns-group { display: none; position: absolute; }
 .active { display: block; }
 
