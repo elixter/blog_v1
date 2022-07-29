@@ -17,7 +17,7 @@
 - [x] Image upload
 - [x] JPA 전환
 - [ ] XSS 방지 => 프론트에서 처리되기 때문에 보류
-- [ ] 회원가입시 아이디 중복확인 API
+- [x] 회원가입시 아이디 중복확인 API
 - [x] 이메일 인증 API (Optional)
 
 ### Frontend
