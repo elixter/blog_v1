@@ -1,6 +1,6 @@
 package elixter.blog.repository.image;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.image.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -8,19 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -31,7 +28,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final SimpleJdbcInsert jdbcRelate;
 
     @Autowired
     public JdbcTemplateImageRepository(DataSource dataSource) {
@@ -39,10 +35,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("images")
                 .usingGeneratedKeyColumns("id");
-
-        this.jdbcRelate = new SimpleJdbcInsert(dataSource)
-                .withTableName("images_posts")
-                .usingColumns("image_id", "post_id");
     }
 
     @Override
@@ -52,7 +44,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                 .addValue("origin_name", image.getOriginName())
                 .addValue("stored_name", image.getStoredName())
                 .addValue("create_at", image.getCreateAt())
-                .addValue("status", image.getStatus().ordinal());
+                .addValue("status", image.getStatus().toString());
         Number key = jdbcInsert.executeAndReturnKey(params);
         image.setId(key.longValue());
 
@@ -71,7 +63,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                     .addValue("origin_name", img.getOriginName())
                     .addValue("stored_name", img.getStoredName())
                     .addValue("create_at", img.getCreateAt())
-                    .addValue("status", img.getStatus().ordinal());
+                    .addValue("status", img.getStatus().toString());
             batchParams.add(param);
         }
         jdbcInsert.executeBatch(batchParams.toArray(new SqlParameterSource[0]));
@@ -115,7 +107,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
 
         String sql = "select * from images where status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
 
         return jdbcTemplate.query(sql, param, imageRowMapper());
     }
@@ -123,7 +115,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
     @Override
     public List<Image> findByPostId(Long postId) {
 
-        String sql = "select * from images join images_posts ip on images.id = ip.image_id where ip.post_id = :postId";
+        String sql = "select * from images join posts_images pi on images.id = pi.image_id where pi.post_id = :postId";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("postId", postId);
 
@@ -156,20 +148,6 @@ public class JdbcTemplateImageRepository implements ImageRepository {
         }
     }
 
-    @Override
-    public void relateWithPost(List<Long> idList, Long postId) {
-
-        List<Map<String, Object>> records = new LinkedList<>();
-        for (Long imageId : idList) {
-            Map<String, Object> record = new HashMap<>();
-            record.put("image_id", imageId);
-            record.put("post_id", postId);
-            records.add(record);
-        }
-
-        jdbcRelate.executeBatch(SqlParameterSourceUtils.createBatch(records));
-    }
-
     @NotNull
     private BatchPreparedStatementSetter getStatementSetter(List<Long> idList, String status) {
         return new BatchPreparedStatementSetter() {
@@ -190,7 +168,7 @@ public class JdbcTemplateImageRepository implements ImageRepository {
                 .originName(rs.getString("origin_name"))
                 .storedName(rs.getString("stored_name"))
                 .createAt(rs.getTimestamp("create_at").toLocalDateTime())
-                .status(RecordStatus.values()[rs.getInt("status")])
+                .status(RecordStatus.valueOf(rs.getString("status")))
                 .build());
     }
 }

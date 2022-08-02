@@ -1,13 +1,11 @@
 package elixter.blog.dto.post;
 
-import elixter.blog.constants.RecordStatus;
-import elixter.blog.domain.hashtag.Hashtag;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.post.Post;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ public class CreatePostRequestDto extends AbstractPostDto {
     private String category;
 
     private String thumbnail;
-    private List<String> imageUrlList;
+    private List<String> imageUrlList = new ArrayList<>();
 
     @Builder
     public CreatePostRequestDto(String title, String content, String category, String thumbnail, List<String> hashtags, List<String> imageUrlList) {
@@ -36,7 +34,10 @@ public class CreatePostRequestDto extends AbstractPostDto {
         this.category = category;
         this.thumbnail = thumbnail;
         this.hashtags = hashtags;
-        this.imageUrlList = imageUrlList;
+
+        if (imageUrlList != null) {
+            this.imageUrlList.addAll(imageUrlList);
+        }
     }
 
     public Post postMapping() {
@@ -53,16 +54,6 @@ public class CreatePostRequestDto extends AbstractPostDto {
                 .updateAt(now)
                 .status(RecordStatus.exist)
                 .build();
-
-        if (hashtags != null) {
-            hashtags.forEach(tag -> {
-                Hashtag hashtag = new Hashtag();
-                hashtag.setTag(tag);
-                hashtag.setPost(post);
-                hashtag.setStatus(RecordStatus.exist);
-                post.addHashtag(hashtag);
-            });
-        }
 
         return post;
     }

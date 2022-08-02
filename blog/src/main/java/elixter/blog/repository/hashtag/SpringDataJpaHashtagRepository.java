@@ -14,16 +14,16 @@ public interface SpringDataJpaHashtagRepository extends JpaRepository<Hashtag, L
     @Query("Select h.tag as tag, count(h) as count from Hashtag h where h.tag like concat('%', :tag, '%')  group by h.tag")
     List<HashtagCountInterface> searchTag(String tag);
 
-    @Query("select h from Hashtag h where h.id = :id and h.status = 1")
+    @Query("select h from Hashtag h where h.id = :id and h.status = 'exist'")
     Optional<Hashtag> findById(Long id);
 
-    @Query("select h from Hashtag h where h.tag = :tag and h.status = 1")
+    @Query("select h from Hashtag h where h.tag = :tag and h.status = 'exist'")
     List<Hashtag> findByTag(String tag);
 
-    @Query("select h from Hashtag h where h.status = 1")
+    @Query("select h from Hashtag h where h.status = 'exist'")
     List<Hashtag> findAll();
 
-    @Query("select h from Hashtag h where h.post.id = :postId and h.status = 1")
+    @Query("select h from Hashtag h where h.post.id = :postId and h.status = 'exist'")
     List<Hashtag> findByPostId(Long postId);
 
     @Modifying

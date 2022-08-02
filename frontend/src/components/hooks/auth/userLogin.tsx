@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import { AxiosError } from 'axios';
 import { atom, useRecoilState } from 'recoil';
+import { useSnackbar } from 'notistack';
 import { LoginParams } from '../../authentication/hooks/types';
 import { sleep } from '../../utils';
-import { loginRequest } from '../../authentication/hooks/user';
+import { loginRequest } from '../../api/user';
 
 type LoginRequestResult = {
 	error: AxiosError | null;
@@ -18,6 +19,7 @@ export const loginRequestResult = atom<LoginRequestResult>({
 
 export const useLogin = () => {
 	const [result, setResult] = useRecoilState(loginRequestResult);
+	const { enqueueSnackbar } = useSnackbar();
 
 	const fetch = useCallback(
 		async (param: LoginParams) => {
@@ -42,6 +44,9 @@ export const useLogin = () => {
 						loading: false,
 						error: e,
 					});
+					enqueueSnackbar('아이디 혹은 비밀번호가 일치하지 않습니다.', {
+						variant: 'error',
+					});
 					return false;
 				}
 			});
@@ -49,7 +54,8 @@ export const useLogin = () => {
 			return state;
 		},
 
-		[setResult]
+		[enqueueSnackbar, setResult]
+		// [setResult]
 	);
 
 	useEffect(() => {

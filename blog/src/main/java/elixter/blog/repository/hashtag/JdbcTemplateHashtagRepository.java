@@ -1,6 +1,6 @@
 package elixter.blog.repository.hashtag;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.hashtag.HashtagCount;
 import elixter.blog.domain.hashtag.HashtagCountInterface;
@@ -39,7 +39,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", hashtag.getTag())
                 .addValue("post_id", hashtag.getPost().getId())
-                .addValue("status", hashtag.getStatus().ordinal());
+                .addValue("status", hashtag.getStatus().toString());
         Number key = jdbcInsert.executeAndReturnKey(param);
         hashtag.setId(key.longValue());
 
@@ -56,7 +56,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
             SqlParameterSource param = new MapSqlParameterSource()
                     .addValue("tag", hashtag.getTag())
                     .addValue("post_id", hashtag.getPost().getId())
-                    .addValue("status", hashtag.getStatus().ordinal());
+                    .addValue("status", hashtag.getStatus().toString());
             batchParams.add(param);
         }
 
@@ -78,7 +78,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "select * from hashtags where id = :id and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("status", RecordStatus.exist.ordinal());
+                .addValue("status", RecordStatus.exist.toString());
         List<Hashtag> result = jdbcTemplate.query(sql, param, hashtagRowMapper());
         return result.stream().findAny();
     }
@@ -89,7 +89,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "select * from hashtags where tag = :tag and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", tag)
-                .addValue("status", RecordStatus.exist.ordinal());
+                .addValue("status", RecordStatus.exist.toString());
         return jdbcTemplate.query(sql, param, hashtagRowMapper());
     }
 
@@ -98,7 +98,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
 
         String sql = "select * from hashtags where status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal());
+                .addValue("status", RecordStatus.exist.toString());
         return jdbcTemplate.query(sql, param, hashtagRowMapper());
     }
 
@@ -108,7 +108,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "select * from hashtags where post_id = :postId and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("postId", postId)
-                .addValue("status", RecordStatus.exist.ordinal());
+                .addValue("status", RecordStatus.exist.toString());
         return jdbcTemplate.query(sql, param, hashtagRowMapper());
     }
 
@@ -127,7 +127,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "update hashtags set status = :status where id = :id";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("status", RecordStatus.deleted.ordinal());
+                .addValue("status", RecordStatus.deleted.toString());
         jdbcTemplate.update(sql, param);
     }
 
@@ -137,7 +137,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "update hashtags set status = :status where tag = :tag";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", tag)
-                .addValue("status", RecordStatus.deleted.ordinal());
+                .addValue("status", RecordStatus.deleted.toString());
         jdbcTemplate.update(sql, param);
     }
 
@@ -147,7 +147,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
         String sql = "update hashtags set status = :status where post_id = :postId";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("post_id", postId)
-                .addValue("status", RecordStatus.deleted.ordinal());
+                .addValue("status", RecordStatus.deleted.toString());
         jdbcTemplate.update(sql, param);
     }
 
@@ -157,6 +157,7 @@ public class JdbcTemplateHashtagRepository implements HashtagRepository {
             hashtag.setId(rs.getLong("id"));
             hashtag.setTag(rs.getString("tag"));
             hashtag.getPost().setId(rs.getLong("post_id"));
+            hashtag.setStatus(RecordStatus.valueOf(rs.getString("status")));
             return hashtag;
         });
     }

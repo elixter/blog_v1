@@ -24,4 +24,11 @@ public class UserControllerAdvice {
 
         return new ResponseEntity<>(response, e.getStatus());
     }
+
+    @ExceptionHandler(EmailAlreadyUseException.class)
+    public ResponseEntity<Map<String, Object>> emailAlreadyUseExceptionHandler(EmailAlreadyUseException e) {
+        Map<String, Object> response = e.getRestExceptionResponseMap();
+
+        return new ResponseEntity<>(response, e.getStatus());
+    }
 }

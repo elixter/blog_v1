@@ -1,14 +1,12 @@
 package elixter.blog.repository.post;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.post.Post;
 import elixter.blog.exception.post.PostNotFoundException;
 import elixter.blog.repository.RepositoryUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -56,7 +54,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
                 .addValue("thumbnail", post.getThumbnail())
                 .addValue("create_at", post.getCreateAt())
                 .addValue("update_at", post.getUpdateAt())
-                .addValue("status", post.getStatus().ordinal());
+                .addValue("status", post.getStatus().toString());
         Number key = jdbcInsert.executeAndReturnKey(param);
         post.setId(key.longValue());
 
@@ -78,7 +76,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts where id = :id and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("status", RecordStatus.exist.ordinal());
+                .addValue("status", RecordStatus.exist.toString());
 
         try {
             Post post = jdbcTemplate.queryForObject(sql, param, postRowMapper());
@@ -94,7 +92,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts where id = :id and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
 
         try {
             Post post = jdbcTemplate.queryForObject(sql, param, postRowMapper());
@@ -114,7 +112,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String orderBy = RepositoryUtils.getOrderBy(pageable);
         String sql = "select * from posts where status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -132,7 +130,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String orderBy = RepositoryUtils.getOrderBy(pageable);
         String sql = "select * from posts where status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -153,7 +151,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts where category = :category and status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("category", category)
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -174,7 +172,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts where category = :category and status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("category", category)
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -187,7 +185,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
 
         String sql = "update posts set status = :status where id = :id";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", RecordStatus.deleted.ordinal())
+                .addValue("status", RecordStatus.deleted.toString())
                 .addValue("id", id);
         int affected = jdbcTemplate.update(sql, param);
         if (affected == 0) {
@@ -206,7 +204,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts p join hashtags h on p.id = h.post_id where h.tag = :tag and p.status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", hashtag)
-                .addValue("status", RecordStatus.exist.ordinal())
+                .addValue("status", RecordStatus.exist.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -225,7 +223,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select * from posts p join hashtags h on p.id = h.post_id where h.tag = :tag and p.status = :status " + orderBy + " limit :offset, :limit";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", hashtag)
-                .addValue("status", status.ordinal())
+                .addValue("status", status.toString())
                 .addValue("offset", pageable.getOffset())
                 .addValue("limit", pageable.getPageSize());
         List<Post> result = jdbcTemplate.query(sql, param, postRowMapper());
@@ -240,7 +238,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
     private Long getPostCount(RecordStatus status) {
         String sql = "select count(*) as cnt from posts where status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
 
         return jdbcTemplate.queryForObject(sql, param, Long.class);
     }
@@ -249,7 +247,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select count(*) from posts where category = :category and status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("category", category)
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
         return jdbcTemplate.queryForObject(sql, param, Long.class);
     }
 
@@ -257,7 +255,7 @@ public class JdbcTemplatePostRepository implements PostRepository {
         String sql = "select count(*) from posts p join hashtags h on p.id = h.post_id where h.tag = :tag and p.status = :status";
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("tag", hashtag)
-                .addValue("status", status.ordinal());
+                .addValue("status", status.toString());
         return jdbcTemplate.queryForObject(sql, param, Long.class);
     }
 }

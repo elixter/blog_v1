@@ -1,10 +1,9 @@
 package elixter.blog.repository.hashtag;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.hashtag.Hashtag;
 import elixter.blog.domain.hashtag.HashtagCount;
 import elixter.blog.domain.post.Post;
-import elixter.blog.domain.hashtag.HashtagCountInterface;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

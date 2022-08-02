@@ -1,6 +1,6 @@
 package elixter.blog.service.image;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.image.Image;
 import elixter.blog.domain.post.Post;
 import elixter.blog.repository.image.ImageRepository;
@@ -45,7 +45,7 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public void relateWithPost(List<Image> images, Post post) {
-        images.forEach(image -> image.setPost(post));
+//        images.forEach(image -> image.setPost(post));
     }
 
     @Override

@@ -1,3 +1,4 @@
+-- auto-generated definition
 create table posts
 (
     id        bigint auto_increment
@@ -6,7 +7,8 @@ create table posts
     content   text                                not null,
     thumbnail text                                null,
     category  varchar(20)                         not null,
-    status    tinyint                             not null,
+    status    varchar(10)                         not null,
     create_at timestamp default CURRENT_TIMESTAMP not null,
     update_at timestamp default CURRENT_TIMESTAMP not null
 );
+

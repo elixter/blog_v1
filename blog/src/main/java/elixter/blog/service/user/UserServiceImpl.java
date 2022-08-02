@@ -1,6 +1,6 @@
 package elixter.blog.service.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.constants.SessionConstants;
 import elixter.blog.domain.user.SessionUser;
 import elixter.blog.domain.user.User;
@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -68,24 +68,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findUser(String filterType, String filterKey) {
+    public List<User> findUser(UserSearchType filterType, String filterKey) {
         List<User> result = new ArrayList<>();
 
         switch (filterType) {
-            case "id":
+            case USER_SEARCH_TYPE_ID:
                 result.add(repository.findByIdAndStatus(Long.parseLong(filterKey), RecordStatus.exist).orElse(User.getEmpty()));
                 if (result.get(0).isEmpty()) {
                     log.debug("No such user id : {}", filterKey);
                 }
                 break;
-            case "loginId":
+            case USER_SEARCH_TYPE_LOGIN_ID:
                 result.add(repository.findByLoginIdAndStatus(filterKey, RecordStatus.exist).orElse(User.getEmpty()));
                 if (result.get(0).isEmpty()) {
                     log.debug("No such user login id : {}", filterKey);
                 }
                 break;
-            case "userName":
+            case USER_SEARCH_TYPE_USER_NAME:
                 result = repository.findByNameAndStatus(filterKey, RecordStatus.exist);
+                break;
+            case USER_SEARCH_TYPE_EMAIL:
+                result.add(repository.findByEmailAndStatus(filterKey, RecordStatus.exist).orElse(User.getEmpty()));
+                if (result.get(0).isEmpty()) {
+                    log.debug("No such user email: {}", filterKey);
+                }
                 break;
             default:
                 break;
@@ -95,6 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(UpdateUserRequestDto user) {
         User updateUser = repository.findByIdAndStatus(user.getId(), RecordStatus.exist).orElse(User.getEmpty());
         if (updateUser.isEmpty()) {

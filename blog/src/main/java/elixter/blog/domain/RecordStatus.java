@@ -1,4 +1,4 @@
-package elixter.blog.constants;
+package elixter.blog.domain;
 
 public enum RecordStatus {
     deleted,

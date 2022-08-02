@@ -1,6 +1,6 @@
 package elixter.blog.dto.user;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.user.User;
 import lombok.Builder;
 import lombok.Data;

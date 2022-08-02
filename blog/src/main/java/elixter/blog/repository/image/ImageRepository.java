@@ -1,8 +1,7 @@
 package elixter.blog.repository.image;
 
-import elixter.blog.constants.RecordStatus;
+import elixter.blog.domain.RecordStatus;
 import elixter.blog.domain.image.Image;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,4 @@ public interface ImageRepository {
     List<Image> findByStoredName(List<String> urlList);
 
     Optional<Image> findByStoredName(String storedName);
-
-    void relateWithPost(List<Long> idList, Long postId);
 }
