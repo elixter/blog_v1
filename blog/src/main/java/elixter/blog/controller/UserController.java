@@ -143,11 +143,13 @@ public class UserController {
     @GetMapping("/loginIdValidate")
     public ResponseEntity<Object> GetLoginIdValidate(@RequestBody String loginId) {
 
-        userService.findUser(UserSearchType.USER_SEARCH_TYPE_LOGIN_ID, loginId)
+        if (!userService.findUser(UserSearchType.USER_SEARCH_TYPE_LOGIN_ID, loginId)
                 .stream()
                 .findFirst()
-                .filter(user -> !user.isEmpty())
-                .orElseThrow(UserAlreadyExistException::new);
+                .orElse(User.getEmpty())
+                .isEmpty()) {
+            throw new UserAlreadyExistException();
+        }
 
         return ResponseEntity.ok().build();
     }
