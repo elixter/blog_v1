@@ -30,6 +30,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Component
@@ -71,17 +73,13 @@ public class PostServiceImpl implements PostService {
 
         newPost = postRepository.save(newPost);
 
-        List<Hashtag> hashtags = new ArrayList<>();
-        for (String hashtag : post.getHashtags()) {
-            hashtags.add(
-                    Hashtag.builder()
-                            .tag(hashtag)
-                            .status(RecordStatus.exist)
-                            .post(newPost)
-                            .build()
-            );
-        }
-        hashtagRepository.saveAll(hashtags);
+        final Post tempPost = newPost;
+        List<Hashtag> hashtags = post.getHashtags().stream().map(tag -> Hashtag.builder()
+                .tag(tag)
+                .post(tempPost)
+                .status(RecordStatus.exist)
+                .build()).collect(Collectors.toList());
+
         newPost.getHashtags().addAll(hashtags);
 
         if (post.getImageUrlList().isEmpty()) {
@@ -116,16 +114,12 @@ public class PostServiceImpl implements PostService {
         postRepository.update(updatePost);
 
         hashtagRepository.deleteByPostId(post.getId());
-        List<Hashtag> hashtags = new ArrayList<>();
-        for (String hashtag : post.getHashtags()) {
-            hashtags.add(
-                    Hashtag.builder()
-                            .tag(hashtag)
-                            .status(RecordStatus.exist)
-                            .post(updatePost)
-                            .build()
-            );
-        }
+        List<Hashtag> hashtags = post.getHashtags().stream().map(tag -> Hashtag.builder()
+                .tag(tag)
+                .status(RecordStatus.exist)
+                .post(updatePost)
+                .build()).collect(Collectors.toList());
+
         hashtagRepository.saveAll(hashtags);
         updatePost.getHashtags().addAll(hashtags);
 
@@ -138,15 +132,12 @@ public class PostServiceImpl implements PostService {
         for (String imageUrl : post.getImageUrlList()) {
             storedNameList.add(StringUtils.removeStart(imageUrl, serverUri + "/api/images/"));
         }
-        List<Image> images = imageRepository.findByStoredName(storedNameList);
+        List<PostImage> postImages = imageRepository.findByStoredName(storedNameList).stream()
+                .map(image -> PostImage.builder()
+                        .post(updatePost)
+                        .image(image)
+                        .build()).collect(Collectors.toList());
 
-        List<PostImage> postImages = new ArrayList<>();
-        for (Image image : images) {
-            postImages.add(PostImage.builder()
-                    .post(updatePost)
-                    .image(image)
-                    .build());
-        }
         postImageRepository.saveAll(postImages);
     }
 
@@ -217,37 +208,5 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long id) {
         postRepository.delete(id);
         hashtagRepository.deleteByPostId(id);
-    }
-
-    private void asyncRelateImageWithPost(Post newPost, String content, List<String> imageUrlList) {
-//        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-//        executorService.submit(() -> {
-//            log.debug("start relate image");
-//
-//            List<String> storedNameList = getActiveImageStoredNames(content, imageUrlList);
-//            List<Image> images = imageRepository.findByStoredName(storedNameList);
-//            images.forEach(image -> image.setPost(newPost));
-//
-//            imageRepository.saveAll(images);
-//
-//            log.debug("relate image is finished");
-//        });
-//        executorService.shutdown();
-    }
-
-    private static List<String> getActiveImageStoredNames(String content, List<String> imageUrlList) {
-        List<String> storedNameList = new Vector<>();
-
-        imageUrlList.parallelStream().forEach(url -> {
-            if (content.contains(url)) {
-                storedNameList.add(url.replace(serverUri + "/api/image/", ""));
-            }
-        });
-
-        return storedNameList;
-    }
-
-    private void setPostToHashtagList(Post newPost) {
-        newPost.getHashtags().forEach(hashtag -> hashtag.setPost(newPost));
     }
 }
