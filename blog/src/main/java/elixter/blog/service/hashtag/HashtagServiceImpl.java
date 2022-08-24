@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HashtagServiceImpl implements HashtagService {
@@ -30,14 +31,9 @@ public class HashtagServiceImpl implements HashtagService {
 
     @Override
     public List<Long> createHashtags(List<Hashtag> hashtags) {
-        List<Long> result = new ArrayList<>();
-        hashtags = (List<Hashtag>) repository.saveAll(hashtags);
-
-        for (Hashtag hashtag : hashtags) {
-            result.add(hashtag.getId());
-        }
-
-        return result;
+        return repository.saveAll(hashtags).stream()
+                .map(Hashtag::getId)
+                .collect(Collectors.toList());
     }
 
     @Override
