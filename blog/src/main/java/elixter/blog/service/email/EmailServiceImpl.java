@@ -16,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,17 +54,18 @@ public class EmailServiceImpl implements EmailService {
         mailSender.send(mimeMessage);
 
         log.info("mail={} sent successfully", mimeMessage);
-        List<Mail> mailList = new ArrayList<>();
-        for (String receiver : receivers) {
-            mailList.add(Mail.builder()
-                    .sender(sender)
-                    .receiver(receiver)
-                    .title(title)
-                    .content(content)
-                    .status(RecordStatus.exist)
-                    .build());
-        }
-        mailRepository.saveAll(mailList);
+
+        mailRepository.saveAll(
+                receivers.stream()
+                .map(receiver -> Mail.builder()
+                        .sender(sender)
+                        .receiver(receiver)
+                        .title(title)
+                        .content(content)
+                        .status(RecordStatus.exist)
+                        .build())
+                .collect(Collectors.toList())
+        );
     }
 
     @Override
